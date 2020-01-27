@@ -20,38 +20,39 @@ export function getRandomCard() {
 	return CardList[index];
 }	
 
-export class Card extends React.Component {
+interface CardProps {
+	card: CardData
+	ally: boolean
+	onClick?: () => void
+}
 
-	constructor(props){
-		super(props);
-		this.state = {
-			name: this.props.card.name,
-			text: this.props.card.text,
-			cost: this.props.card.cost,
-			ally: this.props.ally
-		}
-	}
+export default class Card extends React.Component<CardProps, {} > {
 
 	render() {
-		if (this.state.ally === "true") {
-			return (
-				<div className="card" ally= "true">
+		// add is-not-ally class after ':' if needed
+		const allyClass = this.props.ally ? "is-ally" : "" 
+		const {
+			card, 
+			ally,
+			onClick
+		} = this.props
+		return(
+			<div className={`card ${allyClass}`} onClick={onClick}> 
+			{
+				ally &&
+				<>
 					<div className="cardcost">
-						{this.state.cost}
+						{card.cost}
 					</div>
 					<div className="cardname">
-						{this.state.name}
+						{card.name}
 					</div>
 					<div className="cardtext">
-						{this.state.text}
+						{card.text}
 					</div>
-				</div>
-			);
-		} else {
-			return (
-				<div className="card" ally= "false">
-				</div>
-			);
-		}
+				</>
+			}
+			</div>
+		)
 	}
 }

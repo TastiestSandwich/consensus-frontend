@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom'
 import './index.css';
-import { Card, CardData, getRandomCard } from './card.tsx';
-import { Chinpoko, ChinpokoData, getRandomChinpoko } from './chinpoko.tsx';
+import Card, { CardData, getRandomCard } from './card';
+import { Chinpoko, ChinpokoData, getRandomChinpoko } from './chinpoko';
 
 interface GameState {
   allyHand: Array<CardData>
@@ -13,7 +13,7 @@ interface GameState {
 }
 
 function getStartingHand(size: number) {
-  let startingHand: Array<CardData> = new Array<CardData>;
+  let startingHand: Array<CardData> = new Array<CardData>();
   for (let i = 0; i < size; i++) {
     startingHand.push(getRandomCard());
   }
@@ -28,11 +28,12 @@ class Game extends React.Component<{}, GameState> {
       enemyHand: getStartingHand(3),
       allyChinpoko: getRandomChinpoko(),
       enemyChinpoko: getRandomChinpoko(),
-      selectedCard: getStartingHand(1),
+      //selectedCard: getStartingHand(1), Not the right value?
+      selectedCard: null,
     };
   }
 
-  handleCardClick(selectedCard: CardData) {
+  handleCardClick = (selectedCard: CardData) => {
     console.log(selectedCard)
     this.setState({
       selectedCard: selectedCard,
@@ -42,9 +43,9 @@ class Game extends React.Component<{}, GameState> {
   renderBoard() {
     return (
       <div className = "board">
-        <Chinpoko chinpoko = {this.state.enemyChinpoko} ally="false" />
+        <Chinpoko chinpoko = {this.state.enemyChinpoko} ally={false} />
         <hr></hr>
-        <Chinpoko chinpoko = {this.state.allyChinpoko} ally="true" />
+        <Chinpoko chinpoko = {this.state.allyChinpoko} ally={true} />
       </div>  
     );
   }
@@ -52,73 +53,79 @@ class Game extends React.Component<{}, GameState> {
   render() {
     return (
       <div className="game">
-        <Hand hand = {this.state.enemyHand} ally ="false" />
+        <Hand cards={this.state.enemyHand} ally={false} />
         <hr></hr>
         <div className="game-board">
           { this.renderBoard() }
         </div>
         <hr></hr>
-        <Hand hand={this.state.allyHand} ally="true" onCardClick={() => this.handleCardClick()} />
-        <SelectedCard card={this.state.selectedCard} />
+        <Hand cards={this.state.allyHand} ally={true} onCardClick={this.handleCardClick} />
+        {
+          this.state.selectedCard &&
+          <SelectedCard card={this.state.selectedCard} />
+        }
+        
       </div>
     );
   }
 }
-
+/*
 class Deck extends React.Component {
 	constructor(props) {
 		super(props);
 		
 	}
 }
+*/
 
-interface HandState {
+interface HandProps {
   cards: Array<CardData>
   ally: boolean
+  onCardClick?: (card: CardData) => void
 }
 
-class Hand extends React.Component<{}, HandState> {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      cards: this.props.hand,
-      ally: this.props.ally,
-    }
+class Hand extends React.Component<HandProps> {
+  handleClick = (card: CardData) => () => {
+    if(this.props.onCardClick)
+      this.props.onCardClick(card)
   }
-
   render() {
+    // add is-not-ally class after ':' if needed
+    const allyClass = this.props.ally ? "is-ally" : "" 
     return (
-      <div className = "game-hand" ally = {this.state.ally.toString()}>
-        { this.state.cards.map((card, index) => (
-          <Card key={index} card={card} ally={this.state.ally} onClick={() => this.props.onCardClick()} /> 
+      <div className={`game-hand ${allyClass}`} >
+        { this.props.cards.map((card, index) => (
+          <Card 
+            key={index} 
+            card={card}
+            ally={this.props.ally} 
+            onClick={this.handleClick(card)}
+            /*undefined prop in Card 
+             onClick={() => this.props.onCardClick()} 
+             */
+           /> 
           ))}
       </div>
     );
   }
 }
 
-class SelectedCard extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedCard: this.props.card,
-    }
-  }
+interface SelectedCardProps {
+  card: CardData
+}
 
+class SelectedCard extends React.Component<SelectedCardProps> {
+ 
   render() {
-    if (this.state.selectedCard === null) {
-      return (
-        <div className = "selected-card">
-        </div>
-      )
-    } else {
-      return (
-        <div className = "selected-card">
-          <Card card={this.state.selectedCard} ally="true"/>
-        </div>
-      )
-    }
+    const {card} = this.props
+    return (
+      <div className = "selected-card">
+        {
+          card &&
+          <Card card={card} ally={true}/>
+        }
+      </div>
+    )
   }
 }
 
