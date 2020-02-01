@@ -31985,7 +31985,7 @@ if ("development" === 'production') {
 } else {
   module.exports = require('./cjs/react-dom.development.js');
 }
-},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -32017,7 +32017,7 @@ function getBaseURL(url) {
 
 exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
-},{}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
+},{}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
 var bundle = require('./bundle-url');
 
 function updateLink(link) {
@@ -32052,18 +32052,19 @@ function reloadCSS() {
 }
 
 module.exports = reloadCSS;
-},{"./bundle-url":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../src/index.css":[function(require,module,exports) {
+},{"./bundle-url":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../src/index.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/board.tsx":[function(require,module,exports) {
+},{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/card.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports.getRandomCard = getRandomCard;
+exports.Card = exports.CardList = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
@@ -32095,32 +32096,75 @@ var __extends = void 0 && (void 0).__extends || function () {
   };
 }();
 
-var Board =
+var CardList = [{
+  name: "card1",
+  text: "do thing 1",
+  cost: 1
+}, {
+  name: "card2",
+  text: "do thing 2",
+  cost: 2
+}, {
+  name: "card3",
+  text: "do tremendously long thing 3",
+  cost: 3
+}, {
+  name: "card4",
+  text: "do long thing 4",
+  cost: 4
+}, {
+  name: "card5",
+  text: "do very long thing 5",
+  cost: 5
+}];
+exports.CardList = CardList;
+
+function getRandomCard() {
+  var index = Math.floor(Math.random() * CardList.length);
+  return CardList[index];
+}
+
+var Card =
 /** @class */
 function (_super) {
-  __extends(Board, _super);
+  __extends(Card, _super);
 
-  function Board() {
-    return _super !== null && _super.apply(this, arguments) || this;
+  function Card(props) {
+    var _this = _super.call(this, props) || this;
+
+    _this.state = {
+      name: _this.props.card.name,
+      text: _this.props.card.text,
+      cost: _this.props.card.cost,
+      ally: _this.props.ally
+    };
+    return _this;
   }
 
-  Board.prototype.render = function () {
-    return _react.default.createElement("div", {
-      className: "board"
-    }, _react.default.createElement("div", {
-      className: "enemy-chinpokomon"
-    }, "ENEMY"), _react.default.createElement("div", {
-      className: "ally-chinpokomon"
-    }, "ALLY"), _react.default.createElement("div", {
-      className: "hand"
-    }, "HAND"));
+  Card.prototype.render = function () {
+    if (this.state.ally === "true") {
+      return _react.default.createElement("div", {
+        className: "card",
+        ally: "true"
+      }, _react.default.createElement("div", {
+        className: "cardcost"
+      }, this.state.cost), _react.default.createElement("div", {
+        className: "cardname"
+      }, this.state.name), _react.default.createElement("div", {
+        className: "cardtext"
+      }, this.state.text));
+    } else {
+      return _react.default.createElement("div", {
+        className: "card",
+        ally: "false"
+      });
+    }
   };
 
-  return Board;
+  return Card;
 }(_react.default.Component);
 
-var _default = Board;
-exports.default = _default;
+exports.Card = Card;
 },{"react":"../node_modules/react/index.js","./index.css":"../src/index.css"}],"../src/index.tsx":[function(require,module,exports) {
 "use strict";
 
@@ -32130,7 +32174,7 @@ var _reactDom = require("react-dom");
 
 require("./index.css");
 
-var _board = _interopRequireDefault(require("./board.tsx"));
+var _card = require("./card.tsx");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32163,17 +32207,32 @@ var Game =
 function (_super) {
   __extends(Game, _super);
 
-  function Game() {
-    return _super !== null && _super.apply(this, arguments) || this;
+  function Game(props) {
+    var _this = _super.call(this, props) || this;
+
+    _this.state = {};
+    return _this;
   }
+
+  Game.prototype.renderBoard = function () {
+    return _react.default.createElement("div", null, _react.default.createElement("div", {
+      className: "chinpoko",
+      ally: "false"
+    }, "ENEMY"), _react.default.createElement("div", {
+      className: "chinpoko",
+      ally: "true"
+    }, "ALLY"));
+  };
 
   Game.prototype.render = function () {
     return _react.default.createElement("div", {
       className: "game"
-    }, _react.default.createElement("div", {
+    }, _react.default.createElement(Hand, {
+      ally: "false"
+    }), _react.default.createElement("hr", null), _react.default.createElement("div", {
       className: "game-board"
-    }, _react.default.createElement(_board.default, null)), _react.default.createElement("div", {
-      className: "game-info"
+    }, this.renderBoard()), _react.default.createElement("hr", null), _react.default.createElement(Hand, {
+      ally: "true"
     }));
   };
 
@@ -32197,15 +32256,46 @@ var Hand =
 function (_super) {
   __extends(Hand, _super);
 
-  function Hand() {
-    return _super !== null && _super.apply(this, arguments) || this;
+  function Hand(props) {
+    var _this = _super.call(this, props) || this;
+
+    _this.state = {
+      cards: _this.getStartingHand(3),
+      ally: _this.props.ally
+    };
+    return _this;
   }
+
+  Hand.prototype.getStartingHand = function (size) {
+    var startingHand = new Array();
+
+    for (var i = 0; i < size; i++) {
+      startingHand.push((0, _card.getRandomCard)());
+    }
+
+    return startingHand;
+  };
+
+  Hand.prototype.render = function () {
+    var _this = this;
+
+    return _react.default.createElement("div", {
+      className: "game-hand",
+      ally: this.state.ally.toString()
+    }, this.state.cards.map(function (card, index) {
+      return _react.default.createElement(_card.Card, {
+        key: index,
+        card: card,
+        ally: _this.state.ally
+      });
+    }));
+  };
 
   return Hand;
 }(_react.default.Component);
 
 (0, _reactDom.render)(_react.default.createElement(Game, null), document.getElementById('root'));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./index.css":"../src/index.css","./board.tsx":"../src/board.tsx"}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./index.css":"../src/index.css","./card.tsx":"../src/card.tsx"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -32233,7 +32323,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38779" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64210" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -32409,5 +32499,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","../src/index.tsx"], null)
+},{}]},{},["../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","../src/index.tsx"], null)
 //# sourceMappingURL=/src.62c16509.js.map
