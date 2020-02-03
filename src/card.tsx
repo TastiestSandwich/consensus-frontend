@@ -16,8 +16,8 @@ export const CardList: Array<CardData> = [
 ];
 
 export function getRandomCard() {
-	let index = Math.floor(Math.random() * CardList.length)
-	return CardList[index]
+	let index = Math.floor(Math.random() * CardList.length);
+	return CardList[index];
 }	
 
 export class Card extends React.Component {
@@ -27,7 +27,7 @@ export class Card extends React.Component {
 		this.state = {
 			name: this.props.card.name,
 			text: this.props.card.text,
-			cost: this.props.card.cost
+			cost: this.props.card.cost,
 			ally: this.props.ally
 		}
 	}

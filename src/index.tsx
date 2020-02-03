@@ -2,23 +2,40 @@ import React from 'react';
 import { render } from 'react-dom'
 import './index.css';
 import { Card, CardData, getRandomCard } from './card.tsx';
+import { Chinpoko, ChinpokoData, getRandomChinpoko } from './chinpoko.tsx';
+
+interface GameState {
+  allyHand: Array<CardData>
+  enemyHand: Array<CardData>
+  allyChinpoko: ChinpokoData
+  enemyChinpoko: ChinpokoData
+}
+
+function getStartingHand(size: number) {
+  let startingHand: Array = new Array<CardData>;
+  for (let i = 0; i < size; i++) {
+    startingHand.push(getRandomCard());
+  }
+  return startingHand;
+}
 
 class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      allyHand: getStartingHand(3),
+      enemyHand: getStartingHand(3),
+      allyChinpoko: getRandomChinpoko(),
+      enemyChinpoko: getRandomChinpoko()
     };
   }
 
   renderBoard() {
     return (
-      <div>
-        <div className = "chinpoko" ally="false">
-          ENEMY
-        </div>
-        <div className = "chinpoko" ally="true">
-          ALLY
-        </div>
+      <div className = "board">
+        <Chinpoko chinpoko = {this.state.enemyChinpoko} ally="false" />
+        <hr></hr>
+        <Chinpoko chinpoko = {this.state.allyChinpoko} ally="true" />
       </div>  
     );
   }
@@ -26,13 +43,13 @@ class Game extends React.Component {
   render() {
     return (
       <div className="game">
-        <Hand ally ="false" />
+        <Hand hand = {this.state.enemyHand} ally ="false" />
         <hr></hr>
         <div className="game-board">
           { this.renderBoard() }
         </div>
         <hr></hr>
-         <Hand ally="true" />
+         <Hand hand = {this.state.allyHand} ally="true" />
       </div>
     );
   }
@@ -52,18 +69,10 @@ interface HandState {
 
 class Hand extends React.Component<{}, HandState> {
 
-  getStartingHand(size: number) {
-    let startingHand: Array = new Array<CardData>;
-    for (let i = 0; i < size; i++) {
-      startingHand.push(getRandomCard());
-    }
-    return startingHand;
-  }
-
   constructor(props) {
     super(props);
     this.state = {
-      cards: this.getStartingHand(3),
+      cards: this.props.hand,
       ally: this.props.ally,
     }
   }

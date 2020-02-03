@@ -32165,16 +32165,65 @@ function (_super) {
 }(_react.default.Component);
 
 exports.Card = Card;
-},{"react":"../node_modules/react/index.js","./index.css":"../src/index.css"}],"../src/index.tsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./index.css":"../src/index.css"}],"../src/common.tsx":[function(require,module,exports) {
 "use strict";
 
-var _react = _interopRequireDefault(require("react"));
-
-var _reactDom = require("react-dom");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TypeList = void 0;
 
 require("./index.css");
 
-var _card = require("./card.tsx");
+var TypeList = {
+  "FIRE": {
+    name: "FIRE",
+    strongTo: ["GRASS"],
+    resistedBy: ["FIRE", "WATER"]
+  },
+  "WATER": {
+    name: "WATER",
+    strongTo: ["FIRE"],
+    resistedBy: ["WATER", "GRASS"]
+  },
+  "GRASS": {
+    name: "GRASS",
+    strongTo: ["WATER"],
+    resistedBy: ["GRASS", "FIRE"]
+  },
+  "NEUTRAL": {
+    name: "NEUTRAL",
+    strongTo: [],
+    resistedBy: []
+  }
+};
+exports.TypeList = TypeList;
+},{"./index.css":"../src/index.css"}],"../src/images/bisonte.png":[function(require,module,exports) {
+module.exports = "/bisonte.1afbfc6d.png";
+},{}],"../src/images/lagarto.png":[function(require,module,exports) {
+module.exports = "/lagarto.a36365ad.png";
+},{}],"../src/images/nutria.png":[function(require,module,exports) {
+module.exports = "/nutria.ab55cd8c.png";
+},{}],"../src/chinpoko.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getRandomChinpoko = getRandomChinpoko;
+exports.Chinpoko = exports.ChinpokoList = exports.BaseChinpokoList = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+require("./index.css");
+
+var _common = require("./common.tsx");
+
+var _bisonte = _interopRequireDefault(require("./images/bisonte.png"));
+
+var _lagarto = _interopRequireDefault(require("./images/lagarto.png"));
+
+var _nutria = _interopRequireDefault(require("./images/nutria.png"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32202,6 +32251,206 @@ var __extends = void 0 && (void 0).__extends || function () {
   };
 }();
 
+var BaseChinpokoList = {
+  "BISONTE": {
+    speciesName: "BISONTE",
+    sprite: _bisonte.default,
+    baseHP: 100,
+    baseATK: 60,
+    baseDEF: 100,
+    baseSPE: 60,
+    type: _common.TypeList["GRASS"]
+  },
+  "LAGARTO": {
+    speciesName: "LAGARTO",
+    sprite: _lagarto.default,
+    baseHP: 70,
+    baseATK: 100,
+    baseDEF: 70,
+    baseSPE: 80,
+    type: _common.TypeList["FIRE"]
+  },
+  "NUTRIA": {
+    speciesName: "NUTRIA",
+    sprite: _nutria.default,
+    baseHP: 60,
+    baseATK: 100,
+    baseDEF: 60,
+    baseSPE: 100,
+    type: _common.TypeList["WATER"]
+  }
+};
+exports.BaseChinpokoList = BaseChinpokoList;
+var ChinpokoList = [{
+  name: "Imanol",
+  species: BaseChinpokoList["BISONTE"],
+  lvl: 10,
+  evHP: 0,
+  evATK: 0,
+  evDEF: 0,
+  evSPE: 0
+}, {
+  name: "Gerard",
+  species: BaseChinpokoList["LAGARTO"],
+  lvl: 10,
+  evHP: 0,
+  evATK: 0,
+  evDEF: 0,
+  evSPE: 0
+}, {
+  name: "Mojano",
+  species: BaseChinpokoList["NUTRIA"],
+  lvl: 10,
+  evHP: 0,
+  evATK: 0,
+  evDEF: 0,
+  evSPE: 0
+}];
+exports.ChinpokoList = ChinpokoList;
+
+function getRandomChinpoko() {
+  var index = Math.floor(Math.random() * ChinpokoList.length);
+  return getChinpokoData(ChinpokoList[index]);
+}
+
+function getChinpokoData(storedData) {
+  var startingHP = calcHP(storedData.species.baseHP, storedData.evHP, storedData.lvl);
+  var chinpoko = {
+    storedData: storedData,
+    maxhp: startingHP,
+    hp: startingHP,
+    atk: calcStat(storedData.species.baseATK, storedData.evATK, storedData.lvl),
+    def: calcStat(storedData.species.baseDEF, storedData.evDEF, storedData.lvl),
+    spe: calcStat(storedData.species.baseSPE, storedData.evSPE, storedData.lvl)
+  };
+  return chinpoko;
+}
+
+function calcStat(baseStat, evStat, lvl) {
+  return Math.floor((2 * baseStat + evStat) * lvl / 100 + 5);
+}
+
+function calcHP(baseHP, evHP, lvl) {
+  return Math.floor((2 * baseHP + evHP) * lvl / 100 + lvl + 10);
+}
+
+var Chinpoko =
+/** @class */
+function (_super) {
+  __extends(Chinpoko, _super);
+
+  function Chinpoko(props) {
+    var _this = _super.call(this, props) || this;
+
+    _this.state = {
+      name: _this.props.chinpoko.storedData.name,
+      lvl: _this.props.chinpoko.storedData.lvl,
+      species: _this.props.chinpoko.storedData.species,
+      maxhp: _this.props.chinpoko.maxhp,
+      hp: _this.props.chinpoko.hp,
+      atk: _this.props.chinpoko.atk,
+      def: _this.props.chinpoko.def,
+      spe: _this.props.chinpoko.spe,
+      ally: _this.props.ally
+    };
+    return _this;
+  }
+
+  Chinpoko.prototype.renderChinpokoSprite = function () {
+    return _react.default.createElement("div", {
+      className: "chinpoko-sprite",
+      ally: this.state.ally.toString()
+    }, _react.default.createElement("img", {
+      src: this.state.species.sprite,
+      alt: this.state.species.speciesName
+    }));
+  }; // <img src={ "/images/" + this.state.species.speciesName.toLowerCase() + ".png" }  alt={ this.state.species.speciesName } />
+
+
+  Chinpoko.prototype.renderChinpokoDataBox = function () {
+    return _react.default.createElement("div", {
+      className: "chinpoko-databox",
+      ally: this.state.ally.toString()
+    }, _react.default.createElement("div", {
+      className: "chinpoko-hpbox"
+    }, _react.default.createElement("div", {
+      className: "chinpoko-title"
+    }, _react.default.createElement("div", {
+      className: "chinpoko-name"
+    }, this.state.name), _react.default.createElement("div", {
+      className: "chinpoko-lvl"
+    }, _react.default.createElement("b", null, "lvl ", this.state.lvl))), _react.default.createElement("div", {
+      className: "chinpoko-healthbar",
+      style: {
+        width: this.state.hp * 96 / this.state.maxhp
+      }
+    }), _react.default.createElement("div", {
+      className: "chinpoko-hp"
+    }, _react.default.createElement("b", null, "HP "), this.state.hp, " / ", this.state.maxhp)), _react.default.createElement("div", {
+      className: "chinpoko-statbox"
+    }, _react.default.createElement("table", null, _react.default.createElement("thead", null, _react.default.createElement("tr", null, _react.default.createElement("th", null, "ATK"), _react.default.createElement("th", null, "DEF"), _react.default.createElement("th", null, "SPE"))), _react.default.createElement("tbody", null, _react.default.createElement("tr", null, _react.default.createElement("td", null, this.state.atk), _react.default.createElement("td", null, this.state.def), _react.default.createElement("td", null, this.state.spe))))));
+  };
+
+  Chinpoko.prototype.render = function () {
+    return _react.default.createElement("div", {
+      className: "chinpoko-field",
+      ally: this.state.ally
+    }, this.renderChinpokoDataBox(), this.renderChinpokoSprite());
+  };
+
+  return Chinpoko;
+}(_react.default.Component);
+
+exports.Chinpoko = Chinpoko;
+},{"react":"../node_modules/react/index.js","./index.css":"../src/index.css","./common.tsx":"../src/common.tsx","./images/bisonte.png":"../src/images/bisonte.png","./images/lagarto.png":"../src/images/lagarto.png","./images/nutria.png":"../src/images/nutria.png"}],"../src/index.tsx":[function(require,module,exports) {
+"use strict";
+
+var _react = _interopRequireDefault(require("react"));
+
+var _reactDom = require("react-dom");
+
+require("./index.css");
+
+var _card = require("./card.tsx");
+
+var _chinpoko = require("./chinpoko.tsx");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var __extends = void 0 && (void 0).__extends || function () {
+  var extendStatics = function (d, b) {
+    extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    };
+
+    return extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+function getStartingHand(size) {
+  var startingHand = new Array();
+
+  for (var i = 0; i < size; i++) {
+    startingHand.push((0, _card.getRandomCard)());
+  }
+
+  return startingHand;
+}
+
 var Game =
 /** @class */
 function (_super) {
@@ -32210,28 +32459,37 @@ function (_super) {
   function Game(props) {
     var _this = _super.call(this, props) || this;
 
-    _this.state = {};
+    _this.state = {
+      allyHand: getStartingHand(3),
+      enemyHand: getStartingHand(3),
+      allyChinpoko: (0, _chinpoko.getRandomChinpoko)(),
+      enemyChinpoko: (0, _chinpoko.getRandomChinpoko)()
+    };
     return _this;
   }
 
   Game.prototype.renderBoard = function () {
-    return _react.default.createElement("div", null, _react.default.createElement("div", {
-      className: "chinpoko",
+    return _react.default.createElement("div", {
+      className: "board"
+    }, _react.default.createElement(_chinpoko.Chinpoko, {
+      chinpoko: this.state.enemyChinpoko,
       ally: "false"
-    }, "ENEMY"), _react.default.createElement("div", {
-      className: "chinpoko",
+    }), _react.default.createElement("hr", null), _react.default.createElement(_chinpoko.Chinpoko, {
+      chinpoko: this.state.allyChinpoko,
       ally: "true"
-    }, "ALLY"));
+    }));
   };
 
   Game.prototype.render = function () {
     return _react.default.createElement("div", {
       className: "game"
     }, _react.default.createElement(Hand, {
+      hand: this.state.enemyHand,
       ally: "false"
     }), _react.default.createElement("hr", null), _react.default.createElement("div", {
       className: "game-board"
     }, this.renderBoard()), _react.default.createElement("hr", null), _react.default.createElement(Hand, {
+      hand: this.state.allyHand,
       ally: "true"
     }));
   };
@@ -32260,21 +32518,11 @@ function (_super) {
     var _this = _super.call(this, props) || this;
 
     _this.state = {
-      cards: _this.getStartingHand(3),
+      cards: _this.props.hand,
       ally: _this.props.ally
     };
     return _this;
   }
-
-  Hand.prototype.getStartingHand = function (size) {
-    var startingHand = new Array();
-
-    for (var i = 0; i < size; i++) {
-      startingHand.push((0, _card.getRandomCard)());
-    }
-
-    return startingHand;
-  };
 
   Hand.prototype.render = function () {
     var _this = this;
@@ -32295,7 +32543,7 @@ function (_super) {
 }(_react.default.Component);
 
 (0, _reactDom.render)(_react.default.createElement(Game, null), document.getElementById('root'));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./index.css":"../src/index.css","./card.tsx":"../src/card.tsx"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./index.css":"../src/index.css","./card.tsx":"../src/card.tsx","./chinpoko.tsx":"../src/chinpoko.tsx"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -32323,7 +32571,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64210" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62371" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
