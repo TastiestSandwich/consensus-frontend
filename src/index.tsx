@@ -12,14 +12,14 @@ interface GameState {
 }
 
 function getStartingHand(size: number) {
-  let startingHand: Array = new Array<CardData>;
+  let startingHand: Array<CardData> = new Array<CardData>;
   for (let i = 0; i < size; i++) {
     startingHand.push(getRandomCard());
   }
   return startingHand;
 }
 
-class Game extends React.Component {
+class Game extends React.Component<{}, GameState> {
   constructor(props) {
     super(props);
     this.state = {
