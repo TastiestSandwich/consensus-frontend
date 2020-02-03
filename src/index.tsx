@@ -9,6 +9,7 @@ interface GameState {
   enemyHand: Array<CardData>
   allyChinpoko: ChinpokoData
   enemyChinpoko: ChinpokoData
+  selectedCard: CardData | null
 }
 
 function getStartingHand(size: number) {
@@ -26,8 +27,16 @@ class Game extends React.Component<{}, GameState> {
       allyHand: getStartingHand(3),
       enemyHand: getStartingHand(3),
       allyChinpoko: getRandomChinpoko(),
-      enemyChinpoko: getRandomChinpoko()
+      enemyChinpoko: getRandomChinpoko(),
+      selectedCard: getStartingHand(1),
     };
+  }
+
+  handleCardClick(selectedCard: CardData) {
+    console.log(selectedCard)
+    this.setState({
+      selectedCard: selectedCard,
+    })
   }
 
   renderBoard() {
@@ -49,7 +58,8 @@ class Game extends React.Component<{}, GameState> {
           { this.renderBoard() }
         </div>
         <hr></hr>
-         <Hand hand = {this.state.allyHand} ally="true" />
+        <Hand hand={this.state.allyHand} ally="true" onCardClick={() => this.handleCardClick()} />
+        <SelectedCard card={this.state.selectedCard} />
       </div>
     );
   }
@@ -81,10 +91,34 @@ class Hand extends React.Component<{}, HandState> {
     return (
       <div className = "game-hand" ally = {this.state.ally.toString()}>
         { this.state.cards.map((card, index) => (
-          <Card key={index} card={card} ally={this.state.ally} /> 
+          <Card key={index} card={card} ally={this.state.ally} onClick={() => this.props.onCardClick()} /> 
           ))}
       </div>
     );
+  }
+}
+
+class SelectedCard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedCard: this.props.card,
+    }
+  }
+
+  render() {
+    if (this.state.selectedCard === null) {
+      return (
+        <div className = "selected-card">
+        </div>
+      )
+    } else {
+      return (
+        <div className = "selected-card">
+          <Card card={this.state.selectedCard} ally="true"/>
+        </div>
+      )
+    }
   }
 }
 

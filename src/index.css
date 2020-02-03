@@ -11,6 +11,10 @@ ol, ul {
   margin-bottom: 10px;
 }
 
+.selected-card {
+  height:250px;
+}
+
 .card {
   background: #fff;
   border: 5px solid #888;

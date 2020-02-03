@@ -31985,7 +31985,7 @@ if ("development" === 'production') {
 } else {
   module.exports = require('./cjs/react-dom.development.js');
 }
-},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -32017,7 +32017,7 @@ function getBaseURL(url) {
 
 exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
-},{}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
+},{}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
 var bundle = require('./bundle-url');
 
 function updateLink(link) {
@@ -32052,12 +32052,12 @@ function reloadCSS() {
 }
 
 module.exports = reloadCSS;
-},{"./bundle-url":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../src/index.css":[function(require,module,exports) {
+},{"./bundle-url":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../src/index.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/card.tsx":[function(require,module,exports) {
+},{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/card.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32463,10 +32463,18 @@ function (_super) {
       allyHand: getStartingHand(3),
       enemyHand: getStartingHand(3),
       allyChinpoko: (0, _chinpoko.getRandomChinpoko)(),
-      enemyChinpoko: (0, _chinpoko.getRandomChinpoko)()
+      enemyChinpoko: (0, _chinpoko.getRandomChinpoko)(),
+      selectedCard: getStartingHand(1)
     };
     return _this;
   }
+
+  Game.prototype.handleCardClick = function (selectedCard) {
+    console.log(selectedCard);
+    this.setState({
+      selectedCard: selectedCard
+    });
+  };
 
   Game.prototype.renderBoard = function () {
     return _react.default.createElement("div", {
@@ -32481,6 +32489,8 @@ function (_super) {
   };
 
   Game.prototype.render = function () {
+    var _this = this;
+
     return _react.default.createElement("div", {
       className: "game"
     }, _react.default.createElement(Hand, {
@@ -32490,7 +32500,12 @@ function (_super) {
       className: "game-board"
     }, this.renderBoard()), _react.default.createElement("hr", null), _react.default.createElement(Hand, {
       hand: this.state.allyHand,
-      ally: "true"
+      ally: "true",
+      onCardClick: function () {
+        return _this.handleCardClick();
+      }
+    }), _react.default.createElement(SelectedCard, {
+      card: this.state.selectedCard
     }));
   };
 
@@ -32534,7 +32549,10 @@ function (_super) {
       return _react.default.createElement(_card.Card, {
         key: index,
         card: card,
-        ally: _this.state.ally
+        ally: _this.state.ally,
+        onClick: function () {
+          return _this.props.onCardClick();
+        }
       });
     }));
   };
@@ -32542,8 +32560,40 @@ function (_super) {
   return Hand;
 }(_react.default.Component);
 
+var SelectedCard =
+/** @class */
+function (_super) {
+  __extends(SelectedCard, _super);
+
+  function SelectedCard(props) {
+    var _this = _super.call(this, props) || this;
+
+    _this.state = {
+      selectedCard: _this.props.card
+    };
+    return _this;
+  }
+
+  SelectedCard.prototype.render = function () {
+    if (this.state.selectedCard === null) {
+      return _react.default.createElement("div", {
+        className: "selected-card"
+      });
+    } else {
+      return _react.default.createElement("div", {
+        className: "selected-card"
+      }, _react.default.createElement(_card.Card, {
+        card: this.state.selectedCard,
+        ally: "true"
+      }));
+    }
+  };
+
+  return SelectedCard;
+}(_react.default.Component);
+
 (0, _reactDom.render)(_react.default.createElement(Game, null), document.getElementById('root'));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./index.css":"../src/index.css","./card.tsx":"../src/card.tsx","./chinpoko.tsx":"../src/chinpoko.tsx"}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./index.css":"../src/index.css","./card.tsx":"../src/card.tsx","./chinpoko.tsx":"../src/chinpoko.tsx"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -32571,7 +32621,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38679" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54517" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -32747,5 +32797,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","../src/index.tsx"], null)
+},{}]},{},["../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","../src/index.tsx"], null)
 //# sourceMappingURL=/src.62c16509.js.map
