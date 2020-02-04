@@ -24,8 +24,12 @@ ol, ul {
   height: 70%;
   width: 50px;
 }
+.card:hover {
+  width: 60px;
+  height: 90%;
+}
 
-.card[ally="true"]{
+.card.is-ally{
   font-size: 16px;
   font-weight: bold;
   width: 125px;
@@ -33,12 +37,8 @@ ol, ul {
   word-wrap: break-word;
 }
 
-.card:hover {
-  width: 60px;
-  height: 90%;
-}
 
-.card[ally="true"]:hover {
+.card.is-ally:hover {
   width: 160px;
   font-size: 20px;
 }
@@ -65,7 +65,7 @@ ol, ul {
   justify-content: center;
 }
 
-.game-hand[ally="true"] {
+.game-hand.is-ally {
   height: 250px;
 }
 
