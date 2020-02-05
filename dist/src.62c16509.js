@@ -32057,6 +32057,11 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
+},{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/card.css":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
 },{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/card.tsx":[function(require,module,exports) {
 "use strict";
 
@@ -32068,7 +32073,7 @@ exports.default = exports.CardList = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
-require("./index.css");
+require("./card.css");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32157,7 +32162,12 @@ function (_super) {
 
 var _default = Card;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","./index.css":"../src/index.css"}],"../src/common.tsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./card.css":"../src/card.css"}],"../src/chinpoko.css":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/common.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32207,7 +32217,7 @@ exports.Chinpoko = exports.ChinpokoList = exports.BaseChinpokoList = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
-require("./index.css");
+require("./chinpoko.css");
 
 var _common = require("./common");
 
@@ -32385,7 +32395,119 @@ function (_super) {
 }(_react.default.Component);
 
 exports.Chinpoko = Chinpoko;
-},{"react":"../node_modules/react/index.js","./index.css":"../src/index.css","./common":"../src/common.tsx","./images/bisonte.png":"../src/images/bisonte.png","./images/lagarto.png":"../src/images/lagarto.png","./images/nutria.png":"../src/images/nutria.png"}],"../src/index.tsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./chinpoko.css":"../src/chinpoko.css","./common":"../src/common.tsx","./images/bisonte.png":"../src/images/bisonte.png","./images/lagarto.png":"../src/images/lagarto.png","./images/nutria.png":"../src/images/nutria.png"}],"../src/phase.css":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/phase.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.initPhaseGroupData = initPhaseGroupData;
+exports.Phase = exports.PhaseGroup = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+require("./phase.css");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var __extends = void 0 && (void 0).__extends || function () {
+  var extendStatics = function (d, b) {
+    extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    };
+
+    return extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+function initPhaseGroupData(size) {
+  var phaseGroup = new Array();
+
+  for (var i = 0; i < size; i++) {
+    phaseGroup.push(initPhaseData());
+  }
+
+  return phaseGroup;
+}
+
+function initPhaseData() {
+  var phaseData = {
+    filled: false,
+    action: null
+  };
+  return phaseData;
+}
+
+var PhaseGroup =
+/** @class */
+function (_super) {
+  __extends(PhaseGroup, _super);
+
+  function PhaseGroup() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  }
+
+  PhaseGroup.prototype.render = function () {
+    var _this = this;
+
+    return _react.default.createElement("div", {
+      className: "phase-group"
+    }, this.props.phases.map(function (phase, index) {
+      return _react.default.createElement(Phase, {
+        key: index,
+        value: index,
+        phase: phase,
+        ally: _this.props.ally
+      });
+    }));
+  };
+
+  return PhaseGroup;
+}(_react.default.Component);
+
+exports.PhaseGroup = PhaseGroup;
+
+var Phase =
+/** @class */
+function (_super) {
+  __extends(Phase, _super);
+
+  function Phase() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  }
+
+  Phase.prototype.render = function () {
+    // add is-not-ally class after ':' if needed
+    var allyClass = this.props.ally ? "is-ally" : "";
+    return _react.default.createElement("div", {
+      className: "phase " + allyClass
+    }, this.props.value);
+  };
+
+  return Phase;
+}(_react.default.Component);
+
+exports.Phase = Phase;
+},{"react":"../node_modules/react/index.js","./phase.css":"../src/phase.css"}],"../src/index.tsx":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -32397,6 +32519,8 @@ require("./index.css");
 var _card = _interopRequireWildcard(require("./card"));
 
 var _chinpoko = require("./chinpoko");
+
+var _phase = require("./phase");
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
@@ -32459,15 +32583,16 @@ function (_super) {
       enemyHand: getStartingHand(3),
       allyChinpoko: (0, _chinpoko.getRandomChinpoko)(),
       enemyChinpoko: (0, _chinpoko.getRandomChinpoko)(),
-      //selectedCard: getStartingHand(1), Not the right value?
-      selectedCard: null
+      selectedCard: null,
+      allyPhases: (0, _phase.initPhaseGroupData)(5),
+      enemyPhases: (0, _phase.initPhaseGroupData)(5)
     };
     return _this;
   }
 
-  Game.prototype.renderBoard = function () {
+  Game.prototype.renderField = function () {
     return _react.default.createElement("div", {
-      className: "board"
+      className: "field"
     }, _react.default.createElement(_chinpoko.Chinpoko, {
       chinpoko: this.state.enemyChinpoko,
       ally: false
@@ -32480,18 +32605,23 @@ function (_super) {
   Game.prototype.render = function () {
     return _react.default.createElement("div", {
       className: "game"
+    }, _react.default.createElement("div", {
+      className: "game-action"
     }, _react.default.createElement(Hand, {
       cards: this.state.enemyHand,
       ally: false
-    }), _react.default.createElement("hr", null), _react.default.createElement("div", {
-      className: "game-board"
-    }, this.renderBoard()), _react.default.createElement("hr", null), _react.default.createElement(Hand, {
+    }), _react.default.createElement("hr", null), this.renderField(), _react.default.createElement("hr", null), _react.default.createElement(Hand, {
       cards: this.state.allyHand,
       ally: true,
       onCardClick: this.handleCardClick
+    })), _react.default.createElement("div", {
+      className: "game-info"
+    }, _react.default.createElement(NextTurn, null), _react.default.createElement(_phase.PhaseGroup, {
+      phases: this.state.allyPhases,
+      ally: true
     }), this.state.selectedCard && _react.default.createElement(SelectedCard, {
       card: this.state.selectedCard
-    }));
+    })));
   };
 
   return Game;
@@ -32556,8 +32686,28 @@ function (_super) {
   return SelectedCard;
 }(_react.default.Component);
 
+var NextTurn =
+/** @class */
+function (_super) {
+  __extends(NextTurn, _super);
+
+  function NextTurn() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  }
+
+  NextTurn.prototype.render = function () {
+    return _react.default.createElement("div", {
+      className: "next-turn"
+    }, _react.default.createElement("button", {
+      className: "next-turn-button"
+    }, "NEXT TURN"));
+  };
+
+  return NextTurn;
+}(_react.default.Component);
+
 (0, _reactDom.render)(_react.default.createElement(Game, null), document.getElementById('root'));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./index.css":"../src/index.css","./card":"../src/card.tsx","./chinpoko":"../src/chinpoko.tsx"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./index.css":"../src/index.css","./card":"../src/card.tsx","./chinpoko":"../src/chinpoko.tsx","./phase":"../src/phase.tsx"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -32585,7 +32735,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54633" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52995" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

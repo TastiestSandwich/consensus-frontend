@@ -1,0 +1,38 @@
+.card {
+  background: #fff;
+  border: 5px solid #888;
+  float: center;
+  margin-right: 10px;
+  margin-top: 0px;
+  height: 70%;
+  width: 50px;
+}
+.game-hand .card:hover {
+  width: 60px;
+  height: 90%;  
+}
+
+.card.is-ally{
+  font-size: 16px;
+  font-weight: bold;
+  width: 125px;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+
+.game-hand .card.is-ally:hover {
+  width: 160px;
+  font-size: 20px;
+}
+
+.cardcost {
+  text-align: right;
+  margin-right: 5px;
+  margin-top: 5px;
+}
+
+.cardtext {
+  margin-top: 20px;
+  text-align: left;
+}

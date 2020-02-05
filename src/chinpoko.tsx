@@ -1,5 +1,5 @@
 import React from 'react';
-import './index.css';
+import './chinpoko.css';
 import { Type, TypeList } from './common';
 import bisonte from './images/bisonte.png'
 import lagarto from './images/lagarto.png'

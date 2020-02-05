@@ -3,16 +3,28 @@ body {
   margin: 20px;
 }
 
-ol, ul {
-  padding-left: 30px;
+.game {
+  display: flex;
 }
 
-.status {
-  margin-bottom: 10px;
+.game-action {
+  width: 80%;
 }
 
 .selected-card {
   height:250px;
+  margin-left: 20px;
+}
+
+.game-hand {
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.game-hand.is-ally {
+  height: 250px;
 }
 
 .card {
@@ -24,9 +36,9 @@ ol, ul {
   height: 70%;
   width: 50px;
 }
-.card:hover {
+.game-hand .card:hover {
   width: 60px;
-  height: 90%;
+  height: 90%;  
 }
 
 .card.is-ally{
@@ -38,7 +50,7 @@ ol, ul {
 }
 
 
-.card.is-ally:hover {
+.game-hand .card.is-ally:hover {
   width: 160px;
   font-size: 20px;
 }
@@ -53,22 +65,6 @@ ol, ul {
   margin-top: 20px;
   text-align: left;
 }
-
-.kbd-navigation .card:focus {
-  background: #ddd;
-}
-
-.game-hand {
-  height: 100px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.game-hand.is-ally {
-  height: 250px;
-}
-
 .chinpoko-field {
   display: flex;
   justify-content: center;
@@ -118,6 +114,7 @@ ol, ul {
 .chinpoko-name {
   float: left;
 }
-
+.phase {
+}
 
 /*# sourceMappingURL=/src.62c16509.css.map */

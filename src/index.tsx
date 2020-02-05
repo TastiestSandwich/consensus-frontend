@@ -1,8 +1,9 @@
 import React from 'react';
-import { render } from 'react-dom'
+import { render } from 'react-dom';
 import './index.css';
 import Card, { CardData, getRandomCard } from './card';
 import { Chinpoko, ChinpokoData, getRandomChinpoko } from './chinpoko';
+import { PhaseGroup, PhaseData, initPhaseGroupData } from './phase';
 
 interface GameState {
   allyHand: Array<CardData>
@@ -10,6 +11,8 @@ interface GameState {
   allyChinpoko: ChinpokoData
   enemyChinpoko: ChinpokoData
   selectedCard: CardData | null
+  allyPhases: Array<PhaseData>
+  enemyPhases: Array<PhaseData>
 }
 
 function getStartingHand(size: number) {
@@ -28,8 +31,9 @@ class Game extends React.Component<{}, GameState> {
       enemyHand: getStartingHand(3),
       allyChinpoko: getRandomChinpoko(),
       enemyChinpoko: getRandomChinpoko(),
-      //selectedCard: getStartingHand(1), Not the right value?
       selectedCard: null,
+      allyPhases: initPhaseGroupData(5),
+      enemyPhases: initPhaseGroupData(5),
     };
   }
 
@@ -40,9 +44,9 @@ class Game extends React.Component<{}, GameState> {
     })
   }
 
-  renderBoard() {
+  renderField() {
     return (
-      <div className = "board">
+      <div className = "field">
         <Chinpoko chinpoko = {this.state.enemyChinpoko} ally={false} />
         <hr></hr>
         <Chinpoko chinpoko = {this.state.allyChinpoko} ally={true} />
@@ -53,30 +57,23 @@ class Game extends React.Component<{}, GameState> {
   render() {
     return (
       <div className="game">
-        <Hand cards={this.state.enemyHand} ally={false} />
-        <hr></hr>
-        <div className="game-board">
-          { this.renderBoard() }
+        <div className="game-action">
+          <Hand cards={this.state.enemyHand} ally={false} />
+          <hr></hr>
+          { this.renderField() }
+          <hr></hr>
+          <Hand cards={this.state.allyHand} ally={true} onCardClick={this.handleCardClick} />
         </div>
-        <hr></hr>
-        <Hand cards={this.state.allyHand} ally={true} onCardClick={this.handleCardClick} />
-        {
-          this.state.selectedCard &&
-          <SelectedCard card={this.state.selectedCard} />
-        }
-        
+        <div className="game-info">
+          { <NextTurn /> }
+          { <PhaseGroup phases={this.state.allyPhases} ally={true} /> }
+          { this.state.selectedCard &&
+          <SelectedCard card={this.state.selectedCard} /> }
+        </div>
       </div>
     );
   }
 }
-/*
-class Deck extends React.Component {
-	constructor(props) {
-		super(props);
-		
-	}
-}
-*/
 
 interface HandProps {
   cards: Array<CardData>
@@ -100,9 +97,6 @@ class Hand extends React.Component<HandProps> {
             card={card}
             ally={this.props.ally} 
             onClick={this.handleClick(card)}
-            /*undefined prop in Card 
-             onClick={() => this.props.onCardClick()} 
-             */
            /> 
           ))}
       </div>
@@ -115,7 +109,6 @@ interface SelectedCardProps {
 }
 
 class SelectedCard extends React.Component<SelectedCardProps> {
- 
   render() {
     const {card} = this.props
     return (
@@ -124,6 +117,18 @@ class SelectedCard extends React.Component<SelectedCardProps> {
           card &&
           <Card card={card} ally={true}/>
         }
+      </div>
+    )
+  }
+}
+
+class NextTurn extends React.Component {
+  render() {
+    return (
+      <div className="next-turn">
+        <button className = "next-turn-button">
+          NEXT TURN
+        </button>
       </div>
     )
   }

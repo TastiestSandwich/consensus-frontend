@@ -3,59 +3,17 @@ body {
   margin: 20px;
 }
 
-ol, ul {
-  padding-left: 30px;
+.game {
+  display: flex;
 }
 
-.status {
-  margin-bottom: 10px;
+.game-action {
+  width: 80%;
 }
 
 .selected-card {
   height:250px;
-}
-
-.card {
-  background: #fff;
-  border: 5px solid #888;
-  float: center;
-  margin-right: 10px;
-  margin-top: 0px;
-  height: 70%;
-  width: 50px;
-}
-.card:hover {
-  width: 60px;
-  height: 90%;
-}
-
-.card.is-ally{
-  font-size: 16px;
-  font-weight: bold;
-  width: 125px;
-  text-align: center;
-  word-wrap: break-word;
-}
-
-
-.card.is-ally:hover {
-  width: 160px;
-  font-size: 20px;
-}
-
-.cardcost {
-  text-align: right;
-  margin-right: 5px;
-  margin-top: 5px;
-}
-
-.cardtext {
-  margin-top: 20px;
-  text-align: left;
-}
-
-.kbd-navigation .card:focus {
-  background: #ddd;
+  margin-left: 20px;
 }
 
 .game-hand {
@@ -67,54 +25,4 @@ ol, ul {
 
 .game-hand.is-ally {
   height: 250px;
-}
-
-.chinpoko-field {
-  display: flex;
-  justify-content: center;
-}
-
-.chinpoko-sprite {
-  float: center;
-  height: 150px;
-  width: 150px;
-  text-align: center;
-  justify-content: center;
-  margin: 20px;
-}
-
-.chinpoko-databox {
-}
-
-.chinpoko-hpbox {
-  height: 50px;
-  width: 100px;
-  background: #fff;
-  border: 3px solid #888;
-}
-
-.chinpoko-healthbar {
-  border: 2px solid #000;
-  margin-top: 22px;
-  height: 10px;
-  background: #00ff00;
-}
-
-.chinpoko-hp {
-}
-
-
-.chinpoko-statbox {
-  margin-top: 10px;
-}
-
-.chinpoko-title {
-}
-
-.chinpoko-lvl {
-  float: right;
-}
-
-.chinpoko-name {
-  float: left;
 }
