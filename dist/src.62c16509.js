@@ -32407,6 +32407,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.initPhaseGroupData = initPhaseGroupData;
+exports.shouldPhaseBeClicked = shouldPhaseBeClicked;
+exports.setPhaseGroupData = setPhaseGroupData;
+exports.deleteFromPhaseGroupData = deleteFromPhaseGroupData;
 exports.Phase = exports.PhaseGroup = void 0;
 
 var _react = _interopRequireDefault(require("react"));
@@ -32457,26 +32460,115 @@ function initPhaseData() {
   return phaseData;
 }
 
+function shouldPhaseBeClicked(phaseNumber, card, phases) {
+  if (card === null) {
+    console.log("no card selected");
+    return false;
+  }
+
+  var cost = card.cost;
+
+  if (cost > phaseNumber) {
+    console.log("not enough charging phases");
+    return false;
+  }
+
+  var numberStart = phaseNumber - cost + 1;
+
+  for (var i = numberStart; i <= phaseNumber; i++) {
+    if (phases[i - 1].filled) {
+      console.log("not enough unfilled charging phases");
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function setPhaseGroupData(phaseNumber, card, phases) {
+  var newPhases = phases.slice();
+
+  if (card === null) {
+    return newPhases;
+  }
+
+  var numberStart = phaseNumber - card.cost + 1;
+
+  for (var i = numberStart; i <= phaseNumber; i++) {
+    if (i < phaseNumber) {
+      newPhases[i - 1] = {
+        filled: true,
+        action: null
+      };
+    } else if (i === phaseNumber) {
+      newPhases[i - 1] = {
+        filled: true,
+        action: card
+      };
+    }
+  }
+
+  return newPhases;
+}
+
+function deleteFromPhaseGroupData(phaseNumber, cost, phases) {
+  var newPhases = phases.slice();
+  var numberStart = phaseNumber - cost + 1;
+
+  for (var i = numberStart; i <= phaseNumber; i++) {
+    if (i < phaseNumber) {
+      newPhases[i - 1] = {
+        filled: false,
+        action: null
+      };
+    } else if (i === phaseNumber) {
+      newPhases[i - 1] = {
+        filled: false,
+        action: null
+      };
+    }
+  }
+
+  return newPhases;
+}
+
 var PhaseGroup =
 /** @class */
 function (_super) {
   __extends(PhaseGroup, _super);
 
   function PhaseGroup() {
-    return _super !== null && _super.apply(this, arguments) || this;
+    var _this = _super !== null && _super.apply(this, arguments) || this;
+
+    _this.handleClick = function (phaseNumber) {
+      return function () {
+        if (_this.props.onPhaseClick) _this.props.onPhaseClick(phaseNumber);
+      };
+    };
+
+    _this.handleDelete = function (phaseNumber, card) {
+      return function () {
+        if (_this.props.onPhaseDelete) _this.props.onPhaseDelete(phaseNumber, card);
+      };
+    };
+
+    return _this;
   }
 
   PhaseGroup.prototype.render = function () {
     var _this = this;
 
+    var allyText = this.props.ally ? "ALLY" : "ENEMY";
     return _react.default.createElement("div", {
       className: "phase-group"
-    }, this.props.phases.map(function (phase, index) {
+    }, allyText, this.props.phases.map(function (phase, index) {
       return _react.default.createElement(Phase, {
         key: index,
-        value: index,
+        value: index + 1,
         phase: phase,
-        ally: _this.props.ally
+        ally: _this.props.ally,
+        onPhaseClick: _this.handleClick(index + 1),
+        onPhaseDelete: _this.handleDelete(index + 1, phase.action)
       });
     }));
   };
@@ -32498,9 +32590,18 @@ function (_super) {
   Phase.prototype.render = function () {
     // add is-not-ally class after ':' if needed
     var allyClass = this.props.ally ? "is-ally" : "";
+    var filledClass = this.props.phase.filled ? "is-filled" : "";
     return _react.default.createElement("div", {
-      className: "phase " + allyClass
-    }, this.props.value);
+      className: "phase-container " + allyClass
+    }, _react.default.createElement("div", {
+      className: "phase " + filledClass,
+      onClick: this.props.onPhaseClick
+    }, this.props.value), this.props.phase.action != null && _react.default.createElement("div", {
+      className: "phase-action"
+    }, this.props.phase.action.name, _react.default.createElement("button", {
+      className: "delete-phase-action",
+      onClick: this.props.onPhaseDelete
+    }, "x")));
   };
 
   return Phase;
@@ -32570,11 +32671,57 @@ function (_super) {
   function Game(props) {
     var _this = _super.call(this, props) || this;
 
-    _this.handleCardClick = function (selectedCard) {
-      console.log(selectedCard);
+    _this.handleCardClick = function (selectedCard, index) {
+      var newHand = _this.state.allyHand.slice();
+
+      newHand.splice(index, 1);
+
+      if (_this.state.selectedCard != null) {
+        newHand.push(_this.state.selectedCard);
+      }
 
       _this.setState({
-        selectedCard: selectedCard
+        selectedCard: selectedCard,
+        allyHand: newHand
+      });
+    };
+
+    _this.deleteCardClick = function () {
+      var newHand = _this.state.allyHand.slice();
+
+      if (_this.state.selectedCard != null) {
+        newHand.push(_this.state.selectedCard);
+      }
+
+      _this.setState({
+        selectedCard: null,
+        allyHand: newHand
+      });
+    };
+
+    _this.handlePhaseClick = function (phaseNumber) {
+      var card = _this.state.selectedCard;
+
+      if ((0, _phase.shouldPhaseBeClicked)(phaseNumber, card, _this.state.allyPhases)) {
+        _this.setState({
+          allyPhases: (0, _phase.setPhaseGroupData)(phaseNumber, card, _this.state.allyPhases),
+          selectedCard: null
+        });
+      }
+    };
+
+    _this.deletePhaseClick = function (phaseNumber, card) {
+      if (card === null) {
+        return;
+      }
+
+      var newHand = _this.state.allyHand.slice();
+
+      newHand.push(card);
+
+      _this.setState({
+        allyPhases: (0, _phase.deleteFromPhaseGroupData)(phaseNumber, card.cost, _this.state.allyPhases),
+        allyHand: newHand
       });
     };
 
@@ -32617,10 +32764,16 @@ function (_super) {
     })), _react.default.createElement("div", {
       className: "game-info"
     }, _react.default.createElement(NextTurn, null), _react.default.createElement(_phase.PhaseGroup, {
+      phases: this.state.enemyPhases,
+      ally: false
+    }), _react.default.createElement(_phase.PhaseGroup, {
       phases: this.state.allyPhases,
-      ally: true
+      ally: true,
+      onPhaseClick: this.handlePhaseClick,
+      onPhaseDelete: this.deletePhaseClick
     }), this.state.selectedCard && _react.default.createElement(SelectedCard, {
-      card: this.state.selectedCard
+      card: this.state.selectedCard,
+      deleteCardClick: this.deleteCardClick
     })));
   };
 
@@ -32635,9 +32788,9 @@ function (_super) {
   function Hand() {
     var _this = _super !== null && _super.apply(this, arguments) || this;
 
-    _this.handleClick = function (card) {
+    _this.handleClick = function (card, index) {
       return function () {
-        if (_this.props.onCardClick) _this.props.onCardClick(card);
+        if (_this.props.onCardClick) _this.props.onCardClick(card, index);
       };
     };
 
@@ -32656,7 +32809,7 @@ function (_super) {
         key: index,
         card: card,
         ally: _this.props.ally,
-        onClick: _this.handleClick(card)
+        onClick: _this.handleClick(card, index)
       });
     }));
   };
@@ -32670,7 +32823,15 @@ function (_super) {
   __extends(SelectedCard, _super);
 
   function SelectedCard() {
-    return _super !== null && _super.apply(this, arguments) || this;
+    var _this = _super !== null && _super.apply(this, arguments) || this;
+
+    _this.deleteCardClick = function () {
+      return function () {
+        if (_this.props.deleteCardClick) _this.props.deleteCardClick();
+      };
+    };
+
+    return _this;
   }
 
   SelectedCard.prototype.render = function () {
@@ -32680,7 +32841,10 @@ function (_super) {
     }, card && _react.default.createElement(_card.default, {
       card: card,
       ally: true
-    }));
+    }), card && _react.default.createElement("button", {
+      className: "delete-button",
+      onClick: this.deleteCardClick()
+    }, " X "));
   };
 
   return SelectedCard;
@@ -32735,7 +32899,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52995" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58662" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

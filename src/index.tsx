@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import './index.css';
 import Card, { CardData, getRandomCard } from './card';
 import { Chinpoko, ChinpokoData, getRandomChinpoko } from './chinpoko';
-import { PhaseGroup, PhaseData, initPhaseGroupData } from './phase';
+import { PhaseGroup, PhaseData, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData } from './phase';
 
 interface GameState {
   allyHand: Array<CardData>
@@ -37,10 +37,48 @@ class Game extends React.Component<{}, GameState> {
     };
   }
 
-  handleCardClick = (selectedCard: CardData) => {
-    console.log(selectedCard)
+  handleCardClick = (selectedCard: CardData, index: number) => {
+    let newHand = this.state.allyHand.slice();
+    newHand.splice(index, 1);
+    if (this.state.selectedCard != null) {
+      newHand.push(this.state.selectedCard)
+    }
     this.setState({
       selectedCard: selectedCard,
+      allyHand: newHand
+    })
+  }
+
+  deleteCardClick = () => {
+    let newHand = this.state.allyHand.slice();
+    if(this.state.selectedCard != null) {
+       newHand.push(this.state.selectedCard);
+    }
+    this.setState({
+      selectedCard: null,
+      allyHand: newHand
+    })
+  }
+
+  handlePhaseClick = (phaseNumber: number) => {
+    let card = this.state.selectedCard;
+    if ( shouldPhaseBeClicked(phaseNumber, card, this.state.allyPhases) ) {
+      this.setState({
+        allyPhases: setPhaseGroupData(phaseNumber, card, this.state.allyPhases),
+        selectedCard: null
+      })
+    }
+  }
+
+  deletePhaseClick = (phaseNumber: number, card: CardData | null) => {
+    if (card === null) {
+      return;
+    }
+    let newHand = this.state.allyHand.slice();
+    newHand.push(card);
+    this.setState({
+      allyPhases: deleteFromPhaseGroupData(phaseNumber, card.cost, this.state.allyPhases),
+      allyHand: newHand
     })
   }
 
@@ -66,9 +104,12 @@ class Game extends React.Component<{}, GameState> {
         </div>
         <div className="game-info">
           { <NextTurn /> }
-          { <PhaseGroup phases={this.state.allyPhases} ally={true} /> }
+          { <PhaseGroup phases={this.state.enemyPhases} ally={false} /> }
+          { <PhaseGroup phases={this.state.allyPhases} ally={true} 
+            onPhaseClick={this.handlePhaseClick} 
+            onPhaseDelete={this.deletePhaseClick} /> }
           { this.state.selectedCard &&
-          <SelectedCard card={this.state.selectedCard} /> }
+          <SelectedCard card={this.state.selectedCard} deleteCardClick={this.deleteCardClick} /> }
         </div>
       </div>
     );
@@ -78,13 +119,13 @@ class Game extends React.Component<{}, GameState> {
 interface HandProps {
   cards: Array<CardData>
   ally: boolean
-  onCardClick?: (card: CardData) => void
+  onCardClick?: (card: CardData, index: number) => void
 }
 
 class Hand extends React.Component<HandProps> {
-  handleClick = (card: CardData) => () => {
+  handleClick = (card: CardData, index: number) => () => {
     if(this.props.onCardClick)
-      this.props.onCardClick(card)
+      this.props.onCardClick(card, index)
   }
   render() {
     // add is-not-ally class after ':' if needed
@@ -96,7 +137,7 @@ class Hand extends React.Component<HandProps> {
             key={index} 
             card={card}
             ally={this.props.ally} 
-            onClick={this.handleClick(card)}
+            onClick={this.handleClick(card, index)}
            /> 
           ))}
       </div>
@@ -106,16 +147,26 @@ class Hand extends React.Component<HandProps> {
 
 interface SelectedCardProps {
   card: CardData
+  deleteCardClick?: () => void
 }
 
 class SelectedCard extends React.Component<SelectedCardProps> {
+  deleteCardClick = () => () => {
+    if(this.props.deleteCardClick)
+      this.props.deleteCardClick()
+  }
+
   render() {
-    const {card} = this.props
+    const card = this.props.card
     return (
       <div className = "selected-card">
         {
           card &&
           <Card card={card} ally={true}/>
+        }
+        {
+          card &&
+          <button className="delete-button" onClick={this.deleteCardClick()}> X </button>
         }
       </div>
     )
