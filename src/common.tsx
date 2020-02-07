@@ -26,5 +26,10 @@ export const TypeList = {
 		name: "NEUTRAL",
 		strongTo: [],
 		resistedBy: []
+	},
+	"MISTERY": {
+		name: "MISTERY",
+		strongTo: ["NEUTRAL"],
+		resistedBy: []
 	}
 };

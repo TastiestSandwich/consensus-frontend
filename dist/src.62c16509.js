@@ -31985,7 +31985,7 @@ if ("development" === 'production') {
 } else {
   module.exports = require('./cjs/react-dom.development.js');
 }
-},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -32017,7 +32017,7 @@ function getBaseURL(url) {
 
 exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
-},{}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
+},{}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
 var bundle = require('./bundle-url');
 
 function updateLink(link) {
@@ -32052,17 +32052,17 @@ function reloadCSS() {
 }
 
 module.exports = reloadCSS;
-},{"./bundle-url":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../src/index.css":[function(require,module,exports) {
+},{"./bundle-url":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../src/index.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/card.css":[function(require,module,exports) {
+},{"_css_loader":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/card.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/card.tsx":[function(require,module,exports) {
+},{"_css_loader":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/card.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32104,23 +32104,28 @@ var __extends = void 0 && (void 0).__extends || function () {
 var CardList = [{
   name: "card1",
   text: "do thing 1",
-  cost: 1
+  cost: 1,
+  isClicked: false
 }, {
   name: "card2",
   text: "do thing 2",
-  cost: 2
+  cost: 2,
+  isClicked: false
 }, {
   name: "card3",
   text: "do tremendously long thing 3",
-  cost: 3
+  cost: 3,
+  isClicked: false
 }, {
   name: "card4",
   text: "do long thing 4",
-  cost: 4
+  cost: 4,
+  isClicked: false
 }, {
   name: "card5",
   text: "do very long thing 5",
-  cost: 5
+  cost: 5,
+  isClicked: false
 }];
 exports.CardList = CardList;
 
@@ -32145,8 +32150,9 @@ function (_super) {
         card = _a.card,
         ally = _a.ally,
         onClick = _a.onClick;
+    var clickedClass = card.isClicked ? "is-clicked" : "";
     return _react.default.createElement("div", {
-      className: "card " + allyClass,
+      className: "card " + allyClass + " " + clickedClass,
       onClick: onClick
     }, ally && _react.default.createElement(_react.default.Fragment, null, _react.default.createElement("div", {
       className: "cardcost"
@@ -32167,7 +32173,7 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/common.tsx":[function(require,module,exports) {
+},{"_css_loader":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/common.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32197,6 +32203,11 @@ var TypeList = {
     name: "NEUTRAL",
     strongTo: [],
     resistedBy: []
+  },
+  "MISTERY": {
+    name: "MISTERY",
+    strongTo: ["NEUTRAL"],
+    resistedBy: []
   }
 };
 exports.TypeList = TypeList;
@@ -32206,6 +32217,8 @@ module.exports = "/bisonte.1afbfc6d.png";
 module.exports = "/lagarto.a36365ad.png";
 },{}],"../src/images/nutria.png":[function(require,module,exports) {
 module.exports = "/nutria.ab55cd8c.png";
+},{}],"../src/images/gato.png":[function(require,module,exports) {
+module.exports = "/gato.2abfb93a.png";
 },{}],"../src/chinpoko.tsx":[function(require,module,exports) {
 "use strict";
 
@@ -32226,6 +32239,8 @@ var _bisonte = _interopRequireDefault(require("./images/bisonte.png"));
 var _lagarto = _interopRequireDefault(require("./images/lagarto.png"));
 
 var _nutria = _interopRequireDefault(require("./images/nutria.png"));
+
+var _gato = _interopRequireDefault(require("./images/gato.png"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32280,6 +32295,15 @@ var BaseChinpokoList = {
     baseDEF: 60,
     baseSPE: 100,
     type: _common.TypeList["WATER"]
+  },
+  "GATO": {
+    speciesName: "GATO",
+    sprite: _gato.default,
+    baseHP: 50,
+    baseATK: 80,
+    baseDEF: 50,
+    baseSPE: 140,
+    type: _common.TypeList["MISTERY"]
   }
 };
 exports.BaseChinpokoList = BaseChinpokoList;
@@ -32302,6 +32326,14 @@ var ChinpokoList = [{
 }, {
   name: "Mojano",
   species: BaseChinpokoList["NUTRIA"],
+  lvl: 10,
+  evHP: 0,
+  evATK: 0,
+  evDEF: 0,
+  evSPE: 0
+}, {
+  name: "Aida",
+  species: BaseChinpokoList["GATO"],
   lvl: 10,
   evHP: 0,
   evATK: 0,
@@ -32395,12 +32427,12 @@ function (_super) {
 }(_react.default.Component);
 
 exports.Chinpoko = Chinpoko;
-},{"react":"../node_modules/react/index.js","./chinpoko.css":"../src/chinpoko.css","./common":"../src/common.tsx","./images/bisonte.png":"../src/images/bisonte.png","./images/lagarto.png":"../src/images/lagarto.png","./images/nutria.png":"../src/images/nutria.png"}],"../src/phase.css":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./chinpoko.css":"../src/chinpoko.css","./common":"../src/common.tsx","./images/bisonte.png":"../src/images/bisonte.png","./images/lagarto.png":"../src/images/lagarto.png","./images/nutria.png":"../src/images/nutria.png","./images/gato.png":"../src/images/gato.png"}],"../src/phase.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/phase.tsx":[function(require,module,exports) {
+},{"_css_loader":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/phase.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32871,7 +32903,7 @@ function (_super) {
 }(_react.default.Component);
 
 (0, _reactDom.render)(_react.default.createElement(Game, null), document.getElementById('root'));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./index.css":"../src/index.css","./card":"../src/card.tsx","./chinpoko":"../src/chinpoko.tsx","./phase":"../src/phase.tsx"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./index.css":"../src/index.css","./card":"../src/card.tsx","./chinpoko":"../src/chinpoko.tsx","./phase":"../src/phase.tsx"}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -32899,7 +32931,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58662" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "45345" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -33075,5 +33107,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","../src/index.tsx"], null)
+},{}]},{},["../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","../src/index.tsx"], null)
 //# sourceMappingURL=/src.62c16509.js.map

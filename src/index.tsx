@@ -38,6 +38,9 @@ class Game extends React.Component<{}, GameState> {
   }
 
   handleCardClick = (selectedCard: CardData, index: number) => {
+    if (selectedCard.isClicked) {
+      return;
+    }
     let newHand = this.state.allyHand.slice();
     newHand.splice(index, 1);
     if (this.state.selectedCard != null) {

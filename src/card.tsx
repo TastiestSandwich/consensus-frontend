@@ -5,17 +5,18 @@ export interface CardData {
 	name: string
 	text: string
 	cost: number
+	isClicked: boolean
 }
 
 export const CardList: Array<CardData> = [
-	{name: "card1", text: "do thing 1", cost: 1},
-	{name: "card2", text: "do thing 2", cost: 2},
-	{name: "card3", text: "do tremendously long thing 3", cost: 3},
-	{name: "card4", text: "do long thing 4", cost: 4},
-	{name: "card5", text: "do very long thing 5", cost: 5}
+	{name: "card1", text: "do thing 1", cost: 1, isClicked: false},
+	{name: "card2", text: "do thing 2", cost: 2, isClicked: false},
+	{name: "card3", text: "do tremendously long thing 3", cost: 3, isClicked: false},
+	{name: "card4", text: "do long thing 4", cost: 4, isClicked: false},
+	{name: "card5", text: "do very long thing 5", cost: 5, isClicked: false}
 ];
 
-export function getRandomCard() {
+export function getRandomCard(key: number) {
 	let index = Math.floor(Math.random() * CardList.length);
 	return CardList[index];
 }	
@@ -31,13 +32,14 @@ export default class Card extends React.Component<CardProps, {} > {
 	render() {
 		// add is-not-ally class after ':' if needed
 		const allyClass = this.props.ally ? "is-ally" : "" 
-		const {
+		let {
 			card, 
 			ally,
-			onClick
+			onClick,
 		} = this.props
+		const clickedClass = card.isClicked ? "is-clicked" : ""
 		return(
-			<div className={`card ${allyClass}`} onClick={onClick}> 
+			<div className={`card ${allyClass} ${clickedClass}`} onClick={onClick}> 
 			{
 				ally &&
 				<>

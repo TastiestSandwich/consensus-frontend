@@ -4,6 +4,7 @@ import { Type, TypeList } from './common';
 import bisonte from './images/bisonte.png'
 import lagarto from './images/lagarto.png'
 import nutria from './images/nutria.png'
+import gato from './images/gato.png'
 
 export interface ChinpokoStoredData {
 	name: string
@@ -42,6 +43,15 @@ export const BaseChinpokoList = {
 		baseDEF: 60,
 		baseSPE: 100,
 		type: TypeList["WATER"]
+	},
+	"GATO": {
+		speciesName: "GATO",
+		sprite: gato,
+		baseHP: 50,
+		baseATK: 80,
+		baseDEF: 50,
+		baseSPE: 140,
+		type: TypeList["MISTERY"]
 	}
 };
 
@@ -57,6 +67,10 @@ export const ChinpokoList: Array<ChinpokoStoredData> = [{
 	name: "Mojano",
 	species: BaseChinpokoList["NUTRIA"],
 	lvl: 10, evHP: 0, evATK: 0, evDEF: 0, evSPE: 0
+}, {
+	name: "Aida",
+	species: BaseChinpokoList["GATO"],
+	lvl:10, evHP: 0, evATK: 0, evDEF: 0, evSPE: 0
 }
 ];
 
