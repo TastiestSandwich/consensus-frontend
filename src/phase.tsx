@@ -1,6 +1,6 @@
 import React from 'react';
 import './phase.css';
-import { CardData } from './card';
+import { CardInstance } from './card';
 
 export function initPhaseGroupData(size: number) {
 	let phaseGroup: Array<PhaseData> = new Array<PhaseData>();
@@ -13,17 +13,17 @@ export function initPhaseGroupData(size: number) {
 function initPhaseData() {
 	let phaseData: PhaseData = {
 		filled: false,
-		action: null
+		instance: null
 	}
 	return phaseData;
 }
 
-export function shouldPhaseBeClicked(phaseNumber: number, card: CardData | null, phases: Array<PhaseData>) {
-	if (card === null){
+export function shouldPhaseBeClicked(phaseNumber: number, instance: CardInstance | null, phases: Array<PhaseData>) {
+	if (instance === null){
 		console.log("no card selected");
 		return false;
 	}
-	let cost: number = card.cost;
+	let cost: number = instance.card.cost;
 	if (cost > phaseNumber) {
 		console.log("not enough charging phases")
 		return false;
@@ -38,22 +38,22 @@ export function shouldPhaseBeClicked(phaseNumber: number, card: CardData | null,
 	return true;
 }
 
-export function setPhaseGroupData(phaseNumber: number, card: CardData | null, phases: Array<PhaseData>) {
+export function setPhaseGroupData(phaseNumber: number, instance: CardInstance | null, phases: Array<PhaseData>) {
 	let newPhases: Array<PhaseData> = phases.slice();
-	if (card === null) {
+	if (instance === null) {
 		return newPhases;
 	}
-	let numberStart = phaseNumber - card.cost + 1;
+	let numberStart = phaseNumber - instance.card.cost + 1;
 	for (let i = numberStart; i <= phaseNumber; i++) {
 		if (i < phaseNumber) {
 			newPhases[i-1] = {
 				filled: true,
-				action: null
+				instance: null
 			}
 		} else if (i === phaseNumber) {
 			newPhases[i-1] = {
 				filled: true,
-				action: card
+				instance: instance
 			}
 		}
 	}
@@ -67,12 +67,12 @@ export function deleteFromPhaseGroupData(phaseNumber: number, cost: number, phas
 		if (i < phaseNumber) {
 			newPhases[i-1] = {
 				filled: false,
-				action: null
+				instance: null
 			}
 		} else if (i === phaseNumber) {
 			newPhases[i-1] = {
 				filled: false,
-				action: null
+				instance: null
 			}
 		}
 	}
@@ -83,7 +83,7 @@ interface PhaseGroupProps {
 	phases: Array<PhaseData>
 	ally: boolean
 	onPhaseClick?: (phaseNumber: number) => void
-	onPhaseDelete?: (phaseNumber: number, card: CardData | null) => void
+	onPhaseDelete?: (phaseNumber: number, instance: CardInstance | null) => void
 }
 
 export class PhaseGroup extends React.Component<PhaseGroupProps, {}> {
@@ -91,9 +91,9 @@ export class PhaseGroup extends React.Component<PhaseGroupProps, {}> {
 		if (this.props.onPhaseClick)
 			this.props.onPhaseClick(phaseNumber)
 	}
-	handleDelete = (phaseNumber: number, card: CardData | null) => () => {
+	handleDelete = (phaseNumber: number, instance: CardInstance | null) => () => {
 		if (this.props.onPhaseDelete)
-			this.props.onPhaseDelete(phaseNumber, card)
+			this.props.onPhaseDelete(phaseNumber, instance)
 	}
 
 	render() {
@@ -108,7 +108,7 @@ export class PhaseGroup extends React.Component<PhaseGroupProps, {}> {
 		            phase={phase}
 		            ally={this.props.ally} 
 		            onPhaseClick={this.handleClick(index+1)}
-		            onPhaseDelete={this.handleDelete(index+1, phase.action)}
+		            onPhaseDelete={this.handleDelete(index+1, phase.instance)}
 		           /> 
 		          ))}
 			</div>
@@ -118,7 +118,7 @@ export class PhaseGroup extends React.Component<PhaseGroupProps, {}> {
 
 export interface PhaseData {
 	filled: boolean
-	action: CardData | null
+	instance: CardInstance | null
 }
 
 interface PhaseProps {
@@ -141,10 +141,10 @@ export class Phase extends React.Component<PhaseProps, {}> {
 				<div className={`phase ${filledClass}`} onClick={this.props.onPhaseClick}>
 					{this.props.value}
 				</div>
-				{ this.props.phase.action != null &&
-					<div className="phase-action">
-						{this.props.phase.action.name}
-						<button className="delete-phase-action" onClick={this.props.onPhaseDelete}>
+				{ this.props.phase.instance != null &&
+					<div className="phase-card">
+						{this.props.phase.instance.card.name}
+						<button className="delete-phase-card" onClick={this.props.onPhaseDelete}>
 							x
 						</button>
 					</div> }

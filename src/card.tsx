@@ -5,24 +5,41 @@ export interface CardData {
 	name: string
 	text: string
 	cost: number
-	isClicked: boolean
 }
 
-export const CardList: Array<CardData> = [
-	{name: "card1", text: "do thing 1", cost: 1, isClicked: false},
-	{name: "card2", text: "do thing 2", cost: 2, isClicked: false},
-	{name: "card3", text: "do tremendously long thing 3", cost: 3, isClicked: false},
-	{name: "card4", text: "do long thing 4", cost: 4, isClicked: false},
-	{name: "card5", text: "do very long thing 5", cost: 5, isClicked: false}
-];
+export const CardList: { [name:string] : CardData } = {
+	"card1": {name: "card1", text: "do thing 1", cost: 1},
+	"card2": {name: "card2", text: "do thing 2", cost: 2},
+	"card3": {name: "card3", text: "do tremendously long thing 3", cost: 3},
+	"card4": {name: "card4", text: "do long thing 4", cost: 4},
+	"card5": {name: "card5", text: "do very long thing 5", cost: 5}
+}
 
-export function getRandomCard(key: number) {
-	let index = Math.floor(Math.random() * CardList.length);
-	return CardList[index];
-}	
+export interface CardInstance {
+	card: CardData
+	id: number
+	isClicked: boolean
+	isRemovable: boolean
+}
+
+function getRandomCard() {
+	let index = Math.floor(Math.random() * Object.values(CardList).length);
+	return Object.values(CardList)[index];
+}
+
+export function getRandomCardInstance(id: number) {
+	const card = getRandomCard();
+	const instance: CardInstance = {
+		card: card,
+		id: id,
+		isClicked: false,
+		isRemovable: true
+	}
+	return instance
+}
 
 interface CardProps {
-	card: CardData
+	instance: CardInstance
 	ally: boolean
 	onClick?: () => void
 }
@@ -31,26 +48,26 @@ export default class Card extends React.Component<CardProps, {} > {
 
 	render() {
 		// add is-not-ally class after ':' if needed
-		const allyClass = this.props.ally ? "is-ally" : "" 
+		const allyClass = this.props.ally ? "is-ally" : "is-enemy" 
+		const isClickedClass = this.props.instance.isClicked ? "is-clicked" : "is-not-clicked"
 		let {
-			card, 
+			instance, 
 			ally,
 			onClick,
 		} = this.props
-		const clickedClass = card.isClicked ? "is-clicked" : ""
 		return(
-			<div className={`card ${allyClass} ${clickedClass}`} onClick={onClick}> 
+			<div className={`card ${allyClass} ${isClickedClass}`} onClick={onClick}> 
 			{
 				ally &&
 				<>
 					<div className="cardcost">
-						{card.cost}
+						{instance.card.cost}
 					</div>
 					<div className="cardname">
-						{card.name}
+						{instance.card.name}
 					</div>
 					<div className="cardtext">
-						{card.text}
+						{instance.card.text}
 					</div>
 				</>
 			}

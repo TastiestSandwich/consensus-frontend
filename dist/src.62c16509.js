@@ -31985,7 +31985,7 @@ if ("development" === 'production') {
 } else {
   module.exports = require('./cjs/react-dom.development.js');
 }
-},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -32017,7 +32017,7 @@ function getBaseURL(url) {
 
 exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
-},{}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
+},{}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
 var bundle = require('./bundle-url');
 
 function updateLink(link) {
@@ -32052,23 +32052,23 @@ function reloadCSS() {
 }
 
 module.exports = reloadCSS;
-},{"./bundle-url":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../src/index.css":[function(require,module,exports) {
+},{"./bundle-url":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../src/index.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/card.css":[function(require,module,exports) {
+},{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/card.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/card.tsx":[function(require,module,exports) {
+},{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/card.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getRandomCard = getRandomCard;
+exports.getRandomCardInstance = getRandomCardInstance;
 exports.default = exports.CardList = void 0;
 
 var _react = _interopRequireDefault(require("react"));
@@ -32101,37 +32101,49 @@ var __extends = void 0 && (void 0).__extends || function () {
   };
 }();
 
-var CardList = [{
-  name: "card1",
-  text: "do thing 1",
-  cost: 1,
-  isClicked: false
-}, {
-  name: "card2",
-  text: "do thing 2",
-  cost: 2,
-  isClicked: false
-}, {
-  name: "card3",
-  text: "do tremendously long thing 3",
-  cost: 3,
-  isClicked: false
-}, {
-  name: "card4",
-  text: "do long thing 4",
-  cost: 4,
-  isClicked: false
-}, {
-  name: "card5",
-  text: "do very long thing 5",
-  cost: 5,
-  isClicked: false
-}];
+var CardList = {
+  "card1": {
+    name: "card1",
+    text: "do thing 1",
+    cost: 1
+  },
+  "card2": {
+    name: "card2",
+    text: "do thing 2",
+    cost: 2
+  },
+  "card3": {
+    name: "card3",
+    text: "do tremendously long thing 3",
+    cost: 3
+  },
+  "card4": {
+    name: "card4",
+    text: "do long thing 4",
+    cost: 4
+  },
+  "card5": {
+    name: "card5",
+    text: "do very long thing 5",
+    cost: 5
+  }
+};
 exports.CardList = CardList;
 
 function getRandomCard() {
-  var index = Math.floor(Math.random() * CardList.length);
-  return CardList[index];
+  var index = Math.floor(Math.random() * Object.values(CardList).length);
+  return Object.values(CardList)[index];
+}
+
+function getRandomCardInstance(id) {
+  var card = getRandomCard();
+  var instance = {
+    card: card,
+    id: id,
+    isClicked: false,
+    isRemovable: true
+  };
+  return instance;
 }
 
 var Card =
@@ -32145,22 +32157,22 @@ function (_super) {
 
   Card.prototype.render = function () {
     // add is-not-ally class after ':' if needed
-    var allyClass = this.props.ally ? "is-ally" : "";
+    var allyClass = this.props.ally ? "is-ally" : "is-enemy";
+    var isClickedClass = this.props.instance.isClicked ? "is-clicked" : "is-not-clicked";
     var _a = this.props,
-        card = _a.card,
+        instance = _a.instance,
         ally = _a.ally,
         onClick = _a.onClick;
-    var clickedClass = card.isClicked ? "is-clicked" : "";
     return _react.default.createElement("div", {
-      className: "card " + allyClass + " " + clickedClass,
+      className: "card " + allyClass + " " + isClickedClass,
       onClick: onClick
     }, ally && _react.default.createElement(_react.default.Fragment, null, _react.default.createElement("div", {
       className: "cardcost"
-    }, card.cost), _react.default.createElement("div", {
+    }, instance.card.cost), _react.default.createElement("div", {
       className: "cardname"
-    }, card.name), _react.default.createElement("div", {
+    }, instance.card.name), _react.default.createElement("div", {
       className: "cardtext"
-    }, card.text)));
+    }, instance.card.text)));
   };
 
   return Card;
@@ -32173,7 +32185,7 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/common.tsx":[function(require,module,exports) {
+},{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/common.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32432,7 +32444,7 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/phase.tsx":[function(require,module,exports) {
+},{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/phase.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32487,18 +32499,18 @@ function initPhaseGroupData(size) {
 function initPhaseData() {
   var phaseData = {
     filled: false,
-    action: null
+    instance: null
   };
   return phaseData;
 }
 
-function shouldPhaseBeClicked(phaseNumber, card, phases) {
-  if (card === null) {
+function shouldPhaseBeClicked(phaseNumber, instance, phases) {
+  if (instance === null) {
     console.log("no card selected");
     return false;
   }
 
-  var cost = card.cost;
+  var cost = instance.card.cost;
 
   if (cost > phaseNumber) {
     console.log("not enough charging phases");
@@ -32517,25 +32529,25 @@ function shouldPhaseBeClicked(phaseNumber, card, phases) {
   return true;
 }
 
-function setPhaseGroupData(phaseNumber, card, phases) {
+function setPhaseGroupData(phaseNumber, instance, phases) {
   var newPhases = phases.slice();
 
-  if (card === null) {
+  if (instance === null) {
     return newPhases;
   }
 
-  var numberStart = phaseNumber - card.cost + 1;
+  var numberStart = phaseNumber - instance.card.cost + 1;
 
   for (var i = numberStart; i <= phaseNumber; i++) {
     if (i < phaseNumber) {
       newPhases[i - 1] = {
         filled: true,
-        action: null
+        instance: null
       };
     } else if (i === phaseNumber) {
       newPhases[i - 1] = {
         filled: true,
-        action: card
+        instance: instance
       };
     }
   }
@@ -32551,12 +32563,12 @@ function deleteFromPhaseGroupData(phaseNumber, cost, phases) {
     if (i < phaseNumber) {
       newPhases[i - 1] = {
         filled: false,
-        action: null
+        instance: null
       };
     } else if (i === phaseNumber) {
       newPhases[i - 1] = {
         filled: false,
-        action: null
+        instance: null
       };
     }
   }
@@ -32578,9 +32590,9 @@ function (_super) {
       };
     };
 
-    _this.handleDelete = function (phaseNumber, card) {
+    _this.handleDelete = function (phaseNumber, instance) {
       return function () {
-        if (_this.props.onPhaseDelete) _this.props.onPhaseDelete(phaseNumber, card);
+        if (_this.props.onPhaseDelete) _this.props.onPhaseDelete(phaseNumber, instance);
       };
     };
 
@@ -32600,7 +32612,7 @@ function (_super) {
         phase: phase,
         ally: _this.props.ally,
         onPhaseClick: _this.handleClick(index + 1),
-        onPhaseDelete: _this.handleDelete(index + 1, phase.action)
+        onPhaseDelete: _this.handleDelete(index + 1, phase.instance)
       });
     }));
   };
@@ -32628,10 +32640,10 @@ function (_super) {
     }, _react.default.createElement("div", {
       className: "phase " + filledClass,
       onClick: this.props.onPhaseClick
-    }, this.props.value), this.props.phase.action != null && _react.default.createElement("div", {
-      className: "phase-action"
-    }, this.props.phase.action.name, _react.default.createElement("button", {
-      className: "delete-phase-action",
+    }, this.props.value), this.props.phase.instance != null && _react.default.createElement("div", {
+      className: "phase-card"
+    }, this.props.phase.instance.card.name, _react.default.createElement("button", {
+      className: "delete-phase-card",
       onClick: this.props.onPhaseDelete
     }, "x")));
   };
@@ -32685,11 +32697,25 @@ var __extends = void 0 && (void 0).__extends || function () {
   };
 }();
 
+var __assign = void 0 && (void 0).__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
+
 function getStartingHand(size) {
-  var startingHand = new Array();
+  var startingHand = {};
 
   for (var i = 0; i < size; i++) {
-    startingHand.push((0, _card.getRandomCard)());
+    startingHand[i] = (0, _card.getRandomCardInstance)(i);
   }
 
   return startingHand;
@@ -32703,26 +32729,32 @@ function (_super) {
   function Game(props) {
     var _this = _super.call(this, props) || this;
 
-    _this.handleCardClick = function (selectedCard, index) {
-      var newHand = _this.state.allyHand.slice();
+    _this.handleCardClick = function (selectedCard) {
+      if (selectedCard.isClicked) {
+        return;
+      }
 
-      newHand.splice(index, 1);
+      var newHand = __assign({}, _this.state.allyHand);
+
+      var newCard = __assign({}, selectedCard);
+
+      newHand[selectedCard.id].isClicked = true;
 
       if (_this.state.selectedCard != null) {
-        newHand.push(_this.state.selectedCard);
+        newHand[_this.state.selectedCard.id].isClicked = false;
       }
 
       _this.setState({
-        selectedCard: selectedCard,
+        selectedCard: newCard,
         allyHand: newHand
       });
     };
 
     _this.deleteCardClick = function () {
-      var newHand = _this.state.allyHand.slice();
+      var newHand = __assign({}, _this.state.allyHand);
 
       if (_this.state.selectedCard != null) {
-        newHand.push(_this.state.selectedCard);
+        newHand[_this.state.selectedCard.id].isClicked = false;
       }
 
       _this.setState({
@@ -32732,27 +32764,27 @@ function (_super) {
     };
 
     _this.handlePhaseClick = function (phaseNumber) {
-      var card = _this.state.selectedCard;
+      var instance = _this.state.selectedCard;
 
-      if ((0, _phase.shouldPhaseBeClicked)(phaseNumber, card, _this.state.allyPhases)) {
+      if ((0, _phase.shouldPhaseBeClicked)(phaseNumber, instance, _this.state.allyPhases)) {
         _this.setState({
-          allyPhases: (0, _phase.setPhaseGroupData)(phaseNumber, card, _this.state.allyPhases),
+          allyPhases: (0, _phase.setPhaseGroupData)(phaseNumber, instance, _this.state.allyPhases),
           selectedCard: null
         });
       }
     };
 
-    _this.deletePhaseClick = function (phaseNumber, card) {
-      if (card === null) {
+    _this.deletePhaseClick = function (phaseNumber, instance) {
+      if (instance === null) {
         return;
       }
 
-      var newHand = _this.state.allyHand.slice();
+      var newHand = __assign({}, _this.state.allyHand);
 
-      newHand.push(card);
+      newHand[instance.id].isClicked = false;
 
       _this.setState({
-        allyPhases: (0, _phase.deleteFromPhaseGroupData)(phaseNumber, card.cost, _this.state.allyPhases),
+        allyPhases: (0, _phase.deleteFromPhaseGroupData)(phaseNumber, instance.card.cost, _this.state.allyPhases),
         allyHand: newHand
       });
     };
@@ -32787,10 +32819,10 @@ function (_super) {
     }, _react.default.createElement("div", {
       className: "game-action"
     }, _react.default.createElement(Hand, {
-      cards: this.state.enemyHand,
+      instances: this.state.enemyHand,
       ally: false
     }), _react.default.createElement("hr", null), this.renderField(), _react.default.createElement("hr", null), _react.default.createElement(Hand, {
-      cards: this.state.allyHand,
+      instances: this.state.allyHand,
       ally: true,
       onCardClick: this.handleCardClick
     })), _react.default.createElement("div", {
@@ -32804,7 +32836,7 @@ function (_super) {
       onPhaseClick: this.handlePhaseClick,
       onPhaseDelete: this.deletePhaseClick
     }), this.state.selectedCard && _react.default.createElement(SelectedCard, {
-      card: this.state.selectedCard,
+      instance: this.state.selectedCard,
       deleteCardClick: this.deleteCardClick
     })));
   };
@@ -32820,9 +32852,9 @@ function (_super) {
   function Hand() {
     var _this = _super !== null && _super.apply(this, arguments) || this;
 
-    _this.handleClick = function (card, index) {
+    _this.handleClick = function (instance) {
       return function () {
-        if (_this.props.onCardClick) _this.props.onCardClick(card, index);
+        if (_this.props.onCardClick) _this.props.onCardClick(instance);
       };
     };
 
@@ -32830,18 +32862,19 @@ function (_super) {
   }
 
   Hand.prototype.render = function () {
-    var _this = this; // add is-not-ally class after ':' if needed
+    var _this = this;
 
+    var cardArray = Object.values(this.props.instances); // add is-not-ally class after ':' if needed
 
     var allyClass = this.props.ally ? "is-ally" : "";
     return _react.default.createElement("div", {
       className: "game-hand " + allyClass
-    }, this.props.cards.map(function (card, index) {
+    }, cardArray.map(function (instance) {
       return _react.default.createElement(_card.default, {
-        key: index,
-        card: card,
+        key: instance.id,
+        instance: instance,
         ally: _this.props.ally,
-        onClick: _this.handleClick(card, index)
+        onClick: _this.handleClick(instance)
       });
     }));
   };
@@ -32857,9 +32890,9 @@ function (_super) {
   function SelectedCard() {
     var _this = _super !== null && _super.apply(this, arguments) || this;
 
-    _this.deleteCardClick = function () {
+    _this.deleteCardClick = function (id) {
       return function () {
-        if (_this.props.deleteCardClick) _this.props.deleteCardClick();
+        if (_this.props.deleteCardClick) _this.props.deleteCardClick(id);
       };
     };
 
@@ -32867,15 +32900,15 @@ function (_super) {
   }
 
   SelectedCard.prototype.render = function () {
-    var card = this.props.card;
+    var instance = this.props.instance;
     return _react.default.createElement("div", {
       className: "selected-card"
-    }, card && _react.default.createElement(_card.default, {
-      card: card,
+    }, instance && _react.default.createElement(_card.default, {
+      instance: instance,
       ally: true
-    }), card && _react.default.createElement("button", {
+    }), instance && _react.default.createElement("button", {
       className: "delete-button",
-      onClick: this.deleteCardClick()
+      onClick: this.deleteCardClick(instance.id)
     }, " X "));
   };
 
@@ -32903,7 +32936,7 @@ function (_super) {
 }(_react.default.Component);
 
 (0, _reactDom.render)(_react.default.createElement(Game, null), document.getElementById('root'));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./index.css":"../src/index.css","./card":"../src/card.tsx","./chinpoko":"../src/chinpoko.tsx","./phase":"../src/phase.tsx"}],"../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./index.css":"../src/index.css","./card":"../src/card.tsx","./chinpoko":"../src/chinpoko.tsx","./phase":"../src/phase.tsx"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -32931,7 +32964,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "45345" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50711" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -33107,5 +33140,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../usr/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","../src/index.tsx"], null)
+},{}]},{},["../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","../src/index.tsx"], null)
 //# sourceMappingURL=/src.62c16509.js.map

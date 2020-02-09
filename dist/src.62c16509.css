@@ -51,7 +51,7 @@ body {
   height: 70%;
   width: 50px;
 }
-.game-hand .card:hover {
+.game-hand .card.is-enemy:hover {
   width: 60px;
   height: 90%;  
 }
@@ -64,9 +64,10 @@ body {
   word-wrap: break-word;
 }
 
-.game-hand .card.is-ally:hover {
+.game-hand .card.is-ally.is-not-clicked:hover {
   width: 160px;
   font-size: 20px;
+  height: 90%;
 }
 
 .cardcost {
