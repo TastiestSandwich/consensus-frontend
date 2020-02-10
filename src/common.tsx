@@ -1,5 +1,3 @@
-import './index.css';
-
 export interface Type {
 	name: string
 	strongTo: Array<string>

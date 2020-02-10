@@ -1,5 +1,5 @@
 import React from 'react';
-import './phase.css';
+import './style/phase.css';
 import { CardInstance } from './card';
 
 export function initPhaseGroupData(size: number) {

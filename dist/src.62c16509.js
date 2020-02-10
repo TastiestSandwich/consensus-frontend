@@ -32057,6 +32057,11 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
+},{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/hand.css":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
 },{"_css_loader":"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../src/card.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
@@ -32180,7 +32185,136 @@ function (_super) {
 
 var _default = Card;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","./card.css":"../src/card.css"}],"../src/chinpoko.css":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./card.css":"../src/card.css"}],"../src/hand.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getStartingHand = getStartingHand;
+exports.SelectedCard = exports.Hand = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+require("./hand.css");
+
+var _card = _interopRequireWildcard(require("./card"));
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var __extends = void 0 && (void 0).__extends || function () {
+  var extendStatics = function (d, b) {
+    extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    };
+
+    return extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+function getStartingHand(size) {
+  var startingHand = {};
+
+  for (var i = 0; i < size; i++) {
+    startingHand[i] = (0, _card.getRandomCardInstance)(i);
+  }
+
+  return startingHand;
+}
+
+var Hand =
+/** @class */
+function (_super) {
+  __extends(Hand, _super);
+
+  function Hand() {
+    var _this = _super !== null && _super.apply(this, arguments) || this;
+
+    _this.handleClick = function (instance) {
+      return function () {
+        if (_this.props.onCardClick) _this.props.onCardClick(instance);
+      };
+    };
+
+    return _this;
+  }
+
+  Hand.prototype.render = function () {
+    var _this = this;
+
+    var cardArray = Object.values(this.props.instances); // add is-not-ally class after ':' if needed
+
+    var allyClass = this.props.ally ? "is-ally" : "";
+    return _react.default.createElement("div", {
+      className: "game-hand " + allyClass
+    }, cardArray.map(function (instance) {
+      return _react.default.createElement(_card.default, {
+        key: instance.id,
+        instance: instance,
+        ally: _this.props.ally,
+        onClick: _this.handleClick(instance)
+      });
+    }));
+  };
+
+  return Hand;
+}(_react.default.Component);
+
+exports.Hand = Hand;
+
+var SelectedCard =
+/** @class */
+function (_super) {
+  __extends(SelectedCard, _super);
+
+  function SelectedCard() {
+    var _this = _super !== null && _super.apply(this, arguments) || this;
+
+    _this.deleteCardClick = function (id) {
+      return function () {
+        if (_this.props.deleteCardClick) _this.props.deleteCardClick(id);
+      };
+    };
+
+    return _this;
+  }
+
+  SelectedCard.prototype.render = function () {
+    var instance = this.props.instance;
+    return _react.default.createElement("div", {
+      className: "selected-card"
+    }, instance && _react.default.createElement(_card.default, {
+      instance: instance,
+      ally: true
+    }), instance && _react.default.createElement("button", {
+      className: "delete-button",
+      onClick: this.deleteCardClick(instance.id)
+    }, " X "));
+  };
+
+  return SelectedCard;
+}(_react.default.Component);
+
+exports.SelectedCard = SelectedCard;
+},{"react":"../node_modules/react/index.js","./hand.css":"../src/hand.css","./card":"../src/card.tsx"}],"../src/chinpoko.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
@@ -32652,7 +32786,62 @@ function (_super) {
 }(_react.default.Component);
 
 exports.Phase = Phase;
-},{"react":"../node_modules/react/index.js","./phase.css":"../src/phase.css"}],"../src/index.tsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./phase.css":"../src/phase.css"}],"../src/engine.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Engine = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+require("./index.css");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var __extends = void 0 && (void 0).__extends || function () {
+  var extendStatics = function (d, b) {
+    extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    };
+
+    return extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+var Engine =
+/** @class */
+function (_super) {
+  __extends(Engine, _super);
+
+  function Engine() {
+    return _super !== null && _super.apply(this, arguments) || this;
+  }
+
+  Engine.prototype.render = function () {
+    return _react.default.createElement("div", null);
+  };
+
+  return Engine;
+}(_react.default.Component);
+
+exports.Engine = Engine;
+},{"react":"../node_modules/react/index.js","./index.css":"../src/index.css"}],"../src/index.tsx":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -32661,15 +32850,13 @@ var _reactDom = require("react-dom");
 
 require("./index.css");
 
-var _card = _interopRequireWildcard(require("./card"));
+var _hand = require("./hand");
 
 var _chinpoko = require("./chinpoko");
 
 var _phase = require("./phase");
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+var _engine = require("./engine");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32710,16 +32897,6 @@ var __assign = void 0 && (void 0).__assign || function () {
 
   return __assign.apply(this, arguments);
 };
-
-function getStartingHand(size) {
-  var startingHand = {};
-
-  for (var i = 0; i < size; i++) {
-    startingHand[i] = (0, _card.getRandomCardInstance)(i);
-  }
-
-  return startingHand;
-}
 
 var Game =
 /** @class */
@@ -32789,9 +32966,13 @@ function (_super) {
       });
     };
 
+    _this.handleNextTurnClick = function () {
+      console.log("clickity click");
+    };
+
     _this.state = {
-      allyHand: getStartingHand(3),
-      enemyHand: getStartingHand(3),
+      allyHand: (0, _hand.getStartingHand)(3),
+      enemyHand: (0, _hand.getStartingHand)(3),
       allyChinpoko: (0, _chinpoko.getRandomChinpoko)(),
       enemyChinpoko: (0, _chinpoko.getRandomChinpoko)(),
       selectedCard: null,
@@ -32807,7 +32988,7 @@ function (_super) {
     }, _react.default.createElement(_chinpoko.Chinpoko, {
       chinpoko: this.state.enemyChinpoko,
       ally: false
-    }), _react.default.createElement("hr", null), _react.default.createElement(_chinpoko.Chinpoko, {
+    }), _react.default.createElement("hr", null), _react.default.createElement(_engine.Engine, null), _react.default.createElement("hr", null), _react.default.createElement(_chinpoko.Chinpoko, {
       chinpoko: this.state.allyChinpoko,
       ally: true
     }));
@@ -32818,16 +32999,18 @@ function (_super) {
       className: "game"
     }, _react.default.createElement("div", {
       className: "game-action"
-    }, _react.default.createElement(Hand, {
+    }, _react.default.createElement(_hand.Hand, {
       instances: this.state.enemyHand,
       ally: false
-    }), _react.default.createElement("hr", null), this.renderField(), _react.default.createElement("hr", null), _react.default.createElement(Hand, {
+    }), _react.default.createElement("hr", null), this.renderField(), _react.default.createElement("hr", null), _react.default.createElement(_hand.Hand, {
       instances: this.state.allyHand,
       ally: true,
       onCardClick: this.handleCardClick
     })), _react.default.createElement("div", {
       className: "game-info"
-    }, _react.default.createElement(NextTurn, null), _react.default.createElement(_phase.PhaseGroup, {
+    }, _react.default.createElement(NextTurn, {
+      nextTurnClick: this.handleNextTurnClick
+    }), _react.default.createElement(_phase.PhaseGroup, {
       phases: this.state.enemyPhases,
       ally: false
     }), _react.default.createElement(_phase.PhaseGroup, {
@@ -32835,84 +33018,13 @@ function (_super) {
       ally: true,
       onPhaseClick: this.handlePhaseClick,
       onPhaseDelete: this.deletePhaseClick
-    }), this.state.selectedCard && _react.default.createElement(SelectedCard, {
+    }), this.state.selectedCard && _react.default.createElement(_hand.SelectedCard, {
       instance: this.state.selectedCard,
       deleteCardClick: this.deleteCardClick
     })));
   };
 
   return Game;
-}(_react.default.Component);
-
-var Hand =
-/** @class */
-function (_super) {
-  __extends(Hand, _super);
-
-  function Hand() {
-    var _this = _super !== null && _super.apply(this, arguments) || this;
-
-    _this.handleClick = function (instance) {
-      return function () {
-        if (_this.props.onCardClick) _this.props.onCardClick(instance);
-      };
-    };
-
-    return _this;
-  }
-
-  Hand.prototype.render = function () {
-    var _this = this;
-
-    var cardArray = Object.values(this.props.instances); // add is-not-ally class after ':' if needed
-
-    var allyClass = this.props.ally ? "is-ally" : "";
-    return _react.default.createElement("div", {
-      className: "game-hand " + allyClass
-    }, cardArray.map(function (instance) {
-      return _react.default.createElement(_card.default, {
-        key: instance.id,
-        instance: instance,
-        ally: _this.props.ally,
-        onClick: _this.handleClick(instance)
-      });
-    }));
-  };
-
-  return Hand;
-}(_react.default.Component);
-
-var SelectedCard =
-/** @class */
-function (_super) {
-  __extends(SelectedCard, _super);
-
-  function SelectedCard() {
-    var _this = _super !== null && _super.apply(this, arguments) || this;
-
-    _this.deleteCardClick = function (id) {
-      return function () {
-        if (_this.props.deleteCardClick) _this.props.deleteCardClick(id);
-      };
-    };
-
-    return _this;
-  }
-
-  SelectedCard.prototype.render = function () {
-    var instance = this.props.instance;
-    return _react.default.createElement("div", {
-      className: "selected-card"
-    }, instance && _react.default.createElement(_card.default, {
-      instance: instance,
-      ally: true
-    }), instance && _react.default.createElement("button", {
-      className: "delete-button",
-      onClick: this.deleteCardClick(instance.id)
-    }, " X "));
-  };
-
-  return SelectedCard;
 }(_react.default.Component);
 
 var NextTurn =
@@ -32928,7 +33040,8 @@ function (_super) {
     return _react.default.createElement("div", {
       className: "next-turn"
     }, _react.default.createElement("button", {
-      className: "next-turn-button"
+      className: "next-turn-button",
+      onClick: this.props.nextTurnClick
     }, "NEXT TURN"));
   };
 
@@ -32936,7 +33049,7 @@ function (_super) {
 }(_react.default.Component);
 
 (0, _reactDom.render)(_react.default.createElement(Game, null), document.getElementById('root'));
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./index.css":"../src/index.css","./card":"../src/card.tsx","./chinpoko":"../src/chinpoko.tsx","./phase":"../src/phase.tsx"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./index.css":"../src/index.css","./hand":"../src/hand.tsx","./chinpoko":"../src/chinpoko.tsx","./phase":"../src/phase.tsx","./engine":"../src/engine.tsx"}],"../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -32964,7 +33077,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50711" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57409" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

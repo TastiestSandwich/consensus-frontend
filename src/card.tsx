@@ -1,5 +1,5 @@
 import React from 'react';
-import './card.css';
+import './style/card.css';
 
 export interface CardData {
 	name: string

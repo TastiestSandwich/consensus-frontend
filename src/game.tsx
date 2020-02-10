@@ -1,11 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
-import './index.css';
-import Card, { getRandomCardInstance, CardInstance } from './card';
+import './style/game.css';
+import { CardInstance } from './card';
+import { Hand, getStartingHand, SelectedCard } from './hand';
 import { Chinpoko, ChinpokoData, getRandomChinpoko } from './chinpoko';
 import { PhaseGroup, PhaseData, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData } from './phase';
+import { Engine } from './engine';
 
-interface GameState {
+export interface GameState {
   allyHand: {[id: number] : CardInstance}
   enemyHand: {[id: number] : CardInstance}
   allyChinpoko: ChinpokoData
@@ -13,14 +15,6 @@ interface GameState {
   selectedCard: CardInstance | null
   allyPhases: Array<PhaseData>
   enemyPhases: Array<PhaseData>
-}
-
-function getStartingHand(size: number) {
-  let startingHand: {[id: number] : CardInstance} = {};
-  for (let i = 0; i < size; i++) {
-    startingHand[i] = getRandomCardInstance(i);
-  }
-  return startingHand;
 }
 
 class Game extends React.Component<{}, GameState> {
@@ -86,10 +80,16 @@ class Game extends React.Component<{}, GameState> {
     })
   }
 
+  handleNextTurnClick = () => {
+    console.log("clickity click");
+  }
+
   renderField() {
     return (
       <div className = "field">
         <Chinpoko chinpoko = {this.state.enemyChinpoko} ally={false} />
+        <hr></hr>
+        <Engine />
         <hr></hr>
         <Chinpoko chinpoko = {this.state.allyChinpoko} ally={true} />
       </div>  
@@ -107,7 +107,7 @@ class Game extends React.Component<{}, GameState> {
           <Hand instances={this.state.allyHand} ally={true} onCardClick={this.handleCardClick} />
         </div>
         <div className="game-info">
-          { <NextTurn /> }
+          { <NextTurn nextTurnClick={this.handleNextTurnClick} /> }
           { <PhaseGroup phases={this.state.enemyPhases} ally={false} /> }
           { <PhaseGroup phases={this.state.allyPhases} ally={true} 
             onPhaseClick={this.handlePhaseClick} 
@@ -120,69 +120,15 @@ class Game extends React.Component<{}, GameState> {
   }
 }
 
-interface HandProps {
-  instances: {[id: number] : CardInstance}
-  ally: boolean
-  onCardClick?: (instance: CardInstance) => void
+interface NextTurnProps {
+  nextTurnClick?: () => void
 }
 
-class Hand extends React.Component<HandProps> {
-  handleClick = (instance: CardInstance) => () => {
-    if(this.props.onCardClick)
-      this.props.onCardClick(instance)
-  }
-  render() {
-    const cardArray = Object.values(this.props.instances);
-    // add is-not-ally class after ':' if needed
-    const allyClass = this.props.ally ? "is-ally" : ""
-    return (
-      <div className={`game-hand ${allyClass}`} >
-        { cardArray.map((instance) => (
-          <Card 
-            key={instance.id} 
-            instance={instance}
-            ally={this.props.ally} 
-            onClick={this.handleClick(instance)}
-           /> 
-          ))}
-      </div>
-    );
-  }
-}
-
-interface SelectedCardProps {
-  instance: CardInstance
-  deleteCardClick?: (id: number) => void
-}
-
-class SelectedCard extends React.Component<SelectedCardProps> {
-  deleteCardClick = (id: number) => () => {
-    if(this.props.deleteCardClick)
-      this.props.deleteCardClick(id)
-  }
-
-  render() {
-    const instance = this.props.instance
-    return (
-      <div className = "selected-card">
-        {
-          instance &&
-          <Card instance={instance} ally={true}/>
-        }
-        {
-          instance &&
-          <button className="delete-button" onClick={this.deleteCardClick(instance.id)}> X </button>
-        }
-      </div>
-    )
-  }
-}
-
-class NextTurn extends React.Component {
+class NextTurn extends React.Component<NextTurnProps> {
   render() {
     return (
       <div className="next-turn">
-        <button className = "next-turn-button">
+        <button className = "next-turn-button" onClick={this.props.nextTurnClick}>
           NEXT TURN
         </button>
       </div>

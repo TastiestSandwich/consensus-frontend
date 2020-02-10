@@ -16,6 +16,16 @@ body {
   margin-left: 5%;
 }
 
+.next-turn {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.next-turn-button {
+}
+
 .selected-card {
   height:250px;
   margin-left: 20px;
@@ -31,17 +41,6 @@ body {
 .game-hand.is-ally {
   height: 250px;
 }
-
-.next-turn {
-  height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.next-turn-button {
-}
-
 .card {
   background: #fff;
   border: 5px solid #888;
