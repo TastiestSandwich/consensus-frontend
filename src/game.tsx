@@ -1,11 +1,12 @@
 import React from 'react';
 import { render } from 'react-dom';
 import './style/game.css';
-import { CardInstance } from './card';
+import { CardData, CardInstance } from './card';
 import { Hand, getStartingHand, SelectedCard } from './hand';
 import { Chinpoko, ChinpokoData, getRandomChinpoko } from './chinpoko';
-import { PhaseGroup, PhaseData, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData } from './phase';
+import { PhaseCounter, PhaseGroup, PhaseData, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData } from './phase';
 import { Engine } from './engine';
+import { findHighestIndexOverLimit } from './util';
 
 export interface GameState {
   allyHand: {[id: number] : CardInstance}
@@ -13,6 +14,7 @@ export interface GameState {
   allyChinpoko: ChinpokoData
   enemyChinpoko: ChinpokoData
   selectedCard: CardInstance | null
+  enemySelectedCard: CardInstance | null
   allyPhases: Array<PhaseData>
   enemyPhases: Array<PhaseData>
 }
@@ -26,6 +28,7 @@ class Game extends React.Component<{}, GameState> {
       allyChinpoko: getRandomChinpoko(),
       enemyChinpoko: getRandomChinpoko(),
       selectedCard: null,
+      enemySelectedCard: null,
       allyPhases: initPhaseGroupData(5),
       enemyPhases: initPhaseGroupData(5),
     };
@@ -80,8 +83,51 @@ class Game extends React.Component<{}, GameState> {
     })
   }
 
+  handleChangeTeamClick = () => {
+    this.setState((state) => ({
+      allyHand: state.enemyHand,
+      enemyHand: state.allyHand,
+      allyChinpoko: state.enemyChinpoko,
+      enemyChinpoko: state.allyChinpoko,
+      selectedCard: state.enemySelectedCard,
+      enemySelectedCard: state.selectedCard,
+      allyPhases: state.enemyPhases,
+      enemyPhases: state.allyPhases
+    }))
+  }
+
   handleNextTurnClick = () => {
-    console.log("clickity click");
+    const phaseCounters: Array<PhaseCounter> = [
+    {value: this.state.allyChinpoko.spe, chinpoko: {...this.state.allyChinpoko}, remainingPhases: [...this.state.allyPhases]},
+    {value: this.state.enemyChinpoko.spe, chinpoko: {...this.state.enemyChinpoko}, remainingPhases: [...this.state.enemyPhases]}];
+    const phaseLimit: number = Math.max(...phaseCounters.map( pc => pc.value ));
+
+    while(phaseCounters.length > 0) {
+      let index: number = findHighestIndexOverLimit(phaseCounters, phaseLimit);
+      if (index >= 0) {
+        let phaseCounter: PhaseCounter = phaseCounters[index];
+        // remove phase from counter and do its action if it exists
+        let phase: PhaseData | undefined = phaseCounter.remainingPhases.shift();
+        console.log( "doing phase " + phase.index + " of chinpoko " + phaseCounter.chinpoko.storedData.name);
+        if (phase != undefined && phase.instance != null) {
+          let card: CardData = phase.instance.card;
+          // do card action
+          console.log(card.text);
+        }
+        // delete phaseCounter if no more phases, else antisum limit
+        if (phaseCounter.remainingPhases.length <= 0) {
+          phaseCounters.splice(index,1);
+        } else {
+          phaseCounter.value = phaseCounter.value - phaseLimit;
+        }
+
+      } else {
+        // sum speed to each phaseCounter
+        for (const pc of phaseCounters) {
+          pc.value = pc.value + pc.chinpoko.spe;
+        }
+      }
+    }
   }
 
   renderField() {
@@ -107,6 +153,7 @@ class Game extends React.Component<{}, GameState> {
           <Hand instances={this.state.allyHand} ally={true} onCardClick={this.handleCardClick} />
         </div>
         <div className="game-info">
+          { <ChangeTeam changeTeamClick={this.handleChangeTeamClick} /> }
           { <NextTurn nextTurnClick={this.handleNextTurnClick} /> }
           { <PhaseGroup phases={this.state.enemyPhases} ally={false} /> }
           { <PhaseGroup phases={this.state.allyPhases} ally={true} 
@@ -130,6 +177,22 @@ class NextTurn extends React.Component<NextTurnProps> {
       <div className="next-turn">
         <button className = "next-turn-button" onClick={this.props.nextTurnClick}>
           NEXT TURN
+        </button>
+      </div>
+    )
+  }
+}
+
+interface ChangeTeamProps {
+  changeTeamClick?: () => void
+}
+
+class ChangeTeam extends React.Component<ChangeTeamProps> {
+  render() {
+    return (
+      <div className="change-team">
+        <button className = "change-team-button" onClick={this.props.changeTeamClick}>
+          CHANGE TEAM
         </button>
       </div>
     )

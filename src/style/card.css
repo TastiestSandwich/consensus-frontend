@@ -37,6 +37,6 @@
   text-align: left;
 }
 
-.card.is-clicked{
+.card.is-ally.is-clicked{
   background: lightgrey;
 }
