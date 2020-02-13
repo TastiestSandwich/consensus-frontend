@@ -1,12 +1,11 @@
 import React from 'react';
 import { render } from 'react-dom';
 import './style/game.css';
-import { CardData, CardInstance } from './card';
+import { CardData, CardInstance, CardAction } from './card';
 import { Hand, getStartingHand, SelectedCard } from './hand';
 import { Chinpoko, ChinpokoData, getRandomChinpoko } from './chinpoko';
-import { PhaseCounter, PhaseGroup, PhaseData, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData } from './phase';
-import { Engine } from './engine';
-import { findHighestIndexOverLimit } from './util';
+import { PhaseCounter, PhaseGroup, PhaseData, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from './phase';
+import { Engine, calcDamage, calcAbsorb, calcHeal } from './engine';
 
 export interface GameState {
   allyHand: {[id: number] : CardInstance}
@@ -96,10 +95,49 @@ class Game extends React.Component<{}, GameState> {
     }))
   }
 
+  handleCardActions(card: CardData, ally: ChinpokoData, enemy: ChinpokoData) {
+    for(const action of card.action) {
+      if(action.effect === "DAMAGE") { this.effectDamage(card, action, ally, enemy); } 
+      else if(action.effect === "ABSORB") { this.effectAbsorb(card, action, ally, enemy); } 
+      else if(action.effect === "HEAL") { this.effectHeal(card, action, ally); }
+    }
+  }
+
+  effectDamage(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
+    const damage = calcDamage(action.parameters.power, card.type, ally, enemy);
+    enemy.hp = enemy.hp - damage;
+    if (enemy.hp < 0) {
+      enemy.hp = 0;
+    }
+  }
+
+  effectAbsorb(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
+    const damage = calcDamage(action.parameters.power, card.type, ally, enemy);
+    enemy.hp = enemy.hp - damage;
+    if (enemy.hp < 0) {
+      enemy.hp = 0;
+    }
+    const absorb = calcAbsorb(action.parameters.percentage, card.type, ally, damage);
+    ally.hp = ally.hp + absorb;
+    if (ally.hp > ally.maxhp) {
+      ally.hp = ally.maxhp;
+    }
+  }
+
+  effectHeal(card:CardData, action: CardAction, ally: ChinpokoData) {
+    const heal = calcHeal(action.parameters.percentage, card.type, ally);
+    ally.hp = ally.hp + heal;
+    if (ally.hp > ally.maxhp) {
+      ally.hp = ally.maxhp;
+    }
+  }
+
   handleNextTurnClick = () => {
+    let allyChinpoko:ChinpokoData = {...this.state.allyChinpoko};
+    let enemyChinpoko:ChinpokoData = {...this.state.enemyChinpoko};
     const phaseCounters: Array<PhaseCounter> = [
-    {value: this.state.allyChinpoko.spe, chinpoko: {...this.state.allyChinpoko}, remainingPhases: [...this.state.allyPhases]},
-    {value: this.state.enemyChinpoko.spe, chinpoko: {...this.state.enemyChinpoko}, remainingPhases: [...this.state.enemyPhases]}];
+    {value: allyChinpoko.spe, chinpoko: allyChinpoko, enemy: enemyChinpoko, remainingPhases: [...this.state.allyPhases]},
+    {value: enemyChinpoko.spe, chinpoko: enemyChinpoko, enemy: allyChinpoko, remainingPhases: [...this.state.enemyPhases]}];
     const phaseLimit: number = Math.max(...phaseCounters.map( pc => pc.value ));
 
     while(phaseCounters.length > 0) {
@@ -113,6 +151,11 @@ class Game extends React.Component<{}, GameState> {
           let card: CardData = phase.instance.card;
           // do card action
           console.log(card.text);
+          this.handleCardActions(card, phaseCounter.chinpoko, phaseCounter.enemy);
+          this.setState({
+            allyChinpoko: allyChinpoko,
+            enemyChinpoko: enemyChinpoko,
+          })
         }
         // delete phaseCounter if no more phases, else antisum limit
         if (phaseCounter.remainingPhases.length <= 0) {

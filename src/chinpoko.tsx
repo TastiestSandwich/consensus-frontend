@@ -1,6 +1,6 @@
 import React from 'react';
 import './style/chinpoko.css';
-import { Type, TypeList } from './common';
+import { Type, TypeList } from './type';
 import bisonte from './images/bisonte.png'
 import lagarto from './images/lagarto.png'
 import nutria from './images/nutria.png'

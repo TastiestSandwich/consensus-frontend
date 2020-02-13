@@ -1,19 +1,6 @@
 import React from 'react';
 import './style/card.css';
-
-export interface CardData {
-	name: string
-	text: string
-	cost: number
-}
-
-export const CardList: { [name:string] : CardData } = {
-	"card1": {name: "card1", text: "do thing 1", cost: 1},
-	"card2": {name: "card2", text: "do thing 2", cost: 2},
-	"card3": {name: "card3", text: "do tremendously long thing 3", cost: 3},
-	"card4": {name: "card4", text: "do long thing 4", cost: 4},
-	"card5": {name: "card5", text: "do very long thing 5", cost: 5}
-}
+import { Type, TypeList } from './type';
 
 export interface CardInstance {
 	card: CardData
@@ -48,15 +35,14 @@ export default class Card extends React.Component<CardProps, {} > {
 
 	render() {
 		// add is-not-ally class after ':' if needed
-		const allyClass = this.props.ally ? "is-ally" : "is-enemy" 
-		const isClickedClass = this.props.instance.isClicked ? "is-clicked" : "is-not-clicked"
-		let {
-			instance, 
-			ally,
-			onClick,
-		} = this.props
+		const { instance, ally, onClick, } = this.props
+		const isClickedClass = instance.isClicked ? "is-clicked" : "is-not-clicked"
+		const allyClass = ally ? "is-ally" : "is-enemy" 
+		const color = instance.card.type.color
+		const border = ally ? "5px solid " + color : "4px solid grey"
+
 		return(
-			<div className={`card ${allyClass} ${isClickedClass}`} onClick={onClick}> 
+			<div className={`card ${allyClass} ${isClickedClass}`} style={{border: border}} onClick={onClick}> 
 			{
 				ally &&
 				<>
@@ -69,9 +55,103 @@ export default class Card extends React.Component<CardProps, {} > {
 					<div className="cardtext">
 						{instance.card.text}
 					</div>
+					<div className="cardpower-wrapper">
+					{ instance.card.power &&
+						<div className="cardpower">
+							{instance.card.power}
+						</div>
+					}
+					</div>
 				</>
 			}
 			</div>
 		)
 	}
+}
+
+export interface CardData {
+	name: string
+	text: string
+	cost: number
+	power?: number
+	type: Type
+	action: Array<CardAction>
+}
+
+export interface CardAction {
+	effect: string
+	parameters: ActionParameters
+}
+
+export interface ActionParameters {
+	power?: number
+	percentage?: number
+}
+
+export const CardList: { [name:string] : CardData } = {
+	"Quick Attack": {
+		name: "Quick Attack", 
+		cost: 1,
+		power: 30,
+		text: "Quickly strikes the enemy", 
+		type: TypeList["NEUTRAL"],
+		action: [{
+			effect: "DAMAGE",
+			parameters: {
+				power: 30,
+			}
+		}]
+	},
+	"Water Gun": {
+		name: "Water Gun", 
+		cost: 2,
+		power: 50,
+		text: "Soaks the enemy in water",
+		type: TypeList["WATER"],
+		action: [{
+			effect: "DAMAGE",
+			parameters: {
+				power: 50,
+			}
+		}]
+	},
+	"Mega Drain": {
+		name: "Mega Drain",
+		cost: 3,
+		power: 60,
+		text: "Drains the enemy's health, recovering half the damage done",
+		type: TypeList["GRASS"],
+		action: [{
+			effect: "ABSORB",
+			parameters: {
+				power: 60,
+				percentage: 0.5,
+			}
+		}]
+	},
+	"Flamethrower": {
+		name: "Flamethrower",
+		cost: 4,
+		power: 90,
+		text: "Burns the enemy with a stream of fire",
+		type: TypeList["FIRE"],
+		action: [{
+			effect: "DAMAGE",
+			parameters: {
+				power: 90,
+			}
+		}]
+	},
+	"Rest": {
+		name: "Rest",
+		cost: 5,
+		text: "Rests and recovers half of its health",
+		type: TypeList["NEUTRAL"],
+		action: [{
+			effect: "HEAL",
+			parameters: {
+				percentage: 0.5,
+			}
+		}]
+	},
 }

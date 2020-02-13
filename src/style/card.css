@@ -1,11 +1,14 @@
 .card {
   background: #fff;
-  border: 5px solid #888;
+  border: 5px solid;
   float: center;
   margin-right: 10px;
   margin-top: 0px;
   height: 70%;
   width: 50px;
+  display: flex;                   
+  flex-direction: column;          
+  justify-content: space-between;  
 }
 .game-hand .card.is-enemy:hover {
   width: 60px;
@@ -13,16 +16,16 @@
 }
 
 .card.is-ally{
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
-  width: 125px;
+  width: 130px;
   text-align: center;
   word-wrap: break-word;
 }
 
 .game-hand .card.is-ally.is-not-clicked:hover {
   width: 160px;
-  font-size: 20px;
+  font-size: 18px;
   height: 90%;
 }
 
@@ -38,5 +41,14 @@
 }
 
 .card.is-ally.is-clicked{
-  background: lightgrey;
+  filter: brightness(85%);
+}
+
+.cardpower-wrapper {
+}
+
+.cardpower {
+  display: flex;     
+  align-items: flex-end; 
+  padding: 5px;
 }
