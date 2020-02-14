@@ -204,7 +204,9 @@ class Game extends React.Component<{}, GameState> {
         });
       } else {
         this.setState({
-          stage: GameStage.PLAY
+          stage: GameStage.PLAY,
+          allyPhases: initPhaseGroupData(5),
+          enemyPhases: initPhaseGroupData(5),
         })
       }
     }
@@ -226,13 +228,13 @@ class Game extends React.Component<{}, GameState> {
         // unfill phase
         if (phaseCounter.isAlly) {
           const myPhases: Array<PhaseData> = [...this.state.allyPhases];
-          myPhases[phase.index - 1] = initPhaseData(phase.index);
+          myPhases[phase.index - 1].show = true;
           this.setState({
             allyPhases: myPhases
           })
         } else {
           const myPhases: Array<PhaseData> = [...this.state.enemyPhases];
-          myPhases[phase.index - 1] = initPhaseData(phase.index);
+          myPhases[phase.index - 1].show = true;
           this.setState({
             enemyPhases: myPhases
           })

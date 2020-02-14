@@ -43,6 +43,7 @@ export function initPhaseData(index: number) {
 	let phaseData: PhaseData = {
 		index: index,
 		filled: false,
+		show: false,
 		instance: null
 	}
 	return phaseData;
@@ -79,12 +80,14 @@ export function setPhaseGroupData(phaseNumber: number, instance: CardInstance | 
 			newPhases[i-1] = {
 				index: i,
 				filled: true,
+				show: false,
 				instance: null
 			}
 		} else if (i === phaseNumber) {
 			newPhases[i-1] = {
 				index: i,
 				filled: true,
+				show: false,
 				instance: instance
 			}
 		}
@@ -100,12 +103,14 @@ export function deleteFromPhaseGroupData(phaseNumber: number, cost: number, phas
 			newPhases[i-1] = {
 				index: i,
 				filled: false,
+				show: false,
 				instance: null
 			}
 		} else if (i === phaseNumber) {
 			newPhases[i-1] = {
 				index: i,
 				filled: false,
+				show: false,
 				instance: null
 			}
 		}
@@ -152,6 +157,7 @@ export class PhaseGroup extends React.Component<PhaseGroupProps, {}> {
 export interface PhaseData {
 	index: number
 	filled: boolean
+	show: boolean
 	instance: CardInstance | null
 }
 
@@ -170,7 +176,7 @@ export class Phase extends React.Component<PhaseProps, {}> {
 		const allyClass = this.props.ally ? "is-ally" : ""
 		const filledClass = this.props.phase.filled ? "is-filled" : ""
 
-		if(!this.props.ally) {
+		if(!this.props.ally && !this.props.phase.show) {
 			return (
 				<div className={`phase-container ${allyClass}`}>
 					<div className="phase">
