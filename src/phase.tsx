@@ -1,12 +1,10 @@
 import React from 'react';
 import './style/phase.css';
 import { CardInstance } from './card';
-import { ChinpokoData } from './chinpoko';
 
 export interface PhaseCounter {
   value: number
-  chinpoko: ChinpokoData
-  enemy: ChinpokoData
+  isAlly: boolean
   remainingPhases: Array<PhaseData>
 }
 
@@ -41,7 +39,7 @@ export function initPhaseGroupData(size: number) {
 	return phaseGroup;
 }
 
-function initPhaseData(index: number) {
+export function initPhaseData(index: number) {
 	let phaseData: PhaseData = {
 		index: index,
 		filled: false,

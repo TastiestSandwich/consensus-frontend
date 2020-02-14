@@ -39,20 +39,20 @@ export const TypeList = {
 	"FIRE": {
 		name: "FIRE",
 		color: "red",
-		weakness: ["WATER"], 
-		resistance: ["FIRE", "GRASS"]
+		weakness: ["WATER", "EARTH"], 
+		resistance: ["FIRE", "GRASS", "ICE"]
 	},
 	"WATER": {
 		name: "WATER",
 		color: "dodgerblue",
-		weakness: ["GRASS"],
+		weakness: ["GRASS", "ELECTRIC", "ICE"],
 		resistance: ["WATER", "FIRE"]
 	},
 	"GRASS": {
 		name: "GRASS",
 		color: "chartreuse",
-		weakness: ["FIRE"],
-		resistance: ["GRASS", "WATER"]
+		weakness: ["FIRE", "AIR", "ICE"],
+		resistance: ["GRASS", "WATER", "ELECTRIC"]
 	},
 	"NEUTRAL": {
 		name: "NEUTRAL",
@@ -65,5 +65,29 @@ export const TypeList = {
 		color: "darkmagenta",
 		weakness: [],
 		resistance: ["NEUTRAL"]
+	},
+	"ELECTRIC": {
+		name: "ELECTRIC",
+		color: "gold",
+		weakness: ["EARTH"],
+		resistance: ["ELECTRIC", "AIR"]
+	},
+	"EARTH": {
+		name: "EARTH",
+		color: "saddlebrown",
+		weakness: ["GRASS", "AIR"],
+		resistance: ["FIRE"]
+	},
+	"AIR": {
+		name: "AIR",
+		color: "skyblue",
+		weakness: ["ELECTRIC", "ICE"],
+		resistance: ["EARTH", "GRASS"]
+	},
+	"ICE": {
+		name: "ICE",
+		color: "cornflowerblue",
+		weakness: ["FIRE"],
+		resistance: ["ICE", "WATER"]
 	}
 };
