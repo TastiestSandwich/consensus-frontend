@@ -4,7 +4,7 @@ import './style/game.css';
 import { CardData, CardInstance, CardAction } from './card';
 import { Hand, getStartingHand, SelectedCard } from './hand';
 import { Chinpoko, ChinpokoData, getRandomChinpoko } from './chinpoko';
-import { PhaseCounter, PhaseGroup, PhaseData, initPhaseData, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from './phase';
+import { PhaseCounter, PhaseGroup, PhaseData, CurrentPhase, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from './phase';
 import { Engine, calcDamage, calcAbsorb, calcHeal } from './engine';
 
 const enum GameStage {
@@ -24,6 +24,7 @@ export interface GameState {
   stage: GameStage
   phaseCounters: Array<PhaseCounter>
   phaseLimit: number
+  currentPhase: CurrentPhase | null
 }
 
 class Game extends React.Component<{}, GameState> {
@@ -41,6 +42,7 @@ class Game extends React.Component<{}, GameState> {
       stage: GameStage.PLAY,
       phaseCounters: [],
       phaseLimit: 0,
+      currentPhase: null
     };
   }
 
@@ -207,6 +209,7 @@ class Game extends React.Component<{}, GameState> {
           stage: GameStage.PLAY,
           allyPhases: initPhaseGroupData(5),
           enemyPhases: initPhaseGroupData(5),
+          currentPhase: null,
         })
       }
     }
@@ -230,13 +233,15 @@ class Game extends React.Component<{}, GameState> {
           const myPhases: Array<PhaseData> = [...this.state.allyPhases];
           myPhases[phase.index - 1].show = true;
           this.setState({
-            allyPhases: myPhases
+            allyPhases: myPhases,
+            currentPhase: {isAlly: true, index: phase.index}
           })
         } else {
           const myPhases: Array<PhaseData> = [...this.state.enemyPhases];
           myPhases[phase.index - 1].show = true;
           this.setState({
-            enemyPhases: myPhases
+            enemyPhases: myPhases,
+            currentPhase: {isAlly: false, index: phase.index}
           })
         }
 
@@ -288,8 +293,8 @@ class Game extends React.Component<{}, GameState> {
         <div className="game-info">
           { <ChangeTeam stage={this.state.stage} changeTeamClick={this.handleChangeTeamClick} /> }
           { <NextTurn stage={this.state.stage} nextTurnClick={this.handleNextTurnClick} /> }
-          { <PhaseGroup phases={this.state.enemyPhases} ally={false} /> }
-          { <PhaseGroup phases={this.state.allyPhases} ally={true} 
+          { <PhaseGroup phases={this.state.enemyPhases} ally={false} currentPhase={this.state.currentPhase} /> }
+          { <PhaseGroup phases={this.state.allyPhases} ally={true} currentPhase={this.state.currentPhase} 
             onPhaseClick={this.handlePhaseClick} 
             onPhaseDelete={this.deletePhaseClick} /> }
           { this.state.selectedCard &&

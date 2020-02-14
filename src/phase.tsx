@@ -2,6 +2,11 @@ import React from 'react';
 import './style/phase.css';
 import { CardInstance } from './card';
 
+export interface CurrentPhase {
+	isAlly: boolean
+	index: number
+}
+
 export interface PhaseCounter {
   value: number
   isAlly: boolean
@@ -121,6 +126,7 @@ export function deleteFromPhaseGroupData(phaseNumber: number, cost: number, phas
 interface PhaseGroupProps {
 	phases: Array<PhaseData>
 	ally: boolean
+	currentPhase: CurrentPhase | null
 	onPhaseClick?: (phaseNumber: number) => void
 	onPhaseDelete?: (phaseNumber: number, instance: CardInstance | null) => void
 }
@@ -144,7 +150,8 @@ export class PhaseGroup extends React.Component<PhaseGroupProps, {}> {
 				  <Phase 
 					key={index}
 					phase={phase}
-					ally={this.props.ally} 
+					ally={this.props.ally}
+					currentPhase={this.props.currentPhase}
 					onPhaseClick={this.handleClick(index+1)}
 					onPhaseDelete={this.handleDelete(index+1, phase.instance)}
 				   /> 
@@ -165,6 +172,7 @@ interface PhaseProps {
 	key: number
 	phase: PhaseData
 	ally: boolean
+	currentPhase: CurrentPhase | null
 	onPhaseClick?: () => void
 	onPhaseDelete?: () => void
 }
@@ -172,29 +180,36 @@ interface PhaseProps {
 export class Phase extends React.Component<PhaseProps, {}> {
 
 	render() {
-		// add is-not-ally class after ':' if needed
-		const allyClass = this.props.ally ? "is-ally" : ""
-		const filledClass = this.props.phase.filled ? "is-filled" : ""
+		const { phase, ally, currentPhase, onPhaseClick, onPhaseDelete } = this.props;
 
-		if(!this.props.ally && !this.props.phase.show) {
+		let isCurrent = false;
+		if (currentPhase != null) {
+			isCurrent = (ally === currentPhase.isAlly && phase.index === currentPhase.index);
+		}
+		const currentClass = isCurrent ? "is-current" : ""
+		// add is-not-ally class after ':' if needed
+		const allyClass = ally ? "is-ally" : ""
+		const filledClass = phase.filled ? "is-filled" : ""
+
+		if(!ally && !phase.show) {
 			return (
 				<div className={`phase-container ${allyClass}`}>
 					<div className="phase">
-						{this.props.phase.index}
+						{phase.index}
 					</div>
 				</div>
 			)
 
 		} else {
 			return (
-				<div className={`phase-container ${allyClass}`}>
-					<div className={`phase ${filledClass}`} onClick={this.props.onPhaseClick}>
-						{this.props.phase.index}
+				<div className={`phase-container ${allyClass} ${currentClass}`}>
+					<div className={`phase ${filledClass}`} onClick={onPhaseClick}>
+						{phase.index}
 					</div>
-					{ this.props.phase.instance != null &&
+					{ phase.instance != null &&
 						<div className="phase-card">
-							{this.props.phase.instance.card.name}
-							<button className="delete-phase-card" onClick={this.props.onPhaseDelete}>
+							{phase.instance.card.name}
+							<button className="delete-phase-card" onClick={onPhaseDelete}>
 								x
 							</button>
 						</div> }
