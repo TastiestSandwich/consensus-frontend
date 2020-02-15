@@ -1,6 +1,5 @@
 export interface Type {
 	name: string
-	color: string
 	weakness: Array<string>
 	resistance: Array<string>
 }
@@ -38,55 +37,46 @@ export function findStab(cardType: Type, userType: Type):number {
 export const TypeList = {
 	"FIRE": {
 		name: "FIRE",
-		color: "red",
-		weakness: ["WATER", "EARTH"], 
+		weakness: ["WATER", "EARTH"],
 		resistance: ["FIRE", "GRASS", "ICE"]
 	},
 	"WATER": {
 		name: "WATER",
-		color: "dodgerblue",
 		weakness: ["GRASS", "ELECTRIC", "ICE"],
 		resistance: ["WATER", "FIRE"]
 	},
 	"GRASS": {
 		name: "GRASS",
-		color: "chartreuse",
 		weakness: ["FIRE", "AIR", "ICE"],
 		resistance: ["GRASS", "WATER", "ELECTRIC"]
 	},
 	"NEUTRAL": {
 		name: "NEUTRAL",
-		color: "lightgrey",
 		weakness: ["MISTERY"],
 		resistance: []
 	},
 	"MISTERY": {
 		name: "MISTERY",
-		color: "darkmagenta",
 		weakness: [],
 		resistance: ["NEUTRAL"]
 	},
 	"ELECTRIC": {
 		name: "ELECTRIC",
-		color: "gold",
 		weakness: ["EARTH"],
 		resistance: ["ELECTRIC", "AIR"]
 	},
 	"EARTH": {
 		name: "EARTH",
-		color: "saddlebrown",
 		weakness: ["GRASS", "AIR"],
 		resistance: ["FIRE"]
 	},
 	"AIR": {
 		name: "AIR",
-		color: "skyblue",
 		weakness: ["ELECTRIC", "ICE"],
 		resistance: ["EARTH", "GRASS"]
 	},
 	"ICE": {
 		name: "ICE",
-		color: "cornflowerblue",
 		weakness: ["FIRE"],
 		resistance: ["ICE", "WATER"]
 	}

@@ -1,5 +1,5 @@
 import React from 'react';
-import './style/engine.css';
+import './old_style/engine.css';
 import { ChinpokoData } from './chinpoko';
 import { Type, findEffectiveness, findStab } from './type';
 

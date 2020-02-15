@@ -1,5 +1,5 @@
 import React from 'react';
-import './style/phase.css';
+import './old_style/phase.css';
 import { CardInstance } from './card';
 
 export interface CurrentPhase {
@@ -147,14 +147,14 @@ export class PhaseGroup extends React.Component<PhaseGroupProps, {}> {
 			<div className="phase-group">
 				{allyText}
 				{ this.props.phases.map((phase, index) => (
-				  <Phase 
+				  <Phase
 					key={index}
 					phase={phase}
 					ally={this.props.ally}
 					currentPhase={this.props.currentPhase}
 					onPhaseClick={this.handleClick(index+1)}
 					onPhaseDelete={this.handleDelete(index+1, phase.instance)}
-				   /> 
+				   />
 				  ))}
 			</div>
 		)

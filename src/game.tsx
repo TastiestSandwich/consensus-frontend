@@ -1,5 +1,6 @@
 import React from 'react';
-import './style/game.css';
+import './style/root.scss';
+import './style/game.scss';
 import { CardData, CardInstance, CardAction } from './card';
 import { Hand, getStartingHand, SelectedCard } from './hand';
 import { Chinpoko, ChinpokoData, getRandomChinpoko } from './chinpoko';
@@ -33,7 +34,7 @@ export interface GameState {
 export class Game extends React.Component<GameProps, GameState> {
   constructor(props) {
     super(props);
-    
+
     const allyChinpoko: ChinpokoData = this.props.team ? this.props.team[0] : getRandomChinpoko();
     this.state = {
       allyHand: getStartingHand(5),
@@ -124,8 +125,8 @@ export class Game extends React.Component<GameProps, GameState> {
 
   handleCardActions(instance: CardInstance, isAlly: boolean, ally: ChinpokoData, enemy: ChinpokoData) {
     for(const action of instance.card.action) {
-      if(action.effect === "DAMAGE") { this.effectDamage(instance.card, action, ally, enemy); } 
-      else if(action.effect === "ABSORB") { this.effectAbsorb(instance.card, action, ally, enemy); } 
+      if(action.effect === "DAMAGE") { this.effectDamage(instance.card, action, ally, enemy); }
+      else if(action.effect === "ABSORB") { this.effectAbsorb(instance.card, action, ally, enemy); }
       else if(action.effect === "HEAL") { this.effectHeal(instance.card, action, ally); }
     }
     const myHand: {[id: number] : CardInstance} = isAlly? {...this.state.allyHand} : {...this.state.enemyHand};
@@ -162,7 +163,7 @@ export class Game extends React.Component<GameProps, GameState> {
     }
     enemy.hp = enemy.hp - damage;
     console.log("Does " + damage + " points of damage!");
-    
+
     let absorb = calcAbsorb(action.parameters.percentage, card.type, ally, damage);
     if (ally.hp + absorb > ally.maxhp) {
       absorb = ally.maxhp - ally.hp;
@@ -275,35 +276,31 @@ export class Game extends React.Component<GameProps, GameState> {
 
   renderField() {
     return (
-      <div className = "field">
+      <div className = "game-component__field">
         <Chinpoko chinpoko = {this.state.enemyChinpoko} ally={false} />
-        <hr></hr>
         <Engine />
-        <hr></hr>
         <Chinpoko chinpoko = {this.state.allyChinpoko} ally={true} />
-      </div>  
+      </div>
     );
   }
 
   render() {
     return (
-      <div className="game">
-        <div className="game-action">
-          <Hand instances={this.state.enemyHand} ally={false} />
-          <hr></hr>
-          { this.renderField() }
-          <hr></hr>
-          <Hand instances={this.state.allyHand} ally={true} onCardClick={this.handleCardClick} />
-        </div>
-        <div className="game-info">
+      <div className="game-component">
+        <div className="game-component__phases">
           { <ChangeTeam stage={this.state.stage} changeTeamClick={this.handleChangeTeamClick} /> }
           { <NextTurn stage={this.state.stage} nextTurnClick={this.handleNextTurnClick} /> }
           { <PhaseGroup phases={this.state.enemyPhases} ally={false} currentPhase={this.state.currentPhase} /> }
-          { <PhaseGroup phases={this.state.allyPhases} ally={true} currentPhase={this.state.currentPhase} 
-            onPhaseClick={this.handlePhaseClick} 
+          { <PhaseGroup phases={this.state.allyPhases} ally={true} currentPhase={this.state.currentPhase}
+            onPhaseClick={this.handlePhaseClick}
             onPhaseDelete={this.deletePhaseClick} /> }
           { this.state.selectedCard &&
           <SelectedCard instance={this.state.selectedCard} deleteCardClick={this.deleteCardClick} /> }
+        </div>
+        <div className="game-component__board">
+          <Hand instances={this.state.enemyHand} ally={false} className="game-component__hand" />
+          { this.renderField() }
+          <Hand instances={this.state.allyHand} ally={true} onCardClick={this.handleCardClick} className="game-component__hand"/>
         </div>
       </div>
     );
@@ -338,8 +335,8 @@ class ChangeTeam extends React.Component<ChangeTeamProps> {
     const show = this.props.stage === GameStage.PLAY;
     return (
       <div>
-      { 
-        show && 
+      {
+        show &&
         <>
         <div className="change-team">
           <button className = "change-team-button" onClick={this.props.changeTeamClick}>

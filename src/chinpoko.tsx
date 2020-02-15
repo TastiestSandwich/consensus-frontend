@@ -1,5 +1,5 @@
 import React from 'react';
-import './style/chinpoko.css';
+import './style/chinpoko.scss';
 import { Type, TypeList } from './type';
 import bisonte from './images/bisonte.png'
 import lagarto from './images/lagarto.png'
@@ -154,10 +154,9 @@ interface ChinpokoProps {
 export class Chinpoko extends React.Component<ChinpokoProps> {
 
 	renderChinpokoSprite() {
-		const allyClass = this.props.ally ? "is-ally" : ""
 		const species = this.props.chinpoko.storedData.species
 		return (
-			<div className={`chinpoko-sprite ${allyClass}`}>
+			<div className={`chinpoko-component__sprite`}>
 				<img src={species.sprite} alt={species.speciesName} />
 			</div>
 		)
@@ -166,28 +165,28 @@ export class Chinpoko extends React.Component<ChinpokoProps> {
 	// <img src={ "/images/" + this.state.species.speciesName.toLowerCase() + ".png" }  alt={ this.state.species.speciesName } />
 
 	renderChinpokoDataBox() {
-		const allyClass = this.props.ally ? "is-ally" : ""
 		const {chinpoko} = this.props
 		const storedData = chinpoko.storedData
 		const healthStyle = { width: (chinpoko.hp * 96 / chinpoko.maxhp) }
+		const cpc = "chinpoko-component"
 		return (
-			<div className={`chinpoko-databox ${allyClass}`}>
-				<div className="chinpoko-hpbox">
-					<div className="chinpoko-title">
-						<div className="chinpoko-name">
+			<div className={`${cpc}__databox`}>
+				<div className={`${cpc}__hpbox hpbox`}>
+					<div className="hpbox__title">
+						<div className="hpbox__name">
 							{storedData.name}
 						</div>
-						<div className="chinpoko-lvl">
+						<div className="hpbox__lvl">
 							<b>lvl {storedData.lvl}</b>
 						</div>
 					</div>
-					<div className="chinpoko-healthbar" style={healthStyle}>
+					<div className="hpbox__healthbar" style={healthStyle}>
 					</div>
-					<div className="chinpoko-hp">
+					<div className="hpbox__hp">
 						<b>HP </b>{chinpoko.hp} / {chinpoko.maxhp}
 					</div>
 				</div>
-				<div className="chinpoko-statbox">
+				<div className={`${cpc}__statbox`}>
 					<table>
 						<thead>
 							<tr>
@@ -210,9 +209,9 @@ export class Chinpoko extends React.Component<ChinpokoProps> {
 	}
 
 	render() {
-		const allyClass = this.props.ally ? "is-ally" : ""
+		const allyClass = this.props.ally ? "is-ally" : "is-enemy"
 		return (
-			<div className={`chinpoko-field ${allyClass}`}>
+			<div className={`chinpoko-component chinpoko-component--${allyClass}`}>
 				{this.renderChinpokoDataBox()}
 				{this.renderChinpokoSprite()}
 			</div>

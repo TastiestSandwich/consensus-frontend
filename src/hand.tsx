@@ -1,5 +1,5 @@
 import React from 'react';
-import './style/hand.css';
+import './style/hand.scss';
 import Card, { CardInstance, getRandomCardInstance } from './card';
 
 export function getStartingHand(size: number) {
@@ -14,6 +14,7 @@ interface HandProps {
 	instances: {[id: number] : CardInstance}
 	ally: boolean
 	onCardClick?: (instance: CardInstance) => void
+	className?: string
 }
 
 export class Hand extends React.Component<HandProps> {
@@ -22,18 +23,24 @@ export class Hand extends React.Component<HandProps> {
 			this.props.onCardClick(instance)
 	}
 	render() {
-		const cardArray = Object.values(this.props.instances);
+		const {instances, ally, className} = this.props
+		const cardArray = Object.values(instances);
 		// add is-not-ally class after ':' if needed
-		const allyClass = this.props.ally ? "is-ally" : ""
+		const allyClass = ally ? "is-ally" : "is-enemy"
+		const onClick = ally ?
+						this.handleClick ?
+							this.handleClick
+							: (a) => {return undefined}
+						: (a) => {return undefined}
 		return (
-			<div className={`game-hand ${allyClass}`} >
+			<div className={`hand-component hand-component--${allyClass} ${className}`} >
 				{ cardArray.map((instance) => (
-					<Card 
-						key={instance.id} 
+					<Card
+						key={instance.id}
 						instance={instance}
-						ally={this.props.ally} 
-						onClick={this.handleClick(instance)}
-					 /> 
+						ally={this.props.ally}
+						onClick={onClick(instance)}
+					 />
 					))}
 			</div>
 		);

@@ -1,0 +1,66 @@
+
+$fieldXdistance: 80%;
+$fieldYdistance: 80%;
+$spritePerspective: 0.3;
+.chinpoko-component{
+  position:absolute;
+  display:flex;
+    &--is-ally{
+      transform: translate(-$fieldXdistance, 40%);
+      .chinpoko-component__sprite{
+        transform: scale(1+$spritePerspective);
+      }
+    }
+    &--is-enemy{
+      transform: translate($fieldXdistance, -85%);
+      .chinpoko-component__databox{
+        order:2;
+      }
+      .chinpoko-component__sprite{
+        transform: scale(1-$spritePerspective);
+        order:1;
+      }
+    }
+
+    &__sprite{
+      height: 150px;
+      width: 150px;
+      text-align: center;
+      margin: 20px;
+      &:after{
+        content: " ";
+        width: 200px;
+        height: 70px;
+        background-color: #3b3b3b;
+        border-radius: 100%;
+        position: absolute;
+        transform: translate(-86%, 150%) scale(1.5);
+        z-index: -1;
+        background: radial-gradient(at center, #808080, #222);
+      }
+    }
+
+    &__hpbox{
+      width: 130px;
+      background: #fff;
+      border: 3px solid #888;
+      margin:0 2em;
+    }
+    &__statbox{  }
+
+    .hpbox{
+      &__title{
+        display: flex;
+      }
+      &__name{  }
+      &__lvl{
+        flex:1;
+        text-align: right;
+      }
+      &__healthbar{
+        border: 2px solid #000;
+        height: 10px;
+        background: #00ff00;
+      }
+    }
+}
