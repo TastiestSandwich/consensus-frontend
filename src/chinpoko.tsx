@@ -125,7 +125,7 @@ export function getRandomChinpoko(): ChinpokoData {
 	return getChinpokoData(ChinpokoList[index]);
 }
 
-function getChinpokoData(storedData: ChinpokoStoredData): ChinpokoData {
+export function getChinpokoData(storedData: ChinpokoStoredData): ChinpokoData {
 	let startingHP = calcHP(storedData.species.baseHP, storedData.evHP, storedData.lvl);
 	let chinpoko: ChinpokoData = {
 		storedData: storedData,

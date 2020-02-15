@@ -4,9 +4,12 @@
   "private": true,
   "dependencies": {
     "@types/react": "^16.9.19",
+    "app": "^0.1.0",
+    "game": "^1.0.3",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "react-scripts": "^3.3.1"
+    "react-scripts": "^3.3.1",
+    "start": "^5.1.0"
   },
   "scripts": {
     "serve": "npx run-p \"serve:*\"",
