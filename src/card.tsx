@@ -1,5 +1,5 @@
 import React from 'react';
-import './style/card.css';
+import './style/card.scss';
 import { Type, TypeList } from './type';
 
 export interface CardInstance {
@@ -34,33 +34,39 @@ interface CardProps {
 export default class Card extends React.Component<CardProps, {} > {
 
 	render() {
-		// add is-not-ally class after ':' if needed
 		const { instance, ally, onClick, } = this.props
-		const isClickedClass = instance.isClicked ? "is-clicked" : "is-not-clicked"
-		const allyClass = ally ? "is-ally" : "is-enemy" 
-		const color = instance.card.type.color
-		const border = ally ? "5px solid " + color : "4px solid grey"
+		const type = instance.card.type.name
+		const ccc = "card-component"
+		const allyClass = ally ? `${ccc}--is-ally` : `${ccc}--is-enemy`
+		const isClickedClass = instance.isClicked ? `${ccc}--is-clicked` : ""
+		const isClickableClass = !!onClick && !instance.isClicked ? `${ccc}--is-clickable` : ""
+		const hasPowerClass = !!instance.card.power ? `${ccc}__power--has` : ""
 
 		return(
-			<div className={`card ${allyClass} ${isClickedClass}`} style={{border: border}} onClick={onClick}> 
+			<div className={`${ccc} ${ccc}--type-${type} ${allyClass} ${isClickedClass} ${isClickableClass}`} onClick={onClick}>
 			{
 				ally &&
 				<>
-					<div className="cardcost">
-						{instance.card.cost}
-					</div>
-					<div className="cardname">
-						{instance.card.name}
-					</div>
-					<div className="cardtext">
-						{instance.card.text}
-					</div>
-					<div className="cardpower-wrapper">
-					{ instance.card.power &&
-						<div className="cardpower">
+					<div className={`${ccc}__values`}>
+						<div className={`${ccc}__cost ${ccc}__cost--pre`}>
+							{instance.card.cost}
+						</div>
+						<div className={`${ccc}__power ${hasPowerClass}`}>
 							{instance.card.power}
 						</div>
-					}
+						<div className={`${ccc}__cost ${ccc}__cost--post`}>
+							{/* TODO: */}
+							{instance.card.cost}
+						</div>
+					</div>
+					<div className={`${ccc}__name`}>
+						{instance.card.name}
+					</div>
+					<div className={`${ccc}__image`}>
+
+					</div>
+					<div className={`${ccc}__text`}>
+						{instance.card.text}
 					</div>
 				</>
 			}
@@ -90,10 +96,10 @@ export interface ActionParameters {
 
 export const CardList: { [name:string] : CardData } = {
 	"Quick Attack": {
-		name: "Quick Attack", 
+		name: "Quick Attack",
 		cost: 1,
 		power: 30,
-		text: "Quickly strikes the enemy", 
+		text: "Quickly strikes the enemy",
 		type: TypeList["NEUTRAL"],
 		action: [{
 			effect: "DAMAGE",
@@ -103,7 +109,7 @@ export const CardList: { [name:string] : CardData } = {
 		}]
 	},
 	"Water Gun": {
-		name: "Water Gun", 
+		name: "Water Gun",
 		cost: 2,
 		power: 50,
 		text: "Soaks the enemy in water",

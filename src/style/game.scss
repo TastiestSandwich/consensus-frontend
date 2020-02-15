@@ -1,0 +1,36 @@
+@import 'generic';
+
+.game-component{
+  flex:1;
+  position: relative;
+  display:flex;
+  font-family: $baseFont;
+  font-size: $baseFontSize;
+  &__board{
+    flex:1;
+    position:relative;
+    display: flex;
+    width:100%;
+    height:100%;
+  }
+  &__field{
+    flex:1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &__phases{
+    /*
+    position:absolute;
+    right:0;
+    top:0;
+    bottom:0;
+    */
+    flex:0 200px;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  &__hand{
+  }
+}
