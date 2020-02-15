@@ -27,6 +27,11 @@ export class Hand extends React.Component<HandProps> {
 		const cardArray = Object.values(instances);
 		// add is-not-ally class after ':' if needed
 		const allyClass = ally ? "is-ally" : "is-enemy"
+		const onClick = ally ?
+						this.handleClick ?
+							this.handleClick
+							: (a) => {return undefined}
+						: (a) => {return undefined}
 		return (
 			<div className={`hand-component hand-component--${allyClass} ${className}`} >
 				{ cardArray.map((instance) => (
@@ -34,7 +39,7 @@ export class Hand extends React.Component<HandProps> {
 						key={instance.id}
 						instance={instance}
 						ally={this.props.ally}
-						onClick={this.handleClick(instance)}
+						onClick={onClick(instance)}
 					 />
 					))}
 			</div>
