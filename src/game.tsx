@@ -1,5 +1,4 @@
 import React from 'react';
-import { render } from 'react-dom';
 import './style/game.css';
 import { CardData, CardInstance, CardAction } from './card';
 import { Hand, getStartingHand, SelectedCard } from './hand';
@@ -10,6 +9,10 @@ import { Engine, calcDamage, calcAbsorb, calcHeal } from './engine';
 const enum GameStage {
   PLAY,
   RESOLUTION
+}
+
+interface GameProps {
+  team?: {[id: number] : ChinpokoData}
 }
 
 export interface GameState {
@@ -27,13 +30,15 @@ export interface GameState {
   currentPhase: CurrentPhase | null
 }
 
-class Game extends React.Component<{}, GameState> {
+export class Game extends React.Component<GameProps, GameState> {
   constructor(props) {
     super(props);
+    
+    const allyChinpoko: ChinpokoData = this.props.team ? this.props.team[0] : getRandomChinpoko();
     this.state = {
       allyHand: getStartingHand(5),
       enemyHand: getStartingHand(5),
-      allyChinpoko: getRandomChinpoko(),
+      allyChinpoko: allyChinpoko,
       enemyChinpoko: getRandomChinpoko(),
       selectedCard: null,
       enemySelectedCard: null,
@@ -347,8 +352,3 @@ class ChangeTeam extends React.Component<ChangeTeamProps> {
     )
   }
 }
-
-render(
-  <Game />,
-  document.getElementById('root')
-);
