@@ -16,13 +16,18 @@ function getRandomCard() {
 
 export function getRandomCardInstance(id: number) {
 	const card = getRandomCard();
+	const instance = getCardInstance(id, card, true);
+	return instance
+}
+
+export function getCardInstance(id: number, card: CardData, isRemovable: boolean) {
 	const instance: CardInstance = {
 		card: card,
 		id: id,
 		isClicked: false,
-		isRemovable: true
-	}
-	return instance
+		isRemovable: isRemovable
+	};
+	return instance;
 }
 
 interface CardProps {

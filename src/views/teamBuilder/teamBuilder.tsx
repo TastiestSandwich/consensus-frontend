@@ -57,15 +57,15 @@ function transformDataToInput(data: ChinpokoData): ChinpokoInputData {
 interface TeamBuilderProps {
   changeView: (view: AppView) => void
   setTeam: (team: {[id: number] : ChinpokoData}, ally: boolean) => void
-  swapTeams: () => void
+  swapPlayers: () => void
   allyTeam: {[id: number] : ChinpokoData}
   enemyTeam: {[id: number] : ChinpokoData}
+  ally: boolean
 }
 
 interface TeamBuilderState {
   message: string
   input: string
-  ally: boolean
 }
 
 export class TeamBuilder extends React.Component<TeamBuilderProps, TeamBuilderState> {
@@ -74,17 +74,15 @@ export class TeamBuilder extends React.Component<TeamBuilderProps, TeamBuilderSt
     this.state = {
       message: "",
       input: JSON.stringify( transformTeamToInput(this.props.allyTeam) ),
-      ally: true
     }
   }
 
   handleChangePlayer = () => {
     const team = this.props.enemyTeam;
     this.setState(prevState => ({
-      ally: !prevState.ally,
       input: JSON.stringify( transformTeamToInput(team) )
     }));
-    this.props.swapTeams();  
+    this.props.swapPlayers();  
   }
 
   handleInput = (event) => {
@@ -107,7 +105,7 @@ export class TeamBuilder extends React.Component<TeamBuilderProps, TeamBuilderSt
   }
 
   render(){
-    const player = this.state.ally ? "PLAYER 1" : "PLAYER 2";
+    const player = this.props.ally ? "PLAYER 1" : "PLAYER 2";
     const team = this.props.allyTeam;
     const chinpokoKeys = Object.keys(team);
 

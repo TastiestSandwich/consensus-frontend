@@ -17,7 +17,7 @@ interface GameProps {
   allyTeam: {[id: number] : ChinpokoData}
   enemyTeam: {[id: number] : ChinpokoData}
   setTeam: (team: {[id: number] : ChinpokoData}, ally: boolean) => void
-  swapTeams: () => void
+  swapPlayers: () => void
 }
 
 export interface GameState {
@@ -52,10 +52,6 @@ export class Game extends React.Component<GameProps, GameState> {
       phaseLimit: 0,
       currentPhase: null
     };
-  }
-
-  swapTeams = () => {
-    this.props.swapTeams();
   }
 
   handleCardClick = (selectedCard: CardInstance) => {
@@ -117,7 +113,7 @@ export class Game extends React.Component<GameProps, GameState> {
     if (this.state.stage != GameStage.PLAY) {
       return;
     }
-    this.swapTeams();
+    this.props.swapPlayers();
     this.setState((state) => ({
       allyHand: state.enemyHand,
       enemyHand: state.allyHand,

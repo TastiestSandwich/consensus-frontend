@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { Game } from './views/game/game';
 import { Start } from './views/start/start';
 import { TeamBuilder, getRandomTeam } from './views/teamBuilder/teamBuilder';
-import { DeckBuilder } from './views/deckBuilder/deckBuilder';
+import { DeckBuilder, getRandomDeck } from './views/deckBuilder/deckBuilder';
 import { CardInstance } from './components/card/card';
 import { ChinpokoData } from './components/chinpoko/chinpoko';
 
@@ -17,9 +17,10 @@ export const enum AppView {
 interface AppState {
   allyTeam: {[id: number] : ChinpokoData}
   enemyTeam: {[id: number] : ChinpokoData}
-  allyDeck?: {[id: number] : CardInstance}
-  enemyDeck?: {[id: number] : CardInstance}
+  allyDeck: {[id: number] : CardInstance}
+  enemyDeck: {[id: number] : CardInstance}
   view: AppView
+  ally: boolean
 }
 
 class App extends React.Component<{}, AppState> {
@@ -28,7 +29,10 @@ class App extends React.Component<{}, AppState> {
     this.state = {
       view: AppView.START,
       allyTeam: getRandomTeam(4),
-      enemyTeam: getRandomTeam(4)
+      enemyTeam: getRandomTeam(4),
+      allyDeck: getRandomDeck(30),
+      enemyDeck: getRandomDeck(30),
+      ally: true
     };
   }
 
@@ -44,10 +48,25 @@ class App extends React.Component<{}, AppState> {
     }
   }
 
-  swapTeams = () => {
+  setDeck = (deck: {[id: number] : CardInstance}, ally: boolean) => {
+    if(ally) {
+      this.setState({
+        allyDeck: deck
+      });
+    } else {
+      this.setState({
+        enemyDeck: deck
+      })
+    }
+  }
+
+  swapPlayers = () => {
     this.setState((state) => ({
       allyTeam: state.enemyTeam,
-      enemyTeam: state.allyTeam
+      enemyTeam: state.allyTeam,
+      allyDeck: state.enemyDeck,
+      enemyDeck: state.allyDeck,
+      ally: !state.ally
     }));
   }
 
@@ -68,7 +87,13 @@ class App extends React.Component<{}, AppState> {
 
       case AppView.DECK:
         return (
-          <DeckBuilder changeView={this.changeView}/>
+          <DeckBuilder 
+          changeView={this.changeView}
+          swapPlayers={this.swapPlayers}
+          setDeck={this.setDeck}
+          allyDeck={this.state.allyDeck}
+          enemyDeck={this.state.enemyDeck}
+          ally={this.state.ally}/>
         );
 
       case AppView.TEAM:
@@ -76,9 +101,10 @@ class App extends React.Component<{}, AppState> {
           <TeamBuilder 
           changeView={this.changeView} 
           setTeam={this.setTeam} 
-          swapTeams={this.swapTeams}
+          swapPlayers={this.swapPlayers}
           allyTeam={this.state.allyTeam} 
-          enemyTeam={this.state.enemyTeam}/>
+          enemyTeam={this.state.enemyTeam}
+          ally={this.state.ally}/>
         );
 
       case AppView.GAME:
@@ -87,7 +113,7 @@ class App extends React.Component<{}, AppState> {
           allyTeam={this.state.allyTeam} 
           enemyTeam={this.state.enemyTeam} 
           setTeam={this.setTeam}
-          swapTeams={this.swapTeams}/>
+          swapPlayers={this.swapPlayers}/>
         );
     }
 	}
