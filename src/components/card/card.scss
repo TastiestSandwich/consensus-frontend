@@ -1,0 +1,139 @@
+$cardFontSize: 14px;
+$cardWidth: 150px;
+$ratio:1.4;
+$cardBorderSize: 3px;
+
+
+.card-component{
+	position:relative;
+	display:flex;
+	flex-direction: column;
+	width: $cardWidth;
+	height: $cardWidth*$ratio;
+	padding:1em;
+	font-size: $cardFontSize;
+	font-weight: bold;
+	border-width: $cardBorderSize;
+	border-style: solid;
+	box-shadow: 0 0 0 0 #CCCCFF;
+	&--is-ally{  }
+
+	&--is-clickable{
+		cursor: pointer;
+		transition: transform 300ms, filter 300ms, box-shadow 300ms;
+		&:hover{
+			box-shadow: 0 0 10px 5px #AAAAFF;
+			transform: scale(1.5) translateY(-30%);
+			z-index:2;
+		}
+	}
+	&--is-clicked{
+		cursor: not-allowed;
+		filter: brightness(70%);
+	}
+	&--is-enemy{
+		filter: brightness(90%);
+		border-color:darkgrey !important;
+		background-color: gray !important;
+	}
+
+	&--type{
+		&-FIRE{
+			border-color: red;
+			background-color:#533;
+		}
+		&-WATER{
+			border-color: dodgerblue;
+			background-color:#335;
+		}
+		&-GRASS{
+			border-color: chartreuse;
+			background-color:#353;
+		}
+		&-NEUTRAL{
+			border-color: lightgrey;
+			background-color:#555;
+		}
+		&-MISTERY{
+			border-color: darkmagenta;
+			background-color:#535;
+		}
+		&-ELECTRIC{
+			border-color: gold;
+			background-color:#355;
+		}
+		&-EARTH{
+			border-color: saddlebrown;
+			background-color:#333;
+		}
+		&-AIR{
+			border-color: skyblue;
+			background-color:#333;
+		}
+		&-ICE{
+			border-color: cornflowerblue;
+			background-color:#333;
+		}
+	}
+
+	&__image{
+		height:80px;
+		background:radial-gradient(#ccc, #222);
+		border:thin solid white;
+	}
+
+	&__values{
+		position:absolute;
+		top:1.4em;
+		left: -0.6em;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	&__cost{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		width:2em;
+		height:2em;
+		border-radius: 100%;
+		font-weight: bold;
+		color:white;
+		&--pre{
+			background-color: #2222CC;
+		}
+		&--post{;
+			background-color: #CC2222;
+		}
+	}
+	&__power{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		width:3em;
+		height:3em;
+		border-radius: 100%;
+		font-weight: bold;
+		margin:0.2em;
+		//---TODO: change depending on power type
+		color:white;
+		&--has{
+			background-color: #CC2222;
+		}
+		//---/TODO: change depending on power type
+	}
+	&__name{
+		text-align:center;
+		color:white;
+	}
+	&__text{
+		flex:1;
+		padding:1em;
+		background-color:#FFFD;
+		font-size:0.9em;
+		font-weight: normal;
+	}
+}

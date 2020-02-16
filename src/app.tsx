@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Game } from './game';
-import { Start } from './start';
-import { TeamBuilder } from './teamBuilder';
-import { DeckBuilder } from './deckBuilder';
-import { CardInstance } from './card';
-import { ChinpokoData } from './chinpoko'
+import { Game } from './views/game/game';
+import { Start } from './views/start/start';
+import { TeamBuilder, getRandomTeam } from './views/teamBuilder/teamBuilder';
+import { DeckBuilder } from './views/deckBuilder/deckBuilder';
+import { CardInstance } from './components/card/card';
+import { ChinpokoData } from './components/chinpoko/chinpoko';
 
 export const enum AppView {
   START,
@@ -15,8 +15,10 @@ export const enum AppView {
 }
 
 interface AppState {
-  team?: {[id: number] : ChinpokoData}
-  deck?: {[id: number] : CardInstance}
+  allyTeam: {[id: number] : ChinpokoData}
+  enemyTeam: {[id: number] : ChinpokoData}
+  allyDeck?: {[id: number] : CardInstance}
+  enemyDeck?: {[id: number] : CardInstance}
   view: AppView
 }
 
@@ -25,14 +27,28 @@ class App extends React.Component<{}, AppState> {
     super(props);
     this.state = {
       view: AppView.START,
+      allyTeam: getRandomTeam(4),
+      enemyTeam: getRandomTeam(4)
     };
   }
 
-  setTeam = (team: {[id: number] : ChinpokoData}) => {
-    this.setState({
-      team: team
-    });
-    console.log(team);
+  setTeam = (team: {[id: number] : ChinpokoData}, ally: boolean) => {
+    if(ally) {
+      this.setState({
+        allyTeam: team
+      });
+    } else {
+      this.setState({
+        enemyTeam: team
+      })
+    }
+  }
+
+  swapTeams = () => {
+    this.setState((state) => ({
+      allyTeam: state.enemyTeam,
+      enemyTeam: state.allyTeam
+    }));
   }
 
   changeView = (view: AppView) => {
@@ -57,12 +73,21 @@ class App extends React.Component<{}, AppState> {
 
       case AppView.TEAM:
         return (
-          <TeamBuilder changeView={this.changeView} setTeam={this.setTeam}/>
+          <TeamBuilder 
+          changeView={this.changeView} 
+          setTeam={this.setTeam} 
+          swapTeams={this.swapTeams}
+          allyTeam={this.state.allyTeam} 
+          enemyTeam={this.state.enemyTeam}/>
         );
 
       case AppView.GAME:
         return (
-          <Game team={this.state.team}/>
+          <Game 
+          allyTeam={this.state.allyTeam} 
+          enemyTeam={this.state.enemyTeam} 
+          setTeam={this.setTeam}
+          swapTeams={this.swapTeams}/>
         );
     }
 	}
