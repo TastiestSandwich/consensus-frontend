@@ -4,26 +4,26 @@ import { AppView } from '../../app';
 import { CardInstance, CardList, getRandomCardInstance, getCardInstance, CardData } from '../../components/card/card';
 import { DeckCard } from './deckCard';
 
-export function getRandomDeck(size: number) {
-  let deck: {[id: number] : CardInstance} = {};
+export function getRandomDeckList(size: number) {
+  let deckList: {[id: number] : CardInstance} = {};
   for(let i=0; i < size; i++) {
-    deck[i] = getRandomCardInstance(i);
+    deckList[i] = getRandomCardInstance(i);
   }
-  return deck;
+  return deckList;
 }
 
 function transformInputToDeckList(inputArray: Array<string>): {[id: number] : CardInstance} {
-  const deck: {[id: number] : CardInstance} = {};
+  const deckList: {[id: number] : CardInstance} = {};
   for(let i=0; i < inputArray.length; i++) {
     const card: CardData = CardList[inputArray[i]];
-    deck[i] = getCardInstance(i, card, true);
+    deckList[i] = getCardInstance(i, card, true);
   }
-  return deck;
+  return deckList;
 }
 
-function transformDeckListToInput(deck: {[id: number] : CardInstance}) {
+function transformDeckListToInput(deckList: {[id: number] : CardInstance}) {
   const input: Array<String> = [];
-  for(let instance of Object.values(deck)) {
+  for(let instance of Object.values(deckList)) {
     input.push( instance.card.name );
   }
   return input;
@@ -31,10 +31,10 @@ function transformDeckListToInput(deck: {[id: number] : CardInstance}) {
 
 interface DeckBuilderProps {
   changeView: (view: AppView) => void
-  setDeck: (deck: {[id: number] : CardInstance}, ally: boolean) => void
+  setDeckList: (deckList: {[id: number] : CardInstance}, ally: boolean) => void
   swapPlayers: () => void
-  allyDeck: {[id: number] : CardInstance}
-  enemyDeck: {[id: number] : CardInstance}
+  allyDeckList: {[id: number] : CardInstance}
+  enemyDeckList: {[id: number] : CardInstance}
   ally: boolean
 }
 
@@ -48,14 +48,14 @@ export class DeckBuilder extends React.Component<DeckBuilderProps, DeckBuilderSt
     super(props);
     this.state = {
       message: "",
-      input: JSON.stringify( transformDeckListToInput(this.props.allyDeck) ),
+      input: JSON.stringify( transformDeckListToInput(this.props.allyDeckList) ),
     }
   }
 
   handleChangePlayer = () => {
-    const deck = this.props.enemyDeck;
+    const deckList = this.props.enemyDeckList;
     this.setState(prevState => ({
-      input: JSON.stringify( transformDeckListToInput(deck) )
+      input: JSON.stringify( transformDeckListToInput(deckList) )
     }));
     this.props.swapPlayers();
   }
@@ -69,7 +69,7 @@ export class DeckBuilder extends React.Component<DeckBuilderProps, DeckBuilderSt
 
   handleSubmit = () => {
     const input = JSON.parse(this.state.input);
-    this.props.setDeck( transformInputToDeckList(input), true );
+    this.props.setDeckList( transformInputToDeckList(input), true );
     this.setState({
       message: "Deck submitted successfully!"
     })
@@ -81,8 +81,8 @@ export class DeckBuilder extends React.Component<DeckBuilderProps, DeckBuilderSt
 
   render(){
     const player = this.props.ally ? "PLAYER 1" : "PLAYER 2";
-    const deck = this.props.allyDeck;
-    const cardKeys = Object.keys(deck);
+    const deckList = this.props.allyDeckList;
+    const cardKeys = Object.keys(deckList);
 
   	return (
   		<div className="deck-builder-component">
@@ -104,7 +104,7 @@ export class DeckBuilder extends React.Component<DeckBuilderProps, DeckBuilderSt
           { cardKeys.map((key) => (
           <DeckCard
             key={key}
-            instance={deck[key]}
+            instance={deckList[key]}
            />
           ))}
         </div>

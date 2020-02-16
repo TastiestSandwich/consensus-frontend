@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { Game } from './views/game/game';
 import { Start } from './views/start/start';
 import { TeamBuilder, getRandomTeam } from './views/teamBuilder/teamBuilder';
-import { DeckBuilder, getRandomDeck } from './views/deckBuilder/deckBuilder';
+import { DeckBuilder, getRandomDeckList } from './views/deckBuilder/deckBuilder';
 import { CardInstance } from './components/card/card';
 import { ChinpokoData } from './components/chinpoko/chinpoko';
 
@@ -17,8 +17,8 @@ export const enum AppView {
 interface AppState {
   allyTeam: {[id: number] : ChinpokoData}
   enemyTeam: {[id: number] : ChinpokoData}
-  allyDeck: {[id: number] : CardInstance}
-  enemyDeck: {[id: number] : CardInstance}
+  allyDeckList: {[id: number] : CardInstance}
+  enemyDeckList: {[id: number] : CardInstance}
   view: AppView
   ally: boolean
 }
@@ -30,8 +30,8 @@ class App extends React.Component<{}, AppState> {
       view: AppView.START,
       allyTeam: getRandomTeam(4),
       enemyTeam: getRandomTeam(4),
-      allyDeck: getRandomDeck(30),
-      enemyDeck: getRandomDeck(30),
+      allyDeckList: getRandomDeckList(30),
+      enemyDeckList: getRandomDeckList(30),
       ally: true
     };
   }
@@ -48,14 +48,14 @@ class App extends React.Component<{}, AppState> {
     }
   }
 
-  setDeck = (deck: {[id: number] : CardInstance}, ally: boolean) => {
+  setDeckList = (deckList: {[id: number] : CardInstance}, ally: boolean) => {
     if(ally) {
       this.setState({
-        allyDeck: deck
+        allyDeckList: deckList
       });
     } else {
       this.setState({
-        enemyDeck: deck
+        enemyDeckList: deckList
       })
     }
   }
@@ -64,8 +64,8 @@ class App extends React.Component<{}, AppState> {
     this.setState((state) => ({
       allyTeam: state.enemyTeam,
       enemyTeam: state.allyTeam,
-      allyDeck: state.enemyDeck,
-      enemyDeck: state.allyDeck,
+      allyDeckList: state.enemyDeckList,
+      enemyDeckList: state.allyDeckList,
       ally: !state.ally
     }));
   }
@@ -90,9 +90,9 @@ class App extends React.Component<{}, AppState> {
           <DeckBuilder 
           changeView={this.changeView}
           swapPlayers={this.swapPlayers}
-          setDeck={this.setDeck}
-          allyDeck={this.state.allyDeck}
-          enemyDeck={this.state.enemyDeck}
+          setDeckList={this.setDeckList}
+          allyDeckList={this.state.allyDeckList}
+          enemyDeckList={this.state.enemyDeckList}
           ally={this.state.ally}/>
         );
 
@@ -111,8 +111,11 @@ class App extends React.Component<{}, AppState> {
         return (
           <Game 
           allyTeam={this.state.allyTeam} 
-          enemyTeam={this.state.enemyTeam} 
+          enemyTeam={this.state.enemyTeam}
+          allyDeckList={this.state.allyDeckList}
+          enemyDeckList={this.state.enemyDeckList}
           setTeam={this.setTeam}
+          setDeckList={this.setDeckList}
           swapPlayers={this.swapPlayers}/>
         );
     }

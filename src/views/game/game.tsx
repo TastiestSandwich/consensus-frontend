@@ -1,13 +1,13 @@
 import React from 'react';
 import '../../root.scss';
 import './game.scss';
-import { CardData, CardInstance, CardAction } from '../../components/card/card';
-import { Hand, getStartingHand, SelectedCard } from '../../components/hand/hand';
+import { CardData, CardInstance, CardAction, shuffle } from '../../components/card/card';
+import { Hand, SelectedCard } from '../../components/hand/hand';
 import { Chinpoko, ChinpokoData } from '../../components/chinpoko/chinpoko';
 import { PhaseCounter, PhaseGroup, PhaseData, CurrentPhase, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from '../../components/phase/phase';
 import { Engine, calcDamage, calcAbsorb, calcHeal } from '../../components/engine/engine';
 
-const enum GameStage {
+export const enum GameStage {
   PLAY,
   RESOLUTION,
   GAMEOVER
@@ -16,13 +16,20 @@ const enum GameStage {
 interface GameProps {
   allyTeam: {[id: number] : ChinpokoData}
   enemyTeam: {[id: number] : ChinpokoData}
+  allyDeckList: {[id: number] : CardInstance}
+  enemyDeckList: {[id: number] : CardInstance}
   setTeam: (team: {[id: number] : ChinpokoData}, ally: boolean) => void
+  setDeckList: (deckList: {[id: number] : CardInstance}, ally: boolean) => void
   swapPlayers: () => void
 }
 
 export interface GameState {
-  allyHand: {[id: number] : CardInstance}
-  enemyHand: {[id: number] : CardInstance}
+  allyDeck: Array<number>
+  enemyDeck: Array<number>
+  allyHand: Array<number>
+  enemyHand: Array<number>
+  allyDiscard: Array<number>
+  enemyDiscard: Array<number>
   allyChinpoko: number
   enemyChinpoko: number
   selectedCard: CardInstance | null
@@ -39,8 +46,12 @@ export class Game extends React.Component<GameProps, GameState> {
   constructor(props) {
     super(props);
     this.state = {
-      allyHand: getStartingHand(5),
-      enemyHand: getStartingHand(5),
+      allyHand: [],
+      enemyHand: [],
+      allyDeck: shuffle(Object.keys(this.props.allyDeckList).map(i => Number(i))),
+      enemyDeck: shuffle(Object.keys(this.props.enemyDeckList).map(i => Number(i))),
+      allyDiscard: [],
+      enemyDiscard: [],
       allyChinpoko: 0,
       enemyChinpoko: 0,
       selectedCard: null,
@@ -54,34 +65,71 @@ export class Game extends React.Component<GameProps, GameState> {
     };
   }
 
-  handleCardClick = (selectedCard: CardInstance) => {
-    if (selectedCard.isClicked || this.state.stage != GameStage.PLAY) {
+  componentDidMount() {
+    this.drawCards(true, 5);
+    this.drawCards(false, 5);
+  }
+
+  drawCards = (ally: boolean, times: number) => {
+    let deck = ally ? this.state.allyDeck : this.state.enemyDeck;
+    let hand = ally ? this.state.allyHand : this.state.enemyHand;
+    let discard = ally ? this.state.allyDiscard : this.state.enemyDiscard;
+    for(let i = 0; i < times; i++) {
+      let id = deck.shift();
+      // if no more cards in deck, shuffle discard
+      if(id == undefined) {
+        deck = shuffle([...discard]);
+        discard = []
+        id = deck.shift();
+      }
+      if(id != undefined) {
+        hand.push(id);
+      }
+    }
+    if(ally) {
+      this.setState({
+        allyDeck: deck,
+        allyHand: hand,
+        allyDiscard: discard
+      })
+    } else {
+      this.setState({
+        enemyDeck: deck,
+        enemyHand: hand,
+        enemyDiscard: discard
+      })
+    }
+  }
+
+  handleCardClick = (id: number) => {
+    const deckList = {...this.props.allyDeckList};
+    const clickedCard: CardInstance = deckList[id];
+    if (clickedCard.isClicked || this.state.stage != GameStage.PLAY) {
       return;
     }
-    const newHand = {...this.state.allyHand};
-    const newCard = {...selectedCard};
-    newHand[selectedCard.id].isClicked = true;
-    if (this.state.selectedCard != null) {
-      newHand[this.state.selectedCard.id].isClicked = false;
-    }
     this.setState({
-      selectedCard: newCard,
-      allyHand: newHand
+      selectedCard: {...clickedCard}
     })
+    clickedCard.isClicked = true;
+    if (this.state.selectedCard != null) {
+      const selectedCard = deckList[this.state.selectedCard.id];
+      selectedCard.isClicked = false;
+    }
+    this.props.setDeckList(deckList, true);
   }
 
   deleteCardClick = () => {
     if (this.state.stage != GameStage.PLAY) {
       return;
     }
-    const newHand = {...this.state.allyHand};
+    const deckList = {...this.props.allyDeckList};
     if(this.state.selectedCard != null) {
-        newHand[this.state.selectedCard.id].isClicked = false;
+        deckList[this.state.selectedCard.id].isClicked = false;
     }
     this.setState({
       selectedCard: null,
-      allyHand: newHand
     })
+    this.props.setDeckList(deckList, true);
   }
 
   handlePhaseClick = (phaseNumber: number) => {
@@ -101,12 +149,12 @@ export class Game extends React.Component<GameProps, GameState> {
     if (instance === null) {
       return;
     }
-    const newHand = {...this.state.allyHand};
-    newHand[instance.id].isClicked = false;
+    const deckList = {...this.props.allyDeckList};
+    deckList[instance.id].isClicked = false;
     this.setState({
       allyPhases: deleteFromPhaseGroupData(phaseNumber, instance.card.cost, this.state.allyPhases),
-      allyHand: newHand
     })
+    this.props.setDeckList(deckList, true);
   }
 
   handleChangeTeamClick = () => {
@@ -117,6 +165,10 @@ export class Game extends React.Component<GameProps, GameState> {
     this.setState((state) => ({
       allyHand: state.enemyHand,
       enemyHand: state.allyHand,
+      allyDeck: state.enemyDeck,
+      enemyDeck: state.allyDeck,
+      allyDiscard: state.enemyDiscard,
+      enemyDiscard: state.allyDiscard,
       allyChinpoko: state.enemyChinpoko,
       enemyChinpoko: state.allyChinpoko,
       selectedCard: state.enemySelectedCard,
@@ -126,28 +178,37 @@ export class Game extends React.Component<GameProps, GameState> {
     }))
   }
 
+  discardCardIfNeeded(id: number, ally: boolean) {
+    const myHand: Array<number> = ally? [...this.state.allyHand] : [...this.state.enemyHand];
+    const myDiscard: Array<number> = ally? [...this.state.allyDiscard] : [...this.state.enemyDiscard];
+    const myDeck = ally ? {...this.props.allyDeckList} : {...this.props.enemyDeckList};
+    const instance = myDeck[id];
+    instance.isClicked = false;
+    if(instance.isRemovable) {
+      myHand.splice( myHand.indexOf(id), 1 );
+      myDiscard.push(id);
+    }
+    if(ally) {
+      this.setState({
+        allyHand: myHand,
+        allyDiscard: myDiscard,
+      })
+    } else {
+      this.setState({
+        enemyHand: myHand,
+        enemyDiscard: myDiscard,
+      })
+    }
+    this.props.setDeckList(myDeck, ally);
+   }
+
   handleCardActions(instance: CardInstance, isAlly: boolean, ally: ChinpokoData, enemy: ChinpokoData) {
     for(const action of instance.card.action) {
       if(action.effect === "DAMAGE") { this.effectDamage(instance.card, action, ally, enemy); }
       else if(action.effect === "ABSORB") { this.effectAbsorb(instance.card, action, ally, enemy); }
       else if(action.effect === "HEAL") { this.effectHeal(instance.card, action, ally); }
     }
-    const myHand: {[id: number] : CardInstance} = isAlly? {...this.state.allyHand} : {...this.state.enemyHand};
-    if (instance.isRemovable) {
-      delete myHand[instance.id];
-    } else {
-      myHand[instance.id].isClicked = false;
-    }
-
-    if (isAlly) {
-      this.setState({
-        allyHand: myHand
-      });
-    } else {
-      this.setState({
-        enemyHand: myHand
-      });
-    }
+    this.discardCardIfNeeded(instance.id, isAlly);
   }
 
   effectDamage(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
@@ -216,6 +277,8 @@ export class Game extends React.Component<GameProps, GameState> {
           phaseCounters: phaseCounters,
         });
       } else {
+        this.drawCards(true, 1);
+        this.drawCards(false, 1);
         this.setState({
           stage: GameStage.PLAY,
           allyPhases: initPhaseGroupData(5),
@@ -245,6 +308,7 @@ export class Game extends React.Component<GameProps, GameState> {
   }
 
   handleChinpokoDeath(chinpoko: ChinpokoData, ally: boolean) {
+    console.log("RIP " + chinpoko.storedData.name);
     let team = ally ? this.props.allyTeam : this.props.enemyTeam;
     let chinpokoIndex = ally ? this.state.allyChinpoko : this.state.enemyChinpoko;
     let aliveChinpokos: Array<number> = [];
@@ -254,9 +318,10 @@ export class Game extends React.Component<GameProps, GameState> {
         aliveChinpokos.push(Number(index));
       }
     }
-    console.log(aliveChinpokos);
     if(aliveChinpokos.length) {
       let random = Math.floor(Math.random() * aliveChinpokos.length);
+      let newChinpoko: ChinpokoData = team[aliveChinpokos[random]];
+      console.log("GO " + newChinpoko.storedData.name + "!");
       if (ally) {
         this.setState({
           allyChinpoko: aliveChinpokos[random]
@@ -268,6 +333,7 @@ export class Game extends React.Component<GameProps, GameState> {
       }
 
     } else {
+      console.log("GAME OVER");
       this.setState({
         stage: GameStage.GAMEOVER
       })
@@ -275,7 +341,6 @@ export class Game extends React.Component<GameProps, GameState> {
   }
 
   unfillPhase(isAlly: boolean, phase: PhaseData) {
-    // unfill phase
     if (isAlly) {
       const myPhases: Array<PhaseData> = [...this.state.allyPhases];
       myPhases[phase.index - 1].show = true;
@@ -343,22 +408,26 @@ export class Game extends React.Component<GameProps, GameState> {
   }
 
   render() {
+    const allyInstances: Array<CardInstance> = this.state.allyHand.map(a => this.props.allyDeckList[a]);
+    const enemyInstances: Array<CardInstance> = this.state.enemyHand.map(a => this.props.enemyDeckList[a]);
+    const stage: GameStage = this.state.stage;
+
     return (
       <div className="game-component">
         <div className="game-component__phases">
           { <ChangeTeam stage={this.state.stage} changeTeamClick={this.handleChangeTeamClick} /> }
           { <NextTurn stage={this.state.stage} nextTurnClick={this.handleNextTurnClick} /> }
-          { <PhaseGroup phases={this.state.enemyPhases} ally={false} currentPhase={this.state.currentPhase} /> }
-          { <PhaseGroup phases={this.state.allyPhases} ally={true} currentPhase={this.state.currentPhase}
+          { <PhaseGroup phases={this.state.enemyPhases} ally={false} stage={stage} currentPhase={this.state.currentPhase} /> }
+          { <PhaseGroup phases={this.state.allyPhases} ally={true} stage={stage} currentPhase={this.state.currentPhase}
             onPhaseClick={this.handlePhaseClick}
             onPhaseDelete={this.deletePhaseClick} /> }
           { this.state.selectedCard &&
-          <SelectedCard instance={this.state.selectedCard} deleteCardClick={this.deleteCardClick} /> }
+          <SelectedCard instance={this.state.selectedCard} deleteCardClick={this.deleteCardClick} stage={this.state.stage}/> }
         </div>
         <div className="game-component__board">
-          <Hand instances={this.state.enemyHand} ally={false} className="game-component__hand" />
+          <Hand instances={enemyInstances} ally={false} stage={stage} className="game-component__hand" />
           { this.renderField() }
-          <Hand instances={this.state.allyHand} ally={true} onCardClick={this.handleCardClick} className="game-component__hand"/>
+          <Hand instances={allyInstances} ally={true} stage={stage} onCardClick={this.handleCardClick} className="game-component__hand"/>
         </div>
       </div>
     );

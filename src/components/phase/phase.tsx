@@ -1,5 +1,6 @@
 import React from 'react';
 import '../../old_style/phase.css';
+import { GameStage } from '../../views/game/game';
 import { CardInstance } from '../card/card';
 
 export interface CurrentPhase {
@@ -126,6 +127,7 @@ export function deleteFromPhaseGroupData(phaseNumber: number, cost: number, phas
 interface PhaseGroupProps {
 	phases: Array<PhaseData>
 	ally: boolean
+	stage: GameStage
 	currentPhase: CurrentPhase | null
 	onPhaseClick?: (phaseNumber: number) => void
 	onPhaseDelete?: (phaseNumber: number, instance: CardInstance | null) => void
@@ -151,6 +153,7 @@ export class PhaseGroup extends React.Component<PhaseGroupProps, {}> {
 					key={index}
 					phase={phase}
 					ally={this.props.ally}
+					stage={this.props.stage}
 					currentPhase={this.props.currentPhase}
 					onPhaseClick={this.handleClick(index+1)}
 					onPhaseDelete={this.handleDelete(index+1, phase.instance)}
@@ -172,6 +175,7 @@ interface PhaseProps {
 	key: number
 	phase: PhaseData
 	ally: boolean
+	stage: GameStage
 	currentPhase: CurrentPhase | null
 	onPhaseClick?: () => void
 	onPhaseDelete?: () => void
@@ -180,7 +184,7 @@ interface PhaseProps {
 export class Phase extends React.Component<PhaseProps, {}> {
 
 	render() {
-		const { phase, ally, currentPhase, onPhaseClick, onPhaseDelete } = this.props;
+		const { phase, ally, stage, currentPhase, onPhaseClick, onPhaseDelete } = this.props;
 
 		let isCurrent = false;
 		if (currentPhase != null) {
@@ -190,8 +194,10 @@ export class Phase extends React.Component<PhaseProps, {}> {
 		// add is-not-ally class after ':' if needed
 		const allyClass = ally ? "is-ally" : ""
 		const filledClass = phase.filled ? "is-filled" : ""
+		const showCondition = phase.show || (ally && stage === GameStage.PLAY)
+		const showClass = phase.show ? "is-show" : ""
 
-		if(!ally && !phase.show) {
+		if(!showCondition) {
 			return (
 				<div className={`phase-container ${allyClass}`}>
 					<div className="phase">
@@ -202,7 +208,7 @@ export class Phase extends React.Component<PhaseProps, {}> {
 
 		} else {
 			return (
-				<div className={`phase-container ${allyClass} ${currentClass}`}>
+				<div className={`phase-container ${allyClass} ${currentClass} ${showClass}`}>
 					<div className={`phase ${filledClass}`} onClick={onPhaseClick}>
 						{phase.index}
 					</div>

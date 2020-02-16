@@ -9,6 +9,14 @@
 	display: flex;
 }
 
+.phase-container.is-show{
+	border: 2px solid blue;
+}
+
+.phase-container.is-current{
+	border: 5px solid red !important;
+}
+
 .phase {
 	background-color: lightgrey;
 	width: 50%;

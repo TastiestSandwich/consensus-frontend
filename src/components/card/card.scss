@@ -37,6 +37,12 @@ $cardBorderSize: 3px;
 		background-color: gray !important;
 	}
 
+	&--is-hide{
+		filter: brightness(90%);
+		border-color:darkgrey !important;
+		background-color: gray !important;
+	}
+
 	&--type{
 		&-FIRE{
 			border-color: red;

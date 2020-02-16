@@ -1,30 +1,23 @@
 import React from 'react';
 import './hand.scss';
-import Card, { CardInstance, getRandomCardInstance } from '../card/card';
-
-export function getStartingHand(size: number) {
-	let startingHand: {[id: number] : CardInstance} = {};
-	for (let i = 0; i < size; i++) {
-		startingHand[i] = getRandomCardInstance(i);
-	}
-	return startingHand;
-}
+import { GameStage } from '../../views/game/game';
+import Card, { CardInstance } from '../card/card';
 
 interface HandProps {
-	instances: {[id: number] : CardInstance}
+	instances: Array<CardInstance>
 	ally: boolean
-	onCardClick?: (instance: CardInstance) => void
+  stage: GameStage
+	onCardClick?: (id: number) => void
 	className?: string
 }
 
 export class Hand extends React.Component<HandProps> {
-	handleClick = (instance: CardInstance) => () => {
+	handleClick = (id: number) => () => {
 		if(this.props.onCardClick)
-			this.props.onCardClick(instance)
+			this.props.onCardClick(id)
 	}
 	render() {
 		const {instances, ally, className} = this.props
-		const cardArray = Object.values(instances);
 		// add is-not-ally class after ':' if needed
 		const allyClass = ally ? "is-ally" : "is-enemy"
 		const onClick = ally ?
@@ -34,12 +27,13 @@ export class Hand extends React.Component<HandProps> {
 						: (a) => {return undefined}
 		return (
 			<div className={`hand-component hand-component--${allyClass} ${className}`} >
-				{ cardArray.map((instance) => (
+				{ instances.map((instance) => (
 					<Card
 						key={instance.id}
 						instance={instance}
 						ally={this.props.ally}
-						onClick={onClick(instance)}
+            stage={this.props.stage}
+						onClick={onClick(instance.id)}
 					 />
 					))}
 			</div>
@@ -49,6 +43,7 @@ export class Hand extends React.Component<HandProps> {
 
 interface SelectedCardProps {
 	instance: CardInstance
+  stage: GameStage
 	deleteCardClick?: (id: number) => void
 }
 
@@ -64,7 +59,7 @@ export class SelectedCard extends React.Component<SelectedCardProps> {
 			<div className = "selected-card">
 				{
 					instance &&
-					<Card instance={instance} ally={true}/>
+					<Card instance={instance} ally={true} stage={this.props.stage}/>
 				}
 				{
 					instance &&

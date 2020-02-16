@@ -1,6 +1,15 @@
 import React from 'react';
 import './card.scss';
+import { GameStage } from '../../views/game/game';
 import { Type, TypeList } from '../type/type';
+
+export function shuffle(array: Array<number>) {
+	for (let i = array.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
 
 export interface CardInstance {
 	card: CardData
@@ -33,6 +42,7 @@ export function getCardInstance(id: number, card: CardData, isRemovable: boolean
 interface CardProps {
 	instance: CardInstance
 	ally: boolean
+  stage: GameStage
 	onClick?: () => void
 }
 
@@ -46,11 +56,13 @@ export default class Card extends React.Component<CardProps, {} > {
 		const isClickedClass = instance.isClicked ? `${ccc}--is-clicked` : ""
 		const isClickableClass = !!onClick && !instance.isClicked ? `${ccc}--is-clickable` : ""
 		const hasPowerClass = !!instance.card.power ? `${ccc}__power--has` : ""
+    const show = ally && this.props.stage === GameStage.PLAY
+    const hideClass = show ? "" : `${ccc}--is-hide` 
 
 		return(
-			<div className={`${ccc} ${ccc}--type-${type} ${allyClass} ${isClickedClass} ${isClickableClass}`} onClick={onClick}>
+			<div className={`${ccc} ${ccc}--type-${type} ${allyClass} ${isClickedClass} ${isClickableClass} ${hideClass}`} onClick={onClick}>
 			{
-				ally &&
+				show &&
 				<>
 					<div className={`${ccc}__values`}>
 						<div className={`${ccc}__cost ${ccc}__cost--pre`}>
