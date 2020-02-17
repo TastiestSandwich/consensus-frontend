@@ -1,7 +1,8 @@
 import React from 'react';
 import './deckBuilder.scss';
 import { AppView } from '../../app';
-import { CardInstance, CardList, getRandomCardInstance, getCardInstance, CardData } from '../../components/card/card';
+import { CardInstance, getRandomCardInstance, getCardInstance, CardData } from '../../components/card/card';
+import { CardList } from '../../data/cardList';
 import { DeckCard } from './deckCard';
 
 export function getRandomDeckList(size: number) {

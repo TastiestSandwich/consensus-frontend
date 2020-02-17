@@ -1,12 +1,7 @@
 import React from 'react';
 import './chinpoko.scss';
-import { Type, TypeList } from '../type/type';
-import bisonte from '../../images/bisonte.png'
-import lagarto from '../../images/lagarto.png'
-import nutria from '../../images/nutria.png'
-import gato from '../../images/gato.png'
-import ardilla from '../../images/ardilla.png'
-import morsa from '../../images/morsa.png'
+import { Type } from '../type/type';
+import { ChinpokoList } from '../../data/chinpokoList';
 
 export interface ChinpokoStoredData {
 	name: string
@@ -17,89 +12,6 @@ export interface ChinpokoStoredData {
 	evDEF: number
 	evSPE: number
 }
-
-export const BaseChinpokoList = {
-	"BISONTE": {
-		speciesName: "BISONTE",
-		sprite: bisonte,
-		baseHP: 100,
-		baseATK: 60,
-		baseDEF: 100,
-		baseSPE: 60,
-		type: TypeList["GRASS"]
-	},
-	"LAGARTO": {
-		speciesName: "LAGARTO",
-		sprite: lagarto,
-		baseHP: 70,
-		baseATK: 100,
-		baseDEF: 70,
-		baseSPE: 80,
-		type: TypeList["FIRE"]
-	},
-	"NUTRIA": {
-		speciesName: "NUTRIA",
-		sprite: nutria,
-		baseHP: 60,
-		baseATK: 100,
-		baseDEF: 60,
-		baseSPE: 100,
-		type: TypeList["WATER"]
-	},
-	"GATO": {
-		speciesName: "GATO",
-		sprite: gato,
-		baseHP: 50,
-		baseATK: 80,
-		baseDEF: 50,
-		baseSPE: 140,
-		type: TypeList["MISTERY"]
-	},
-  "ARDILLA": {
-    speciesName: "ARDILLA",
-    sprite: ardilla,
-    baseHP: 80,
-    baseATK: 60,
-    baseDEF: 60,
-    baseSPE: 120,
-    type: TypeList["ELECTRIC"]
-  },
-  "MORSA": {
-    speciesName: "MORSA",
-    sprite: morsa,
-    baseHP: 100,
-    baseATK: 100,
-    baseDEF: 70,
-    baseSPE: 50,
-    type: TypeList["ICE"]
-  }
-};
-
-export const ChinpokoList: Array<ChinpokoStoredData> = [{
-	name: "Imanol",
-	species: BaseChinpokoList["BISONTE"],
-	lvl: 10, evHP: 0, evATK: 0, evDEF: 0, evSPE: 0
-}, {
-	name: "Gerard",
-	species: BaseChinpokoList["LAGARTO"],
-	lvl: 10, evHP: 0, evATK: 0, evDEF: 0, evSPE: 0
-}, {
-	name: "Mojano",
-	species: BaseChinpokoList["NUTRIA"],
-	lvl: 10, evHP: 0, evATK: 0, evDEF: 0, evSPE: 0
-}, {
-	name: "Aida",
-	species: BaseChinpokoList["GATO"],
-	lvl:10, evHP: 0, evATK: 0, evDEF: 0, evSPE: 0
-}, {
-  name: "Erico",
-  species: BaseChinpokoList["ARDILLA"],
-  lvl:10, evHP: 0, evATK: 0, evDEF: 0, evSPE: 0
-}, {
-  name: "Alejandro",
-  species: BaseChinpokoList["MORSA"],
-  lvl:10, evHP: 0, evATK: 0, evDEF: 0, evSPE: 0
-}];
 
 export interface BaseChinpokoData {
 	speciesName: string

@@ -1,6 +1,7 @@
 import React from 'react';
 import { AppView } from '../../app';
-import { ChinpokoData, ChinpokoStoredData, getChinpokoData, BaseChinpokoList, getRandomChinpoko } from '../../components/chinpoko/chinpoko';
+import { ChinpokoData, ChinpokoStoredData, getChinpokoData, getRandomChinpoko } from '../../components/chinpoko/chinpoko';
+import { BaseChinpokoList } from '../../data/speciesList';
 import { TeamChinpoko } from './teamChinpoko';
 import './teamBuilder.scss';
 
