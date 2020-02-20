@@ -42,12 +42,12 @@ export const TypeList = {
 	},
 	"WATER": {
 		name: "WATER",
-		weakness: ["GRASS", "ELECTRIC", "ICE"],
+		weakness: ["GRASS", "ELECTRIC", "TOXIC"],
 		resistance: ["WATER", "FIRE"]
 	},
 	"GRASS": {
 		name: "GRASS",
-		weakness: ["FIRE", "AIR", "ICE"],
+		weakness: ["FIRE", "TOXIC", "ICE"],
 		resistance: ["GRASS", "WATER", "ELECTRIC"]
 	},
 	"NEUTRAL": {
@@ -62,22 +62,37 @@ export const TypeList = {
 	},
 	"ELECTRIC": {
 		name: "ELECTRIC",
-		weakness: ["EARTH"],
+		weakness: ["EARTH", "ARTIFICIAL"],
 		resistance: ["ELECTRIC", "AIR"]
 	},
 	"EARTH": {
 		name: "EARTH",
 		weakness: ["GRASS", "AIR"],
-		resistance: ["FIRE"]
+		resistance: ["EARTH", "FIRE", "TOXIC"]
 	},
 	"AIR": {
 		name: "AIR",
 		weakness: ["ELECTRIC", "ICE"],
-		resistance: ["EARTH", "GRASS"]
+		resistance: ["AIR","EARTH", "GRASS"]
 	},
 	"ICE": {
 		name: "ICE",
-		weakness: ["FIRE"],
+		weakness: ["FIRE", "METAL"],
 		resistance: ["ICE", "WATER"]
-	}
+	},
+	"TOXIC": {
+		name: "TOXIC",
+		weakness: ["AIR", "ARTIFICIAL"],
+		resistance: ["TOXIC", "MIND"]
+	},
+	"ARTIFICIAL": {
+		name: "ARTIFICIAL",
+		weakness: ["MIND", "GRASS"],
+		resistance: ["ARTIFICIAL", "MISTERY"]
+	},
+	"MIND": {
+		name: "MIND",
+		weakness: ["TOXIC", "MISTERY"],
+		resistance: ["MIND", "ARTIFICIAL"]
+	},
 };
