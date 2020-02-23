@@ -18,7 +18,8 @@
 		"allowSyntheticDefaultImports": true,
 		"experimentalDecorators": true,
 		"baseUrl": "./src/",
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"sourceMap": false
 	},
 	"include": [
 		"./src/**/*"

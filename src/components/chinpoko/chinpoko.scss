@@ -6,7 +6,7 @@ $spritePerspective: 0.3;
   position:absolute;
   display:flex;
     &--is-ally{
-      transform: translate(-$fieldXdistance, 40%);
+      transform: translate(-$fieldXdistance, 35%);
       .chinpoko-component__sprite{
         transform: scale(1+$spritePerspective);
       }
@@ -27,6 +27,7 @@ $spritePerspective: 0.3;
       width: 150px;
       text-align: center;
       margin: 20px;
+      z-index: -1;
       &:after{
         content: " ";
         width: 200px;
@@ -35,7 +36,7 @@ $spritePerspective: 0.3;
         border-radius: 100%;
         position: absolute;
         transform: translate(-86%, 150%) scale(1.5);
-        z-index: -1;
+        z-index: -2;
         background: radial-gradient(at center, #808080, #222);
       }
     }
@@ -46,7 +47,18 @@ $spritePerspective: 0.3;
       border: 3px solid #888;
       margin:0 2em;
     }
-    &__statbox{  }
+    &__statbox{
+      width: 130px;
+      background: #fff;
+      border: 3px solid #888;
+      margin:0 2em;
+    }
+    &__biomebox{
+      width: 130px;
+      background: #fff;
+      border: 3px solid #888;
+      margin:0 2em;
+    }
 
     .hpbox{
       &__title{
@@ -62,5 +74,25 @@ $spritePerspective: 0.3;
         height: 10px;
         background: #00ff00;
       }
+    }
+
+    .biomebox{
+      &__row{
+        height: 25px;
+        display: flex;
+        align-items: center;
+      }
+      &__row-symbol{
+        margin-right: 5px;
+      }
+      &__row-content{
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .type-symbol{
+      height: 25px;
+      width: 25px;
     }
 }

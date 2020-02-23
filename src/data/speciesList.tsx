@@ -1,4 +1,4 @@
-import { TypeList } from '../components/type/type';
+import { BiomeList } from '../components/type/biome';
 import { BaseChinpokoData } from '../components/chinpoko/chinpoko';
 import bisonte from '../images/bisonte.png'
 import lagarto from '../images/lagarto.png'
@@ -15,7 +15,7 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
 		baseATK: 60,
 		baseDEF: 100,
 		baseSPE: 60,
-		type: TypeList["GRASS"]
+		biome: BiomeList["FOREST"]
 	},
 	"LAGARTO": {
 		speciesName: "LAGARTO",
@@ -24,7 +24,7 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
 		baseATK: 100,
 		baseDEF: 70,
 		baseSPE: 80,
-		type: TypeList["FIRE"]
+		biome: BiomeList["DESERT"]
 	},
 	"NUTRIA": {
 		speciesName: "NUTRIA",
@@ -33,7 +33,7 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
 		baseATK: 100,
 		baseDEF: 60,
 		baseSPE: 100,
-		type: TypeList["WATER"]
+		biome: BiomeList["RIVER"]
 	},
 	"GATO": {
 		speciesName: "GATO",
@@ -42,7 +42,7 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
 		baseATK: 80,
 		baseDEF: 50,
 		baseSPE: 140,
-		type: TypeList["MISTERY"]
+		biome: BiomeList["UNKNOWN"]
 	},
   "ARDILLA": {
     speciesName: "ARDILLA",
@@ -51,7 +51,7 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
     baseATK: 60,
     baseDEF: 60,
     baseSPE: 120,
-    type: TypeList["ELECTRIC"]
+    biome: BiomeList["CITY"]
   },
   "MORSA": {
     speciesName: "MORSA",
@@ -60,6 +60,6 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
     baseATK: 100,
     baseDEF: 70,
     baseSPE: 50,
-    type: TypeList["ICE"]
+    biome: BiomeList["ARCTIC"]
   }
 };

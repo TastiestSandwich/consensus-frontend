@@ -1,7 +1,7 @@
 import React from 'react';
 import './card.scss';
 import { GameStage } from '../../views/game/game';
-import { Type } from '../type/type';
+import { Type, TypeSymbol } from '../type/type';
 import { CardList } from '../../data/cardList';
 
 export function shuffle(array: Array<number>) {
@@ -51,7 +51,7 @@ export default class Card extends React.Component<CardProps, {} > {
 
 	render() {
 		const { instance, ally, onClick, } = this.props
-		const type = instance.card.type.name
+		const type = instance.card.type
 		const ccc = "card-component"
 		const allyClass = ally ? `${ccc}--is-ally` : `${ccc}--is-enemy`
 		const isClickedClass = instance.isClicked ? `${ccc}--is-clicked` : ""
@@ -61,10 +61,15 @@ export default class Card extends React.Component<CardProps, {} > {
     const hideClass = show ? "" : `${ccc}--is-hide` 
 
 		return(
-			<div className={`${ccc} ${ccc}--type-${type} ${allyClass} ${isClickedClass} ${isClickableClass} ${hideClass}`} onClick={onClick}>
+			<div className={`${ccc} ${ccc}--type-${type.name} ${allyClass} ${isClickedClass} ${isClickableClass} ${hideClass}`} onClick={onClick}>
 			{
 				show &&
 				<>
+          <div className={`${ccc}__type`}>
+            <TypeSymbol
+            type={type}
+            />
+          </div>
 					<div className={`${ccc}__values`}>
 						<div className={`${ccc}__cost ${ccc}__cost--pre`}>
 							{instance.card.cost}

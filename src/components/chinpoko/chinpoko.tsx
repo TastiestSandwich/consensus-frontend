@@ -1,6 +1,7 @@
 import React from 'react';
 import './chinpoko.scss';
-import { Type } from '../type/type';
+import { TypeSymbol, Type } from '../type/type';
+import { Biome } from '../type/biome';
 import { ChinpokoList } from '../../data/chinpokoList';
 
 export interface ChinpokoStoredData {
@@ -20,7 +21,7 @@ export interface BaseChinpokoData {
 	baseATK: number
 	baseDEF: number
 	baseSPE: number
-	type: Type
+	biome: Biome
 }
 
 export interface ChinpokoData {
@@ -76,10 +77,46 @@ export class Chinpoko extends React.Component<ChinpokoProps> {
 
 	// <img src={ "/images/" + this.state.species.speciesName.toLowerCase() + ".png" }  alt={ this.state.species.speciesName } />
 
+  renderChinpokoTypeRow(parent: string, rowSymbol: string, typeList: Array<Type>) {
+    return(
+      <div className={`${parent}__row`}>
+        <div className={`${parent}__row-symbol`}>
+          <i className={rowSymbol}></i> :
+        </div>
+        <div className={`${parent}__row-content`}>
+          { typeList.map((type) => (
+            <TypeSymbol
+            type={type}
+            />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+	renderChinpokoBiomeBox(parent: string, biome: Biome) {
+		const ally = this.props.ally
+		const strongClass = ally ? "far fa-thumbs-up fa-flip-horizontal" : "fa fa-shield"
+		const weakClass = ally ? "far fa-thumbs-down fa-flip-horizontal" : "fas fa-bahai"
+		const strong = this.renderChinpokoTypeRow("biomebox", strongClass, biome.resistance);
+		const weak = this.renderChinpokoTypeRow("biomebox", weakClass, biome.weakness);
+
+		return(
+			<div className={`${parent}__biomebox biomebox`}>
+				<div className="biomebox__title">
+					<strong>{biome.name}</strong>
+				</div>
+				{ strong }
+				{ weak }
+			</div>
+		);
+	}
+
 	renderChinpokoDataBox() {
 		const {chinpoko} = this.props
 		const storedData = chinpoko.storedData
-		const healthStyle = { width: (chinpoko.hp * 96 / chinpoko.maxhp) }
+		const biome = storedData.species.biome
+		const healthStyle = { width: (chinpoko.hp * 96 / chinpoko.maxhp) + "%" }
 		const cpc = "chinpoko-component"
 		return (
 			<div className={`${cpc}__databox`}>
@@ -116,6 +153,7 @@ export class Chinpoko extends React.Component<ChinpokoProps> {
 						</tbody>
 					</table>
 				</div>
+				{this.renderChinpokoBiomeBox(cpc, biome)}
 			</div>
 		)
 	}
