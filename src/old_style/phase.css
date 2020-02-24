@@ -20,6 +20,13 @@
 .phase {
 	background-color: lightgrey;
 	width: 50%;
+	display: flex;
+	position: relative;
+}
+
+.phase-symbol {
+	position: absolute;
+	left: 1em;
 }
 
 .phase.is-filled {

@@ -3,6 +3,8 @@ import './card.scss';
 import { GameStage } from '../../views/game/game';
 import { Type, TypeSymbol } from '../type/type';
 import { CardList } from '../../data/cardList';
+import { CardAction } from '../action/action';
+import { ActionSymbol } from '../action/action';
 
 export function shuffle(array: Array<number>) {
 	for (let i = array.length - 1; i > 0; i--) {
@@ -24,21 +26,6 @@ export interface CardData {
   text: string
   type: Type
   actions: Array<CardAction>
-}
-
-export interface CardAction {
-  effect: ActionEffect
-  parameters: ActionParameters
-}
-
-export interface ActionEffect {
-  name: string
-  symbol: string
-}
-
-export interface ActionParameters {
-  power?: number
-  percentage?: number
 }
 
 function getRandomCard() {
@@ -71,16 +58,6 @@ interface CardProps {
 
 export default class Card extends React.Component<CardProps, {} > {
 
-  renderCardAction(parent: string, action: CardAction) {
-    return(
-      <div className={`${parent}__action ${parent}__action--effect-${action.effect.name}`}>
-        <div className={`${parent}__action-icon`}>
-          <i className={action.effect.symbol}></i>
-        </div>
-      </div>
-    )
-  }
-
 	render() {
 		const { instance, ally, onClick, } = this.props
 		const type = instance.card.type
@@ -102,8 +79,11 @@ export default class Card extends React.Component<CardProps, {} > {
             />
           </div>
 					<div className={`${ccc}__values`}>
-						{ instance.card.actions.map((action) => (
-              this.renderCardAction(ccc, action)
+						{ instance.card.actions.map((action, index) => (
+              <ActionSymbol
+              key={index}
+              action={action}
+              />
             ))}
 					</div>
 					<div className={`${ccc}__name`}>

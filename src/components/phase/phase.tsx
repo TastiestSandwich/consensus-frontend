@@ -1,7 +1,8 @@
 import React from 'react';
 import '../../old_style/phase.css';
 import { GameStage } from '../../views/game/game';
-import { CardInstance, CardAction } from '../card/card';
+import { CardInstance } from '../card/card';
+import { CardAction, ActionSymbol } from '../action/action';
 
 export interface CurrentPhase {
 	isAlly: boolean
@@ -200,7 +201,15 @@ export class Phase extends React.Component<PhaseProps, {}> {
 			return (
 				<div className={`phase-container ${allyClass} ${currentClass} ${showClass}`}>
 					<div className={`phase ${filledClass}`} onClick={onPhaseClick}>
-						{phase.index}
+						<div className={"phase-text"}>
+							{phase.index}
+						</div>
+						{ phase.action &&
+							<div className={"phase-symbol"}>
+								<ActionSymbol
+								action={phase.action}
+								/>
+							</div> }
 					</div>
 					{ phase.instance != null && phase.isStart &&
 						<div className="phase-card">

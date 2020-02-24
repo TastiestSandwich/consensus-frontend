@@ -26,8 +26,9 @@ export class TeamChinpoko extends React.Component<TeamChinpokoProps> {
           <i className={rowSymbol}></i> :
         </div>
         <div className={`${parent}__row-content`}>
-          { typeList.map((type) => (
+          { typeList.map((type, index) => (
             <TypeSymbol
+            key={index}
             type={type}
             />
           ))}

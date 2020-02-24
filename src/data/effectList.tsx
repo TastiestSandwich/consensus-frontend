@@ -1,4 +1,4 @@
-import { ActionEffect } from '../components/card/card';
+import { ActionEffect } from '../components/action/action';
 
 export const EffectList: {[name: string] : ActionEffect} = {
 	"WAIT": {

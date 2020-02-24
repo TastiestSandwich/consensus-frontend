@@ -1,11 +1,12 @@
 import React from 'react';
 import '../../root.scss';
 import './game.scss';
-import { CardData, CardInstance, CardAction, shuffle } from '../../components/card/card';
+import { CardData, CardInstance, shuffle } from '../../components/card/card';
 import { Hand, SelectedCard } from '../../components/hand/hand';
 import { Chinpoko, ChinpokoData } from '../../components/chinpoko/chinpoko';
 import { PhaseCounter, PhaseGroup, PhaseData, CurrentPhase, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from '../../components/phase/phase';
 import { Engine, calcDamage, calcAbsorb, calcHeal } from '../../components/engine/engine';
+import { CardAction } from '../../components/action/action';
 
 export const enum GameStage {
   PLAY,
@@ -146,7 +147,7 @@ export class Game extends React.Component<GameProps, GameState> {
   }
 
   deletePhaseClick = (phaseNumber: number, instance: CardInstance | null) => {
-    if (instance === null) {
+    if (instance === null || this.state.stage != GameStage.PLAY) {
       return;
     }
     const deckList = {...this.props.allyDeckList};

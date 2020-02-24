@@ -1,6 +1,7 @@
 import React from 'react';
 import './deckCard.scss';
-import { CardInstance, CardAction } from '../../components/card/card';
+import { CardInstance } from '../../components/card/card';
+import { ActionSymbol } from '../../components/action/action';
 import { TypeSymbol } from '../../components/type/type';
 
 interface DeckCardProps {
@@ -8,16 +9,6 @@ interface DeckCardProps {
 }
 
 export class DeckCard extends React.Component<DeckCardProps, {} > {
-
-  renderCardAction(parent: string, action: CardAction) {
-    return(
-      <div className={`${parent}__action ${parent}__action--effect-${action.effect.name}`}>
-        <div className={`${parent}__action-icon`}>
-          <i className={action.effect.symbol}></i>
-        </div>
-      </div>
-    )
-  }
 
 	render() {
 		const instance = this.props.instance;
@@ -32,8 +23,11 @@ export class DeckCard extends React.Component<DeckCardProps, {} > {
             />
           </div>
 					<div className={`${ccc}__values`}>
-						{ instance.card.actions.map((action) => (
-              this.renderCardAction(ccc, action)
+						{ instance.card.actions.map((action, index) => (
+              <ActionSymbol
+              key={index}
+              action={action}
+              />
             ))}
 					</div>
 				<div className={`${ccc}__name`}>

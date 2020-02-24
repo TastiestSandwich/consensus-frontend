@@ -1,0 +1,22 @@
+.action-symbol{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width:2em;
+  height:2em;
+  border-radius: 100%;
+  background-color: #CC2222;
+
+  &--effect{
+    &-WAIT{
+      width: 1.5em;
+      height: 1.5em;
+      background-color: #2222CC
+    }
+  }
+
+  &__icon{
+    filter: invert(100%);
+  }
+}
