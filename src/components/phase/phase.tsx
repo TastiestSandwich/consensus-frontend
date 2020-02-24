@@ -62,8 +62,10 @@ export function shouldPhaseBeClicked(phaseNumber: number, instance: CardInstance
 		console.log("no card selected");
 		return false;
 	}
-	for (let i = phaseNumber - 1; i < instance.card.actions.length; i++) {
-		if (phases[i] == null || phases[i].action) {
+	const indexStart = phaseNumber - 1;
+	const indexEnd = indexStart + instance.card.actions.length;
+	for (let i = indexStart; i < indexEnd; i++) {
+		if (phases[i] === undefined || phases[i].action) {
 			console.log("not enough unfilled phases")
 			return false;
 		}
