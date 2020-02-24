@@ -96,7 +96,7 @@ export class Chinpoko extends React.Component<ChinpokoProps> {
 
 	renderChinpokoBiomeBox(parent: string, biome: Biome) {
 		const ally = this.props.ally
-		const strongClass = ally ? "far fa-thumbs-up fa-flip-horizontal" : "fa fa-shield"
+		const strongClass = ally ? "far fa-thumbs-up fa-flip-horizontal" : "fas fa-shield-alt"
 		const weakClass = ally ? "far fa-thumbs-down fa-flip-horizontal" : "fas fa-bahai"
 		const strong = this.renderChinpokoTypeRow("biomebox", strongClass, biome.resistance);
 		const weak = this.renderChinpokoTypeRow("biomebox", weakClass, biome.weakness);

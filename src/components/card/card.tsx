@@ -19,6 +19,28 @@ export interface CardInstance {
 	isRemovable: boolean
 }
 
+export interface CardData {
+  name: string
+  text: string
+  type: Type
+  actions: Array<CardAction>
+}
+
+export interface CardAction {
+  effect: ActionEffect
+  parameters: ActionParameters
+}
+
+export interface ActionEffect {
+  name: string
+  symbol: string
+}
+
+export interface ActionParameters {
+  power?: number
+  percentage?: number
+}
+
 function getRandomCard() {
 	let index = Math.floor(Math.random() * Object.values(CardList).length);
 	return Object.values(CardList)[index];
@@ -49,6 +71,16 @@ interface CardProps {
 
 export default class Card extends React.Component<CardProps, {} > {
 
+  renderCardAction(parent: string, action: CardAction) {
+    return(
+      <div className={`${parent}__action ${parent}__action--effect-${action.effect.name}`}>
+        <div className={`${parent}__action-icon`}>
+          <i className={action.effect.symbol}></i>
+        </div>
+      </div>
+    )
+  }
+
 	render() {
 		const { instance, ally, onClick, } = this.props
 		const type = instance.card.type
@@ -56,7 +88,6 @@ export default class Card extends React.Component<CardProps, {} > {
 		const allyClass = ally ? `${ccc}--is-ally` : `${ccc}--is-enemy`
 		const isClickedClass = instance.isClicked ? `${ccc}--is-clicked` : ""
 		const isClickableClass = !!onClick && !instance.isClicked ? `${ccc}--is-clickable` : ""
-		const hasPowerClass = !!instance.card.power ? `${ccc}__power--has` : ""
     const show = ally && this.props.stage === GameStage.PLAY
     const hideClass = show ? "" : `${ccc}--is-hide` 
 
@@ -71,16 +102,9 @@ export default class Card extends React.Component<CardProps, {} > {
             />
           </div>
 					<div className={`${ccc}__values`}>
-						<div className={`${ccc}__cost ${ccc}__cost--pre`}>
-							{instance.card.cost}
-						</div>
-						<div className={`${ccc}__power ${hasPowerClass}`}>
-							{instance.card.power}
-						</div>
-						<div className={`${ccc}__cost ${ccc}__cost--post`}>
-							{/* TODO: */}
-							{instance.card.cost}
-						</div>
+						{ instance.card.actions.map((action) => (
+              this.renderCardAction(ccc, action)
+            ))}
 					</div>
 					<div className={`${ccc}__name`}>
 						{instance.card.name}
@@ -96,23 +120,4 @@ export default class Card extends React.Component<CardProps, {} > {
 			</div>
 		)
 	}
-}
-
-export interface CardData {
-	name: string
-	text: string
-	cost: number
-	power?: number
-	type: Type
-	action: Array<CardAction>
-}
-
-export interface CardAction {
-	effect: string
-	parameters: ActionParameters
-}
-
-export interface ActionParameters {
-	power?: number
-	percentage?: number
 }

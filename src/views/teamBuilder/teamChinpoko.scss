@@ -21,7 +21,18 @@
       border: 3px solid #888;
       margin:0 2em;
     }
-    &__statbox{  }
+    &__statbox{
+      width: 130px;
+      background: #fff;
+      border: 3px solid #888;
+      margin:0 2em;
+    }
+    &__biomebox{
+      width: 130px;
+      background: #fff;
+      border: 3px solid #888;
+      margin:0 2em;
+    }
 
     .hpbox{
       &__title{
@@ -37,5 +48,25 @@
         height: 10px;
         background: #00ff00;
       }
+    }
+
+    .biomebox{
+      &__row{
+        height: 2em;
+        display: flex;
+        align-items: center;
+      }
+      &__row-symbol{
+        margin-right: 0.2em;
+      }
+      &__row-content{
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .type-symbol{
+      height: 1.5em;
+      width: 1.5em;
     }
 }

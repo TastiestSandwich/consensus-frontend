@@ -78,12 +78,12 @@ $spritePerspective: 0.3;
 
     .biomebox{
       &__row{
-        height: 25px;
+        height: 2em;
         display: flex;
         align-items: center;
       }
       &__row-symbol{
-        margin-right: 5px;
+        margin-right: 0.2em;
       }
       &__row-content{
         display: flex;
@@ -92,7 +92,7 @@ $spritePerspective: 0.3;
     }
 
     .type-symbol{
-      height: 25px;
-      width: 25px;
+      height: 1.5em;
+      width: 1.5em;
     }
 }

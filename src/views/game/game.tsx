@@ -152,7 +152,7 @@ export class Game extends React.Component<GameProps, GameState> {
     const deckList = {...this.props.allyDeckList};
     deckList[instance.id].isClicked = false;
     this.setState({
-      allyPhases: deleteFromPhaseGroupData(phaseNumber, instance.card.cost, this.state.allyPhases),
+      allyPhases: deleteFromPhaseGroupData(instance, this.state.allyPhases),
     })
     this.props.setDeckList(deckList, true);
   }
@@ -202,13 +202,10 @@ export class Game extends React.Component<GameProps, GameState> {
     this.props.setDeckList(myDeck, ally);
    }
 
-  handleCardActions(instance: CardInstance, isAlly: boolean, ally: ChinpokoData, enemy: ChinpokoData) {
-    for(const action of instance.card.action) {
-      if(action.effect === "DAMAGE") { this.effectDamage(instance.card, action, ally, enemy); }
-      else if(action.effect === "ABSORB") { this.effectAbsorb(instance.card, action, ally, enemy); }
-      else if(action.effect === "HEAL") { this.effectHeal(instance.card, action, ally); }
-    }
-    this.discardCardIfNeeded(instance.id, isAlly);
+  handleCardAction(instance: CardInstance, action: CardAction, isAlly: boolean, ally: ChinpokoData, enemy: ChinpokoData) {
+    if(action.effect.name === "DAMAGE") { this.effectDamage(instance.card, action, ally, enemy); }
+    else if(action.effect.name === "ABSORB") { this.effectAbsorb(instance.card, action, ally, enemy); }
+    else if(action.effect.name === "HEAL") { this.effectHeal(instance.card, action, ally); }
   }
 
   effectDamage(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
@@ -372,10 +369,15 @@ export class Game extends React.Component<GameProps, GameState> {
         console.log( "doing phase " + phase.index + " of chinpoko " + myChinpoko.storedData.name);
 
         this.unfillPhase(phaseCounter.isAlly, phase);
-        if (phase.instance != null) {
+        if (phase.action != null && phase.instance != null) {
           let instance = phase.instance;
-          console.log(instance.card.text);
-          this.handleCardActions(instance, phaseCounter.isAlly, myChinpoko, otherChinpoko);
+          let action = phase.action;
+          console.log(action.effect);
+          this.handleCardAction(instance, action, phaseCounter.isAlly, myChinpoko, otherChinpoko);
+
+          if(phase.isEnd) {
+            this.discardCardIfNeeded(instance.id, phaseCounter.isAlly);
+          }
         }
       }
       // delete phaseCounter if no more phases, else antisum limit

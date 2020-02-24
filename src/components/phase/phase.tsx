@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../old_style/phase.css';
 import { GameStage } from '../../views/game/game';
-import { CardInstance } from '../card/card';
+import { CardInstance, CardAction } from '../card/card';
 
 export interface CurrentPhase {
 	isAlly: boolean
@@ -48,9 +48,11 @@ export function initPhaseGroupData(size: number) {
 export function initPhaseData(index: number) {
 	let phaseData: PhaseData = {
 		index: index,
-		filled: false,
 		show: false,
-		instance: null
+		instance: null,
+		action: null,
+		isStart: false,
+		isEnd: false
 	}
 	return phaseData;
 }
@@ -60,15 +62,9 @@ export function shouldPhaseBeClicked(phaseNumber: number, instance: CardInstance
 		console.log("no card selected");
 		return false;
 	}
-	let cost: number = instance.card.cost;
-	if (cost > phaseNumber) {
-		console.log("not enough charging phases")
-		return false;
-	}
-	let numberStart = phaseNumber - cost + 1;
-	for (let i = numberStart; i <= phaseNumber; i++) {
-		if (phases[i-1].filled) {
-			console.log("not enough unfilled charging phases")
+	for (let i = phaseNumber - 1; i < instance.card.actions.length; i++) {
+		if (phases[i] == null || phases[i].action) {
+			console.log("not enough unfilled phases")
 			return false;
 		}
 	}
@@ -80,44 +76,34 @@ export function setPhaseGroupData(phaseNumber: number, instance: CardInstance | 
 	if (instance === null) {
 		return newPhases;
 	}
-	let numberStart = phaseNumber - instance.card.cost + 1;
-	for (let i = numberStart; i <= phaseNumber; i++) {
-		if (i < phaseNumber) {
-			newPhases[i-1] = {
-				index: i,
-				filled: true,
-				show: false,
-				instance: null
-			}
-		} else if (i === phaseNumber) {
-			newPhases[i-1] = {
-				index: i,
-				filled: true,
-				show: false,
-				instance: instance
-			}
+	const phaseIndex = phaseNumber - 1;
+	const length = instance.card.actions.length;
+	for (let i = 0; i < length; i++) {
+		let index = phaseIndex + i
+		newPhases[index] = {
+			index: index + 1,
+			show: false,
+			instance: instance,
+			action: instance.card.actions[i],
+			isStart: i === 0 ? true : false,
+			isEnd: i === length - 1 ? true : false
 		}
 	}
 	return newPhases;
 }
 
-export function deleteFromPhaseGroupData(phaseNumber: number, cost: number, phases: Array<PhaseData>) {
+export function deleteFromPhaseGroupData(instance: CardInstance, phases: Array<PhaseData>) {
 	let newPhases: Array<PhaseData> = phases.slice();
-	let numberStart = phaseNumber - cost + 1;
-	for (let i = numberStart; i <= phaseNumber; i++) {
-		if (i < phaseNumber) {
-			newPhases[i-1] = {
-				index: i,
-				filled: false,
+	for (let i = 0; i < newPhases.length; i++) {
+		const localInstance = newPhases[i].instance;
+		if(localInstance != null && localInstance.id === instance.id) {
+			newPhases[i] = {
+				index: i+1,
 				show: false,
-				instance: null
-			}
-		} else if (i === phaseNumber) {
-			newPhases[i-1] = {
-				index: i,
-				filled: false,
-				show: false,
-				instance: null
+				instance: null,
+				action: null,
+				isStart: false,
+				isEnd: false
 			}
 		}
 	}
@@ -166,9 +152,11 @@ export class PhaseGroup extends React.Component<PhaseGroupProps, {}> {
 
 export interface PhaseData {
 	index: number
-	filled: boolean
 	show: boolean
+	action: CardAction | null
 	instance: CardInstance | null
+	isStart: boolean
+	isEnd: boolean
 }
 
 interface PhaseProps {
@@ -193,7 +181,7 @@ export class Phase extends React.Component<PhaseProps, {}> {
 		const currentClass = isCurrent ? "is-current" : ""
 		// add is-not-ally class after ':' if needed
 		const allyClass = ally ? "is-ally" : ""
-		const filledClass = phase.filled ? "is-filled" : ""
+		const filledClass = phase.action ? "is-filled" : ""
 		const showCondition = phase.show || (ally && stage === GameStage.PLAY)
 		const showClass = phase.show ? "is-show" : ""
 
@@ -212,7 +200,7 @@ export class Phase extends React.Component<PhaseProps, {}> {
 					<div className={`phase ${filledClass}`} onClick={onPhaseClick}>
 						{phase.index}
 					</div>
-					{ phase.instance != null &&
+					{ phase.instance != null && phase.isStart &&
 						<div className="phase-card">
 							{phase.instance.card.name}
 							<button className="delete-phase-card" onClick={onPhaseDelete}>

@@ -1,5 +1,7 @@
 import React from 'react';
 import { ChinpokoData } from '../../components/chinpoko/chinpoko';
+import { Biome } from '../../components/type/biome';
+import { TypeSymbol, Type } from '../../components/type/type';
 import './teamChinpoko.scss';
 
 interface TeamChinpokoProps {
@@ -17,11 +19,46 @@ export class TeamChinpoko extends React.Component<TeamChinpokoProps> {
 		)
 	}
 
+	renderChinpokoTypeRow(parent: string, rowSymbol: string, typeList: Array<Type>) {
+    return(
+      <div className={`${parent}__row`}>
+        <div className={`${parent}__row-symbol`}>
+          <i className={rowSymbol}></i> :
+        </div>
+        <div className={`${parent}__row-content`}>
+          { typeList.map((type) => (
+            <TypeSymbol
+            type={type}
+            />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+	renderChinpokoBiomeBox(parent: string, biome: Biome) {
+		const strongClass = "far fa-thumbs-up fa-flip-horizontal"
+		const weakClass = "far fa-thumbs-down fa-flip-horizontal"
+		const strong = this.renderChinpokoTypeRow("biomebox", strongClass, biome.resistance);
+		const weak = this.renderChinpokoTypeRow("biomebox", weakClass, biome.weakness);
+
+		return(
+			<div className={`${parent}__biomebox biomebox`}>
+				<div className="biomebox__title">
+					<strong>{biome.name}</strong>
+				</div>
+				{ strong }
+				{ weak }
+			</div>
+		);
+	}
+
 	renderChinpokoDataBox() {
 		const {chinpoko} = this.props
 		const storedData = chinpoko.storedData
-		const healthStyle = { width: (chinpoko.hp * 96 / chinpoko.maxhp) }
-		const cpc = "team-chinpoko-component"
+		const biome = storedData.species.biome
+		const healthStyle = { width: (chinpoko.hp * 96 / chinpoko.maxhp) + "%" }
+		const cpc = "chinpoko-component"
 		return (
 			<div className={`${cpc}__databox`}>
 				<div className={`${cpc}__hpbox hpbox`}>
@@ -57,6 +94,7 @@ export class TeamChinpoko extends React.Component<TeamChinpokoProps> {
 						</tbody>
 					</table>
 				</div>
+				{this.renderChinpokoBiomeBox(cpc, biome)}
 			</div>
 		)
 	}

@@ -46,11 +46,11 @@ $cardBorderSize: 3px;
 			border-color: saddlebrown;
 			background-color:#333;
 		}
-		&-AIR{
+		&-WIND{
 			border-color: skyblue;
 			background-color:#333;
 		}
-		&-ICE{
+		&-COLD{
 			border-color: cornflowerblue;
 			background-color:#333;
 		}
@@ -71,7 +71,15 @@ $cardBorderSize: 3px;
 		align-items: center;
 	}
 
-	&__cost{
+	&__type{
+		position:absolute;
+		right: 0.3em;
+		top: -1em;
+		height: 2em;
+		width: 2em;
+	}
+
+	&__action{
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -79,32 +87,21 @@ $cardBorderSize: 3px;
 		width:2em;
 		height:2em;
 		border-radius: 100%;
-		font-weight: bold;
-		color:white;
-		&--pre{
-			background-color: #2222CC;
-		}
-		&--post{;
-			background-color: #CC2222;
-		}
-	}
-	&__power{
-		display: flex;
-		justify-content: center;
-		align-items: center;
+		background-color: #CC2222;
 
-		width:3em;
-		height:3em;
-		border-radius: 100%;
-		font-weight: bold;
-		margin:0.2em;
-		//---TODO: change depending on power type
-		color:white;
-		&--has{
-			background-color: #CC2222;
+		&--effect{
+			&-WAIT{
+				width: 1.5em;
+        height: 1.5em;
+				background-color: #2222CC
+			}
 		}
-		//---/TODO: change depending on power type
 	}
+
+	&__action-icon{
+		filter: invert(100%);
+	}
+
 	&__name{
 		text-align:center;
 		color:white;

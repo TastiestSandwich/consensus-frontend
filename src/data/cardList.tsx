@@ -1,15 +1,14 @@
 import { CardData } from '../components/card/card';
 import { TypeList } from '../components/type/type';
+import { EffectList } from './effectList';
 
 export const CardList: { [name:string] : CardData } = {
 	"Quick Attack": {
 		name: "Quick Attack",
-		cost: 1,
-		power: 30,
 		text: "Quickly strikes the enemy",
 		type: TypeList["NEUTRAL"],
-		action: [{
-			effect: "DAMAGE",
+		actions: [{
+			effect: EffectList["DAMAGE"],
 			parameters: {
 				power: 30,
 			}
@@ -17,12 +16,13 @@ export const CardList: { [name:string] : CardData } = {
 	},
 	"Water Gun": {
 		name: "Water Gun",
-		cost: 2,
-		power: 50,
 		text: "Soaks the enemy in water",
 		type: TypeList["WATER"],
-		action: [{
-			effect: "DAMAGE",
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DAMAGE"],
 			parameters: {
 				power: 50,
 			}
@@ -30,12 +30,16 @@ export const CardList: { [name:string] : CardData } = {
 	},
 	"Mega Drain": {
 		name: "Mega Drain",
-		cost: 3,
-		power: 60,
 		text: "Drains the enemy's health, recovering half the damage done",
 		type: TypeList["GRASS"],
-		action: [{
-			effect: "ABSORB",
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["ABSORB"],
 			parameters: {
 				power: 60,
 				percentage: 0.5,
@@ -44,12 +48,19 @@ export const CardList: { [name:string] : CardData } = {
 	},
 	"Flamethrower": {
 		name: "Flamethrower",
-		cost: 4,
-		power: 90,
 		text: "Burns the enemy with a stream of fire",
 		type: TypeList["FIRE"],
-		action: [{
-			effect: "DAMAGE",
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DAMAGE"],
 			parameters: {
 				power: 90,
 			}
@@ -57,11 +68,19 @@ export const CardList: { [name:string] : CardData } = {
 	},
 	"Rest": {
 		name: "Rest",
-		cost: 5,
 		text: "Rests and recovers half of its health",
 		type: TypeList["NEUTRAL"],
-		action: [{
-			effect: "HEAL",
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["HEAL"],
 			parameters: {
 				percentage: 0.5,
 			}

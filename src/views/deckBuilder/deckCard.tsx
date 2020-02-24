@@ -1,6 +1,7 @@
 import React from 'react';
 import './deckCard.scss';
-import { CardInstance } from '../../components/card/card';
+import { CardInstance, CardAction } from '../../components/card/card';
+import { TypeSymbol } from '../../components/type/type';
 
 interface DeckCardProps {
 	instance: CardInstance
@@ -8,26 +9,33 @@ interface DeckCardProps {
 
 export class DeckCard extends React.Component<DeckCardProps, {} > {
 
+  renderCardAction(parent: string, action: CardAction) {
+    return(
+      <div className={`${parent}__action ${parent}__action--effect-${action.effect.name}`}>
+        <div className={`${parent}__action-icon`}>
+          <i className={action.effect.symbol}></i>
+        </div>
+      </div>
+    )
+  }
+
 	render() {
 		const instance = this.props.instance;
-		const type = instance.card.type.name
+		const type = instance.card.type
 		const ccc = "deck-card-component"
-		const hasPowerClass = !!instance.card.power ? `${ccc}__power--has` : ""
 
 		return(
-			<div className={`${ccc} ${ccc}--type-${type}`}>
-				<div className={`${ccc}__values`}>
-					<div className={`${ccc}__cost ${ccc}__cost--pre`}>
-						{instance.card.cost}
+			<div className={`${ccc} ${ccc}--type-${type.name}`}>
+				<div className={`${ccc}__type`}>
+            <TypeSymbol
+            type={type}
+            />
+          </div>
+					<div className={`${ccc}__values`}>
+						{ instance.card.actions.map((action) => (
+              this.renderCardAction(ccc, action)
+            ))}
 					</div>
-					<div className={`${ccc}__power ${hasPowerClass}`}>
-						{instance.card.power}
-					</div>
-					<div className={`${ccc}__cost ${ccc}__cost--post`}>
-						{/* TODO: */}
-						{instance.card.cost}
-					</div>
-				</div>
 				<div className={`${ccc}__name`}>
 					{instance.card.name}
 				</div>
