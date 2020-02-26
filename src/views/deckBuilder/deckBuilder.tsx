@@ -1,7 +1,7 @@
 import React from 'react';
 import './deckBuilder.scss';
 import { AppView } from '../../app';
-import { CardInstance, getRandomCardInstance, getCardInstance, CardData } from '../../components/card/card';
+import { CardInstance, getRandomCardInstance, getCardInstance, CardData, CardSource } from '../../components/card/card';
 import { CardList } from '../../data/cardList';
 import { DeckCard } from './deckCard';
 
@@ -17,7 +17,7 @@ function transformInputToDeckList(inputArray: Array<string>): {[id: number] : Ca
   const deckList: {[id: number] : CardInstance} = {};
   for(let i=0; i < inputArray.length; i++) {
     const card: CardData = CardList[inputArray[i]];
-    deckList[i] = getCardInstance(i, card, true);
+    deckList[i] = getCardInstance(i, card, true, CardSource.DECK);
   }
   return deckList;
 }

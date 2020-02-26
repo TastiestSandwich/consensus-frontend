@@ -16,5 +16,9 @@ export const EffectList: {[name: string] : ActionEffect} = {
 	"HEAL": {
 		name: "HEAL",
 		symbol: "fas fa-heart"
+	},
+	"CHANGE": {
+		name: "CHANGE",
+		symbol: "fas fa-exchange-alt"
 	}
 };

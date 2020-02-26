@@ -3,6 +3,7 @@ import './chinpoko.scss';
 import { TypeSymbol, Type } from '../type/type';
 import { Biome } from '../type/biome';
 import { ChinpokoList } from '../../data/chinpokoList';
+import { CardData } from '../card/card';
 
 export interface ChinpokoStoredData {
 	name: string
@@ -22,6 +23,7 @@ export interface BaseChinpokoData {
 	baseDEF: number
 	baseSPE: number
 	biome: Biome
+	power: CardData
 }
 
 export interface ChinpokoData {
@@ -31,6 +33,7 @@ export interface ChinpokoData {
 	atk: number
 	def: number
 	spe: number
+	powerId: number | null
 }
 
 export function getRandomChinpoko(): ChinpokoData {
@@ -46,7 +49,8 @@ export function getChinpokoData(storedData: ChinpokoStoredData): ChinpokoData {
 		hp: startingHP,
 		atk: calcStat(storedData.species.baseATK, storedData.evATK, storedData.lvl),
 		def: calcStat(storedData.species.baseDEF, storedData.evDEF, storedData.lvl),
-		spe: calcStat(storedData.species.baseSPE, storedData.evSPE, storedData.lvl)
+		spe: calcStat(storedData.species.baseSPE, storedData.evSPE, storedData.lvl),
+		powerId: null
 	}
 	return chinpoko;
 }

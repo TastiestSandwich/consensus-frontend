@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../root.scss';
 import './game.scss';
-import { CardData, CardInstance, shuffle } from '../../components/card/card';
+import Card, { CardData, CardInstance, shuffle, CardSource } from '../../components/card/card';
 import { Hand, SelectedCard } from '../../components/hand/hand';
 import { Chinpoko, ChinpokoData } from '../../components/chinpoko/chinpoko';
 import { PhaseCounter, PhaseGroup, PhaseData, CurrentPhase, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from '../../components/phase/phase';
@@ -19,8 +19,11 @@ interface GameProps {
   enemyTeam: {[id: number] : ChinpokoData}
   allyDeckList: {[id: number] : CardInstance}
   enemyDeckList: {[id: number] : CardInstance}
+  allyPowerList: {[id: number] : CardInstance}
+  enemyPowerList: {[id: number] : CardInstance}
   setTeam: (team: {[id: number] : ChinpokoData}, ally: boolean) => void
   setDeckList: (deckList: {[id: number] : CardInstance}, ally: boolean) => void
+  setPowerList: (powerList: {[id: number] : CardInstance}, ally: boolean) => void
   swapPlayers: () => void
 }
 
@@ -102,9 +105,12 @@ export class Game extends React.Component<GameProps, GameState> {
     }
   }
 
-  handleCardClick = (id: number) => {
+  handleCardClick = (instance: CardInstance) => {
     const deckList = {...this.props.allyDeckList};
-    const clickedCard: CardInstance = deckList[id];
+    const powerList = {...this.props.allyPowerList};
+    const id = instance.id;
+
+    const clickedCard: CardInstance = instance.source == CardSource.DECK ? deckList[id] : powerList[id];
     if (clickedCard.isClicked || this.state.stage != GameStage.PLAY) {
       return;
     }
@@ -113,10 +119,11 @@ export class Game extends React.Component<GameProps, GameState> {
     })
     clickedCard.isClicked = true;
     if (this.state.selectedCard != null) {
-      const selectedCard = deckList[this.state.selectedCard.id];
+      const selectedCard = this.state.selectedCard.source == CardSource.DECK ? deckList[this.state.selectedCard.id] : powerList[this.state.selectedCard.id];
       selectedCard.isClicked = false;
     }
     this.props.setDeckList(deckList, true);
+    this.props.setPowerList(powerList, true);
   }
 
   deleteCardClick = () => {
@@ -124,13 +131,16 @@ export class Game extends React.Component<GameProps, GameState> {
       return;
     }
     const deckList = {...this.props.allyDeckList};
+    const powerList = {...this.props.allyPowerList};
     if(this.state.selectedCard != null) {
-        deckList[this.state.selectedCard.id].isClicked = false;
+      const selectedCard = this.state.selectedCard.source == CardSource.DECK ? deckList[this.state.selectedCard.id] : powerList[this.state.selectedCard.id];
+      selectedCard.isClicked = false;
     }
     this.setState({
       selectedCard: null,
     })
     this.props.setDeckList(deckList, true);
+    this.props.setPowerList(powerList, true);
   }
 
   handlePhaseClick = (phaseNumber: number) => {
@@ -151,11 +161,14 @@ export class Game extends React.Component<GameProps, GameState> {
       return;
     }
     const deckList = {...this.props.allyDeckList};
-    deckList[instance.id].isClicked = false;
+    const powerList = {...this.props.allyPowerList};
+    const card = instance.source == CardSource.DECK ? deckList[instance.id] : powerList[instance.id];
+    card.isClicked = false;
     this.setState({
       allyPhases: deleteFromPhaseGroupData(instance, this.state.allyPhases),
     })
     this.props.setDeckList(deckList, true);
+    this.props.setPowerList(powerList, true);
   }
 
   handleChangeTeamClick = () => {
@@ -179,15 +192,17 @@ export class Game extends React.Component<GameProps, GameState> {
     }))
   }
 
-  discardCardIfNeeded(id: number, ally: boolean) {
+  discardCardIfNeeded(instance: CardInstance, ally: boolean) {
     const myHand: Array<number> = ally? [...this.state.allyHand] : [...this.state.enemyHand];
     const myDiscard: Array<number> = ally? [...this.state.allyDiscard] : [...this.state.enemyDiscard];
     const myDeck = ally ? {...this.props.allyDeckList} : {...this.props.enemyDeckList};
-    const instance = myDeck[id];
-    instance.isClicked = false;
+    const myPowerList = ally ? {...this.props.allyPowerList} : {...this.props.enemyPowerList};
+
+    const card = instance.source == CardSource.DECK ? myDeck[instance.id] : myPowerList[instance.id];
+    card.isClicked = false;
     if(instance.isRemovable) {
-      myHand.splice( myHand.indexOf(id), 1 );
-      myDiscard.push(id);
+      myHand.splice( myHand.indexOf(card.id), 1 );
+      myDiscard.push(card.id);
     }
     if(ally) {
       this.setState({
@@ -201,12 +216,15 @@ export class Game extends React.Component<GameProps, GameState> {
       })
     }
     this.props.setDeckList(myDeck, ally);
+    this.props.setPowerList(myPowerList, ally);
    }
 
   handleCardAction(instance: CardInstance, action: CardAction, isAlly: boolean, ally: ChinpokoData, enemy: ChinpokoData) {
     if(action.effect.name === "DAMAGE") { this.effectDamage(instance.card, action, ally, enemy); }
     else if(action.effect.name === "ABSORB") { this.effectAbsorb(instance.card, action, ally, enemy); }
     else if(action.effect.name === "HEAL") { this.effectHeal(instance.card, action, ally); }
+    else if(action.effect.name === "CHANGE") { this.effectChange(ally, isAlly); }
+    else if(action.effect.name === "WAIT") { }
   }
 
   effectDamage(card: CardData, action: CardAction, ally: ChinpokoData, enemy: ChinpokoData) {
@@ -307,6 +325,17 @@ export class Game extends React.Component<GameProps, GameState> {
 
   handleChinpokoDeath(chinpoko: ChinpokoData, ally: boolean) {
     console.log("RIP " + chinpoko.storedData.name);
+    const changeResult = this.effectChange(chinpoko, ally);
+    if(!changeResult) {
+      console.log("GAME OVER");
+      this.setState({
+        stage: GameStage.GAMEOVER
+      })
+    }
+  }
+
+  effectChange(chinpoko: ChinpokoData, ally: boolean): boolean {
+    console.log("COME BACK " + chinpoko.storedData.name + "!");
     let team = ally ? this.props.allyTeam : this.props.enemyTeam;
     let chinpokoIndex = ally ? this.state.allyChinpoko : this.state.enemyChinpoko;
     let aliveChinpokos: Array<number> = [];
@@ -329,12 +358,10 @@ export class Game extends React.Component<GameProps, GameState> {
           enemyChinpoko: aliveChinpokos[random]
         })
       }
-
+      return true;
     } else {
-      console.log("GAME OVER");
-      this.setState({
-        stage: GameStage.GAMEOVER
-      })
+      console.log("There are no chinpokos left!")
+      return false;
     }
   }
 
@@ -377,7 +404,7 @@ export class Game extends React.Component<GameProps, GameState> {
           this.handleCardAction(instance, action, phaseCounter.isAlly, myChinpoko, otherChinpoko);
 
           if(phase.isEnd) {
-            this.discardCardIfNeeded(instance.id, phaseCounter.isAlly);
+            this.discardCardIfNeeded(instance, phaseCounter.isAlly);
           }
         }
       }
@@ -413,6 +440,8 @@ export class Game extends React.Component<GameProps, GameState> {
   render() {
     const allyInstances: Array<CardInstance> = this.state.allyHand.map(a => this.props.allyDeckList[a]);
     const enemyInstances: Array<CardInstance> = this.state.enemyHand.map(a => this.props.enemyDeckList[a]);
+    const trainerPower: CardInstance = this.props.allyPowerList[0];
+
     const stage: GameStage = this.state.stage;
 
     return (
@@ -431,6 +460,14 @@ export class Game extends React.Component<GameProps, GameState> {
           <Hand instances={enemyInstances} ally={false} stage={stage} className="game-component__hand" />
           { this.renderField() }
           <Hand instances={allyInstances} ally={true} stage={stage} onCardClick={this.handleCardClick} className="game-component__hand"/>
+        </div>
+        <div className="game-component__trainer">
+          <Card
+            instance={trainerPower}
+            ally={true}
+            stage={stage}
+            onClick={() => this.handleCardClick(trainerPower)}
+           />
         </div>
       </div>
     );

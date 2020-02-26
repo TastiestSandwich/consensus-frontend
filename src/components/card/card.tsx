@@ -14,11 +14,17 @@ export function shuffle(array: Array<number>) {
   return array;
 }
 
+export enum CardSource {
+  DECK,
+  POWER
+}
+
 export interface CardInstance {
 	card: CardData
 	id: number
 	isClicked: boolean
 	isRemovable: boolean
+  source: CardSource
 }
 
 export interface CardData {
@@ -35,16 +41,17 @@ function getRandomCard() {
 
 export function getRandomCardInstance(id: number) {
 	const card = getRandomCard();
-	const instance = getCardInstance(id, card, true);
+	const instance = getCardInstance(id, card, true, CardSource.DECK);
 	return instance
 }
 
-export function getCardInstance(id: number, card: CardData, isRemovable: boolean) {
+export function getCardInstance(id: number, card: CardData, isRemovable: boolean, source: CardSource) {
 	const instance: CardInstance = {
 		card: card,
 		id: id,
 		isClicked: false,
-		isRemovable: isRemovable
+		isRemovable: isRemovable,
+    source: source
 	};
 	return instance;
 }

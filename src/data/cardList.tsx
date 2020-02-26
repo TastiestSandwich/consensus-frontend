@@ -85,5 +85,5 @@ export const CardList: { [name:string] : CardData } = {
 				percentage: 0.5,
 			}
 		}]
-	},
+	}
 }

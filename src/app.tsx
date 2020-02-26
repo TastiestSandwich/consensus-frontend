@@ -4,8 +4,9 @@ import { Game } from './views/game/game';
 import { Start } from './views/start/start';
 import { TeamBuilder, getRandomTeam } from './views/teamBuilder/teamBuilder';
 import { DeckBuilder, getRandomDeckList } from './views/deckBuilder/deckBuilder';
-import { CardInstance } from './components/card/card';
+import { CardInstance, getCardInstance, CardSource } from './components/card/card';
 import { ChinpokoData } from './components/chinpoko/chinpoko';
+import { PowerList } from './data/powerList';
 
 export const enum AppView {
   START,
@@ -14,11 +15,26 @@ export const enum AppView {
   GAME
 }
 
+function getPowerList(team: {[id: number] : ChinpokoData}) : {[id: number] : CardInstance} {
+  let powerList: {[id: number] : CardInstance} = {};
+  let id = 0;
+  powerList[id] = getCardInstance(id, PowerList["Change"], false, CardSource.POWER);
+
+  for(let chinpoko of Object.values(team)){
+    id++;
+    powerList[id] = getCardInstance(id, chinpoko.storedData.species.power, false, CardSource.POWER);
+    chinpoko.powerId = id;
+  }
+  return powerList;
+}
+
 interface AppState {
   allyTeam: {[id: number] : ChinpokoData}
   enemyTeam: {[id: number] : ChinpokoData}
   allyDeckList: {[id: number] : CardInstance}
   enemyDeckList: {[id: number] : CardInstance}
+  allyPowerList: {[id: number] : CardInstance}
+  enemyPowerList: {[id: number] : CardInstance}
   view: AppView
   ally: boolean
 }
@@ -26,12 +42,22 @@ interface AppState {
 class App extends React.Component<{}, AppState> {
   constructor(props) {
     super(props);
+
+    let allyTeam = getRandomTeam(4);
+    let enemyTeam = getRandomTeam(4);
+    let allyDeckList = getRandomDeckList(30);
+    let enemyDeckList = getRandomDeckList(30);
+    let allyPowerList = getPowerList(allyTeam);
+    let enemyPowerList = getPowerList(enemyTeam);
+
     this.state = {
       view: AppView.START,
-      allyTeam: getRandomTeam(4),
-      enemyTeam: getRandomTeam(4),
-      allyDeckList: getRandomDeckList(30),
-      enemyDeckList: getRandomDeckList(30),
+      allyTeam: allyTeam,
+      enemyTeam: enemyTeam,
+      allyDeckList: allyDeckList,
+      enemyDeckList: enemyDeckList,
+      allyPowerList: allyPowerList,
+      enemyPowerList: enemyPowerList,
       ally: true
     };
   }
@@ -60,12 +86,26 @@ class App extends React.Component<{}, AppState> {
     }
   }
 
+  setPowerList = (powerList: {[id: number] : CardInstance}, ally: boolean) => {
+    if(ally) {
+      this.setState({
+        allyPowerList: powerList
+      });
+    } else {
+      this.setState({
+        enemyPowerList: powerList
+      })
+    }
+  }
+
   swapPlayers = () => {
     this.setState((state) => ({
       allyTeam: state.enemyTeam,
       enemyTeam: state.allyTeam,
       allyDeckList: state.enemyDeckList,
       enemyDeckList: state.allyDeckList,
+      allyPowerList: state.enemyPowerList,
+      enemyPowerList: state.allyPowerList,
       ally: !state.ally
     }));
   }
@@ -114,8 +154,11 @@ class App extends React.Component<{}, AppState> {
           enemyTeam={this.state.enemyTeam}
           allyDeckList={this.state.allyDeckList}
           enemyDeckList={this.state.enemyDeckList}
+          allyPowerList={this.state.allyPowerList}
+          enemyPowerList={this.state.enemyPowerList}
           setTeam={this.setTeam}
           setDeckList={this.setDeckList}
+          setPowerList={this.setPowerList}
           swapPlayers={this.swapPlayers}/>
         );
     }

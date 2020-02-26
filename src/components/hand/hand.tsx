@@ -7,14 +7,14 @@ interface HandProps {
 	instances: Array<CardInstance>
 	ally: boolean
   stage: GameStage
-	onCardClick?: (id: number) => void
+	onCardClick?: (instance: CardInstance) => void
 	className?: string
 }
 
 export class Hand extends React.Component<HandProps> {
-	handleClick = (id: number) => () => {
+	handleClick = (instance: CardInstance) => () => {
 		if(this.props.onCardClick)
-			this.props.onCardClick(id)
+			this.props.onCardClick(instance)
 	}
 	render() {
 		const {instances, ally, className} = this.props
@@ -33,7 +33,7 @@ export class Hand extends React.Component<HandProps> {
 						instance={instance}
 						ally={this.props.ally}
             stage={this.props.stage}
-						onClick={onClick(instance.id)}
+						onClick={onClick(instance)}
 					 />
 					))}
 			</div>
@@ -44,13 +44,13 @@ export class Hand extends React.Component<HandProps> {
 interface SelectedCardProps {
 	instance: CardInstance
   stage: GameStage
-	deleteCardClick?: (id: number) => void
+	deleteCardClick?: () => void
 }
 
 export class SelectedCard extends React.Component<SelectedCardProps> {
-	deleteCardClick = (id: number) => () => {
+	deleteCardClick = () => () => {
 		if(this.props.deleteCardClick)
-			this.props.deleteCardClick(id)
+			this.props.deleteCardClick()
 	}
 
 	render() {
@@ -63,7 +63,7 @@ export class SelectedCard extends React.Component<SelectedCardProps> {
 				}
 				{
 					instance &&
-					<button className="delete-button" onClick={this.deleteCardClick(instance.id)}> X </button>
+					<button className="delete-button" onClick={this.deleteCardClick()}> X </button>
 				}
 			</div>
 		)

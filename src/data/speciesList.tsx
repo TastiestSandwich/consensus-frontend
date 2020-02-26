@@ -1,5 +1,6 @@
 import { BiomeList } from '../components/type/biome';
 import { BaseChinpokoData } from '../components/chinpoko/chinpoko';
+import { PowerList } from './powerList';
 import bisonte from '../images/bisonte.png'
 import lagarto from '../images/lagarto.png'
 import nutria from '../images/nutria.png'
@@ -15,7 +16,8 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
 		baseATK: 60,
 		baseDEF: 100,
 		baseSPE: 60,
-		biome: BiomeList["FOREST"]
+		biome: BiomeList["FOREST"],
+    power: PowerList["Photosyntesis"]
 	},
 	"LAGARTO": {
 		speciesName: "LAGARTO",
@@ -24,7 +26,8 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
 		baseATK: 100,
 		baseDEF: 70,
 		baseSPE: 80,
-		biome: BiomeList["DESERT"]
+		biome: BiomeList["DESERT"],
+    power: PowerList["Heat Wave"]
 	},
 	"NUTRIA": {
 		speciesName: "NUTRIA",
@@ -33,7 +36,8 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
 		baseATK: 100,
 		baseDEF: 60,
 		baseSPE: 100,
-		biome: BiomeList["RIVER"]
+		biome: BiomeList["RIVER"],
+    power: PowerList["Aqua Jet"]
 	},
 	"GATO": {
 		speciesName: "GATO",
@@ -42,7 +46,8 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
 		baseATK: 80,
 		baseDEF: 50,
 		baseSPE: 140,
-		biome: BiomeList["UNKNOWN"]
+		biome: BiomeList["UNKNOWN"],
+    power: PowerList["Superposition"]
 	},
   "ARDILLA": {
     speciesName: "ARDILLA",
@@ -51,7 +56,8 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
     baseATK: 60,
     baseDEF: 60,
     baseSPE: 120,
-    biome: BiomeList["CITY"]
+    biome: BiomeList["CITY"],
+    power: PowerList["Charge Up"]
   },
   "MORSA": {
     speciesName: "MORSA",
@@ -60,6 +66,7 @@ export const BaseChinpokoList: {[species: string] : BaseChinpokoData} = {
     baseATK: 100,
     baseDEF: 70,
     baseSPE: 50,
-    biome: BiomeList["ARCTIC"]
+    biome: BiomeList["ARCTIC"],
+    power: PowerList["Deep Freeze"]
   }
 };
