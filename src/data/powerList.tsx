@@ -68,7 +68,7 @@ export const PowerList: { [name:string] : CardData } = {
     },{
       effect: EffectList["DAMAGE"],
       parameters: {
-        power: 120
+        power: 100
       }
     }]
   },

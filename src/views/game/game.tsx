@@ -1,12 +1,13 @@
 import React from 'react';
 import '../../root.scss';
 import './game.scss';
-import Card, { CardData, CardInstance, shuffle, CardSource } from '../../components/card/card';
+import { CardData, CardInstance, shuffle, CardSource } from '../../components/card/card';
 import { Hand, SelectedCard } from '../../components/hand/hand';
 import { Chinpoko, ChinpokoData } from '../../components/chinpoko/chinpoko';
 import { PhaseCounter, PhaseGroup, PhaseData, CurrentPhase, initPhaseGroupData, setPhaseGroupData, shouldPhaseBeClicked, deleteFromPhaseGroupData, findHighestIndexOverLimit } from '../../components/phase/phase';
 import { Engine, calcDamage, calcAbsorb, calcHeal } from '../../components/engine/engine';
 import { CardAction } from '../../components/action/action';
+import Power from '../../components/power/power';
 
 export const enum GameStage {
   PLAY,
@@ -428,11 +429,15 @@ export class Game extends React.Component<GameProps, GameState> {
   renderField() {
     const enemyChinpoko: ChinpokoData = this.props.enemyTeam[this.state.enemyChinpoko];
     const allyChinpoko: ChinpokoData = this.props.allyTeam[this.state.allyChinpoko];
+    const allyPower: CardInstance = allyChinpoko.powerId ? this.props.allyPowerList[allyChinpoko.powerId] : null;
+    const stage: GameStage = this.state.stage;
+
     return (
       <div className = "game-component__field">
         <Chinpoko chinpoko = {enemyChinpoko} ally={false} />
         <Engine />
-        <Chinpoko chinpoko = {allyChinpoko} ally={true} />
+        <Chinpoko chinpoko = {allyChinpoko} power={allyPower} ally={true} />
+        <Power instance={allyPower} stage={stage} onClick={() => this.handleCardClick(allyPower)} />
       </div>
     );
   }
@@ -453,21 +458,22 @@ export class Game extends React.Component<GameProps, GameState> {
           { <PhaseGroup phases={this.state.allyPhases} ally={true} stage={stage} currentPhase={this.state.currentPhase}
             onPhaseClick={this.handlePhaseClick}
             onPhaseDelete={this.deletePhaseClick} /> }
-          { this.state.selectedCard &&
-          <SelectedCard instance={this.state.selectedCard} deleteCardClick={this.deleteCardClick} stage={this.state.stage}/> }
+          <div className="game-component__selected">
+           { this.state.selectedCard &&
+            <SelectedCard instance={this.state.selectedCard} deleteCardClick={this.deleteCardClick} stage={this.state.stage}/> }
+          </div>
         </div>
         <div className="game-component__board">
-          <Hand instances={enemyInstances} ally={false} stage={stage} className="game-component__hand" />
+          <div className="game-component__enemy-zone">
+            <Hand instances={enemyInstances} ally={false} stage={stage} className="game-component__hand" />
+          </div>
           { this.renderField() }
-          <Hand instances={allyInstances} ally={true} stage={stage} onCardClick={this.handleCardClick} className="game-component__hand"/>
-        </div>
-        <div className="game-component__trainer">
-          <Card
-            instance={trainerPower}
-            ally={true}
-            stage={stage}
-            onClick={() => this.handleCardClick(trainerPower)}
-           />
+          <div className="game-component__ally-zone">
+            <div className="game-component__ally-trainer">
+              <Power instance={trainerPower} stage={stage} onClick={() => this.handleCardClick(trainerPower)} />
+            </div>
+            <Hand instances={allyInstances} ally={true} stage={stage} onCardClick={this.handleCardClick} className="game-component__hand"/>
+          </div>
         </div>
       </div>
     );
