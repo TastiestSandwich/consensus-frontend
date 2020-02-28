@@ -77,12 +77,161 @@ export const CardList: { [name:string] : CardData } = {
 			effect: EffectList["WAIT"],
 			parameters: {}
 		},{
-			effect: EffectList["WAIT"],
-			parameters: {}
-		},{
 			effect: EffectList["HEAL"],
 			parameters: {
 				percentage: 0.5,
+			}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		}]
+	},
+	"Volt Switch": {
+		name: "Volt Switch",
+		text: "Attacks with electricity and then goes back",
+		type: TypeList["ELECTRIC"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 50
+			}
+		},{
+			effect: EffectList["CHANGE"],
+			parameters: {}
+		}]
+	},
+	"Earthquake": {
+		name: "Earthquake",
+		text: "Shakes the earth with great strength",
+		type: TypeList["EARTH"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}	
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 40
+			}
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 40
+			}
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 40
+			}
+		}]
+	},
+	"Ice Shard": {
+		name: "Ice Shard",
+		text: "Launches a fast shard of sharp ice",
+		type: TypeList["COLD"],
+		actions: [{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 30
+			}
+		}]
+	},
+	"Wake Turbulence": {
+		name: "Wake Turbulence",
+		text: "Leaves at high speed, leaving turbulent winds afterwards",
+		type: TypeList["WIND"],
+		actions: [{
+			effect: EffectList["CHANGE"],
+			parameters: {}
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 30
+			}
+		}]
+	},
+	"Poison Sting": {
+		name: "Poison Sting",
+		text: "Stings the enemy with venom, causing damage later",
+		type: TypeList["TOXIC"],
+		actions: [{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 20
+			}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 65
+			}
+		}]
+	},
+	"Recycle Bite": {
+		name: "Recycle Bite",
+		text: "Bites the enemy, recycling the damage to health",
+		type: TypeList["ARTIFICIAL"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["ABSORB"],
+			parameters:{
+				power: 40,
+				percentage: 0.65
+			}
+		}]
+	},
+	"Uncertainty": {
+		name: "Uncertainty",
+		text: "Misteriously vanishes after recomposing itself",
+		type: TypeList["MISTERY"],
+		actions: [{
+			effect: EffectList["HEAL"],
+			parameters: {
+				percentage: 0.2
+			}
+		},{
+			effect: EffectList["CHANGE"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		}]
+	},
+	"Fast Change": {
+		name: "Fast Change",
+		text: "Quickly changes the current chinpoko",
+		type: TypeList["NEUTRAL"],
+		actions: [{
+			effect: EffectList["CHANGE"],
+			parameters: {}
+		}]
+	},
+	"Body Slam": {
+		name: "Body Slam",
+		text: "Slams its body against the enemy",
+		type: TypeList["NEUTRAL"],
+		actions: [{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["WAIT"],
+			parameters: {}
+		},{
+			effect: EffectList["DAMAGE"],
+			parameters: {
+				power: 70
 			}
 		}]
 	}
