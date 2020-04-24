@@ -7,6 +7,11 @@ import {
   Route,
 } from "react-router-dom"
 
+export enum AppView {
+  CREATOR,
+  VIEWER
+}
+
 class App extends React.Component<{}, {}> {
 
   render() {
@@ -17,7 +22,7 @@ class App extends React.Component<{}, {}> {
           Creator
         </Route>
         <Route path="/id">
-          viewer
+          Viewer
         </Route>
       </Switch>
       </Router>
