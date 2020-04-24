@@ -6,31 +6,19 @@ interface StartProps {
 }
 
 export class Start extends React.Component<StartProps> {
-  changeViewToGame = () => {
-    this.props.changeView(AppView.GAME);
-  }
-  changeViewToTeam = () => {
-    this.props.changeView(AppView.TEAM);
-  }
-  changeViewToDeck = () => {
-    this.props.changeView(AppView.DECK);
+  changeViewToStart = () => {
+    this.props.changeView(AppView.START);
   }
 
 	render() {
     return(
       <div className="start-component">
         <div className="start-component__title">
-          ARE YOU READY TO BECOME A CHINPOKOMON MASTER
+          ARE YOU READY TO BECOME A CONSENSUS MASTER
         </div>
-        <button className="start-component__game-button" onClick={this.changeViewToGame}>
-          GAME
+        <button className="start-component__game-button" onClick={this.changeViewToStart}>
+          START
         </button>
-        <button className="start-component__team-button" onClick={this.changeViewToTeam}>
-          TEAM
-        </button>
-        <button className="start-component__deck-button" onClick={this.changeViewToDeck}>
-          DECK
-         </button>
       </div>
     );
 	}
