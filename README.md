@@ -1,4 +1,4 @@
-Chinpokomon battle prototype.
+Consensus battle prototype.
 
 ## Available Scripts
 
