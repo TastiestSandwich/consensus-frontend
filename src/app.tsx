@@ -1,39 +1,27 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Start } from './views/start/start';
 
-export const enum AppView {
-  START
-}
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom"
 
-interface AppState {
-  view: AppView
-}
-
-class App extends React.Component<{}, AppState> {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      view: AppView.START,
-    };
-  }
-
-  changeView = (view: AppView) => {
-    this.setState({
-      view: view
-    });
-  }
+class App extends React.Component<{}, {}> {
 
   render() {
-    const view = this.state.view;
-
-    switch(view) {
-      case AppView.START:
-        return (
-          <Start changeView={this.changeView}/>
-        );
-    }
+    return (
+      <Router>
+      <Switch>
+        <Route exact path="/">
+          Creator
+        </Route>
+        <Route path="/id">
+          viewer
+        </Route>
+      </Switch>
+      </Router>
+    )
   }
 }
 
