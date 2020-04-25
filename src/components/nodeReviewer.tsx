@@ -12,6 +12,7 @@ export default class NodeReviewer extends React.Component<NodeReviewerProps>{
         return (
             <React.Fragment>
                 <div>
+                    <p>{node.id}</p>
                     <p>{node.sentence}</p>
                 </div>
                 {
