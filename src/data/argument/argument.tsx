@@ -4,8 +4,9 @@ export interface Argument {
   title?: string
 }
 
-export interface Node {
-  type: NodeType
+export type Node = Statement | Fact | Source
+
+export interface NodeBase {
   id: number
   sentence: string
 }
@@ -16,17 +17,17 @@ export enum NodeType {
   SOURCE
 }
 
-export interface Statement extends Node {
+export interface Statement extends NodeBase {
   type: NodeType.STATEMENT
   children?: (Statement | Fact)[]
 }
 
-export interface Fact extends Node {
+export interface Fact extends NodeBase {
   type: NodeType.FACT
   sources: Source[]
 }
 
-export interface Source extends Node{
+export interface Source extends NodeBase{
   type: NodeType.SOURCE
   href: string
   description: string
