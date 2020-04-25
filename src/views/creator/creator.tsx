@@ -3,7 +3,8 @@ import * as api from "../../api"
 import {
 	Argument,
 	createEmptyArgument,
-	Node
+	Node,
+	NodeType
 } from "../../data/argument/argument"
 import ArgumentRender from "../../components/argumentRender"
 import NodeEditor from "../../components/nodeEditor"
@@ -33,10 +34,14 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		})
 	}
 
-	handleSaveSelectedNode = (node: Node) => {
+	handleSaveSelectedNode = (sentence: string, type: NodeType, href?: string, description?: string) => {
 		//TODO search node in argument and substitute
 		let argument = {...this.state.argument} as Argument
-		argument.root = node
+		let node = {...this.state.selectedNode} as Node
+
+		node.sentence = sentence
+		node.type = type
+		
 		this.setState({
 			selectedNode: node,
 			argument: argument
