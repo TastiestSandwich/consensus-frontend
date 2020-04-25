@@ -71,7 +71,7 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
           { childrenCount }
         </div>
         <div className="node-editor__type">
-          { node.type.toString() }
+          { NodeType[node.type] }
         </div>
         {
           node.type === NodeType.SOURCE &&
