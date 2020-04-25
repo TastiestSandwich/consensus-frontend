@@ -1,6 +1,8 @@
 import React from "react"
 import { Node, NodeType, findChildrenCount } from "../data/argument/argument"
 
+import "./nodeEditor.scss"
+
 interface NodeEditorProps {
   node: Node
   save: (sentence: string, type: NodeType, href: string, description: string) => void
@@ -161,7 +163,7 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
 
   render() {
     return(
-      <div className="node-editor">
+      <div className="node-editor-component">
         { this.renderNodePreview() }
         { this.renderEditorActions() }
         { this.renderNextStepButton() }

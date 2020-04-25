@@ -8,7 +8,7 @@ import {
 	Source
 } from "../data/argument/argument"
 
-import "./style.scss"
+import "./argumentRenderer.scss"
 
 interface ArgumentRenderProps {
 	argument: Argument
@@ -30,12 +30,14 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 
 
 	renderFact(fact: Fact) {
+		const multipleChildClass = fact.sources.length > 1 ? "multiple" : ""
 		return (
 			<>
 			<div className="root fact">
 				{fact.sentence}
 			</div>
-			<div className="children">
+			<div className={`children ${multipleChildClass}`}>
+
 			{
 				fact.sources.map(child => this.renderSource(child))
 			}
@@ -45,6 +47,7 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 	}
 
 	renderStatement(st: Statement) {
+		const multipleChildClass = st.children.length > 1 ? "multiple" : ""
 		return (
 			<>
 			<div className="root statement">
@@ -52,7 +55,7 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 			</div>
 			{
 				st.children.length > 0 &&
-				<div className="children">
+				<div className={`children ${multipleChildClass}`}>
 				{
 					st.children.map(child => this.renderTree(child))
 				}
