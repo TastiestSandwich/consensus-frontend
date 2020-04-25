@@ -5,10 +5,16 @@ export interface Argument {
 }
 
 export interface Node {
-  sentence: string
   id: number
-  sources?: Source[]
+  sentence: string
+}
+
+export interface Statement extends Node {
   children?: Node[]
+}
+
+export interface Fact extends Node {
+  sources: Source[]
 }
 
 export interface Source{
