@@ -87,3 +87,7 @@ export function findChildrenCount(node: Node) : number {
     }
   }
 }
+
+export function getNextNodeId() : number {
+  return Date.now()
+}
