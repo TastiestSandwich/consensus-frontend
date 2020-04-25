@@ -1,0 +1,22 @@
+.argument-renderer-component{
+	display:flex;
+	.tree{
+		display: flex;
+		.root{
+			display: flex;
+			align-items: center;
+			order:2;
+		}
+		.children{
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			order:1;
+		}
+
+		.source{
+			display: flex;
+			flex-direction: column;
+		}
+	}
+}

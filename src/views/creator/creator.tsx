@@ -75,7 +75,37 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		}
 
 		let argument = this.state.argument as Argument
-		let selectedNode = this.state.selectedNode as Node
+		/* testing
+		let argument = {
+			id: 1,
+			root: {
+				id: 0,
+				sentence: "El caballo blanco de santiago es blanco",
+				type: NodeType.STATEMENT as NodeType.STATEMENT,
+				children: [
+					{
+						id:1,
+						type: NodeType.FACT as NodeType.FACT,
+						sentence: "Habia un caballo en santiago",
+						sources: [
+							{
+								id:2,
+								type: NodeType.SOURCE as NodeType.SOURCE,
+								sentence: "El caballo homo esta en santiago",
+								href: "http://wwww.wikipedia.com",
+								description: "La universidad de madrid vio el caballo al parecer"
+							}
+						]
+					},
+					{
+						id:3,
+						type: NodeType.STATEMENT as NodeType.STATEMENT,
+						sentence: "Solo se permitian caballos blancos en santiago",
+					}
+				]
+			}
+		}
+*/		let selectedNode = this.state.selectedNode as Node
 
 		return (
 			<div className="creator-component">
