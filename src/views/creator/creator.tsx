@@ -7,8 +7,7 @@ import {
 	createEmptyFact,
 	createEmptySource,
 	Node,
-	NodeType,
-	findChildrenCount
+	NodeType
 } from "../../data/argument/argument"
 import ArgumentRender from "../../components/argumentRender"
 import NodeEditor from "../../components/nodeEditor"
@@ -36,82 +35,6 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 				selectedNode: argument.root
 			})
 		})
-	}
-
-	handleUpdateSentence = (sentence: string) => {
-		//TODO search node in argument and substitute
-		let argument = {...this.state.argument} as Argument
-		let selectedNode = {...this.state.selectedNode} as Node
-
-		selectedNode.sentence = sentence
-		//TODO insert node by id
-		argument.root = selectedNode
-
-		this.updateArgumentAndNode(argument, selectedNode)
-	}
-
-	handleUpdateNodeType = (type: NodeType) => {
-		//TODO search node in argument and substitute
-		let argument = {...this.state.argument} as Argument
-		let selectedNode = this.state.selectedNode as Node
-
-		let childrenCount = findChildrenCount(selectedNode)
-		if (childrenCount > 0) {
-			return
-		}
-		if (selectedNode.type === type) {
-			return
-		}
-
-		let node
-		switch(type) {
-			case NodeType.STATEMENT: {
-				node = createEmptyStatement(selectedNode.id)
-			}
-			case NodeType.FACT: {
-				node = createEmptyFact(selectedNode.id)
-			}
-			case NodeType.SOURCE: {
-				node = createEmptySource(selectedNode.id)
-			}
-		}
-		node.sentence = selectedNode.sentence
-		//TODO insert node by id
-		argument.root = selectedNode
-
-		this.updateArgumentAndNode(argument, selectedNode)
-	}
-
-	handleUpdateDescription = (description: string) => {
-		//TODO search node in argument and substitute
-		let argument = {...this.state.argument} as Argument
-		let selectedNode = {...this.state.selectedNode} as Node
-
-		if (selectedNode.type !== NodeType.SOURCE) {
-			return
-		}
-
-		selectedNode.description = description
-		//TODO insert node by id
-		argument.root = selectedNode
-
-		this.updateArgumentAndNode(argument, selectedNode)
-	}
-
-	handleUpdateHref = (href: string) => {
-		//TODO search node in argument and substitute
-		let argument = {...this.state.argument} as Argument
-		let selectedNode = {...this.state.selectedNode} as Node
-
-		if (selectedNode.type !== NodeType.SOURCE) {
-			return
-		}
-
-		selectedNode.href = href
-		//TODO insert node by id
-		argument.root = selectedNode
-
-		this.updateArgumentAndNode(argument, selectedNode)
 	}
 
 	updateArgumentAndNode(argument: Argument, node: Node) {
@@ -155,8 +78,7 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 			return <div className="loading">I AM LOADING</div>
 		}
 
-		let argument = this.state.argument as Argument
-		/*
+		// let argument = this.state.argument as Argument
 		let argument = {
 			id: 1,
 			root: {
@@ -186,8 +108,8 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 					}
 				]
 			}
-		}*/
-		let selectedNode = this.state.selectedNode as Node
+		}
+		let selectedNode = argument.root
 
 		return (
 			<div className="creator-component">
@@ -198,8 +120,6 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 				<NodeEditor
 					node={selectedNode}
 					save={(sentence: string, type: NodeType, href: string, description: string) => this.handleSaveSelectedNode(sentence, type, href, description)}
-					updateSentence={(sentence: string) => this.handleUpdateSentence(sentence)}
-					updateNodeType={(type: NodeType) => this.handleUpdateNodeType(type)}
 				/>
 			</div>
 		)

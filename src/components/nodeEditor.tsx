@@ -4,8 +4,6 @@ import { Node, NodeType, findChildrenCount } from "../data/argument/argument"
 interface NodeEditorProps {
   node: Node
   save: (sentence: string, type: NodeType, href: string, description: string) => void
-  updateSentence: (sentence: string) => void
-  updateNodeType: (type: NodeType) => void
 }
 
 interface NodeEditorState {
@@ -26,6 +24,15 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
     this.state = {
       step: EditorStep.SENTENCE
     }
+  }
+
+  updateSentence = (sentence: string) => {
+    const node = this.props.node
+    if (node.type === NodeType.SOURCE) {
+      this.props.save(sentence, node.type, node.href, node.description)
+    } else {
+      this.props.save(sentence, node.type, "", "")
+    } 
   }
 
   handleNextStep = () => {
@@ -89,7 +96,7 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
         </div>
         <input className="node-editor__sentence-input"
         value = {this.props.node.sentence}
-        onChange = {e => this.props.updateSentence(e.target.value)}
+        onChange = {e => this.updateSentence(e.target.value)}
         />
       </div>
     )
@@ -153,6 +160,8 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
   }
 
   render() {
+    console.log("he renderitzat")
+    console.log(this.props.node)
     return(
       <div className="node-editor">
         { this.renderNodePreview() }
