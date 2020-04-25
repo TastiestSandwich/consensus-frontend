@@ -1,6 +1,8 @@
+
+
 export interface Argument {
-	root: Node
-	id: number
+  root: Node
+  id: number
   title?: string
 }
 
@@ -27,13 +29,13 @@ export interface Fact extends NodeBase {
   sources: Source[]
 }
 
-export interface Source extends NodeBase{
+export interface Source extends NodeBase {
   type: NodeType.SOURCE
   href: string
   description: string
 }
 
-export function createEmptyArgument(id: number) : Argument {
+export function createEmptyArgument(id: number): Argument {
   return {
     id: id,
     root: {
@@ -45,7 +47,7 @@ export function createEmptyArgument(id: number) : Argument {
   }
 }
 
-export function createEmptyStatement(id: number) : Statement {
+export function createEmptyStatement(id: number): Statement {
   return {
     id: id,
     sentence: "",
@@ -54,7 +56,7 @@ export function createEmptyStatement(id: number) : Statement {
   }
 }
 
-export function createEmptyFact(id: number) : Fact {
+export function createEmptyFact(id: number): Fact {
   return {
     id: id,
     sentence: "",
@@ -63,7 +65,7 @@ export function createEmptyFact(id: number) : Fact {
   }
 }
 
-export function createEmptySource(id: number) : Source {
+export function createEmptySource(id: number): Source {
   return {
     id: id,
     sentence: "",
@@ -73,7 +75,7 @@ export function createEmptySource(id: number) : Source {
   }
 }
 
-export function findChildrenCount(node: Node) : number {
+export function findChildrenCount(node: Node): number {
   switch (node.type) {
     case NodeType.STATEMENT: {
       return node.children.length
@@ -90,4 +92,20 @@ export function findChildrenCount(node: Node) : number {
 
 export function getNextNodeId() : number {
   return Date.now()
+}
+
+export function createFakeList() {
+  const fakeRoot = {
+    id: 1,
+    type: NodeType.STATEMENT as NodeType.STATEMENT,
+    sentence: "Habia un caballo en santiago",
+    children: []
+  }
+  let fakeList = [
+    { root: fakeRoot, id: 0, title: "gerardo de revilla" },
+    { root: fakeRoot, id: 1, title: "ses coffee boy" },
+    { root: fakeRoot, id: 2, title: "mapache maravilla" },
+    { root: fakeRoot, id: 3, title: "agente Mike al servicio" }
+  ]
+  return fakeList
 }
