@@ -1,4 +1,4 @@
-import List from "views/list/list"
+
 
 export interface Argument {
   root: Node
