@@ -90,6 +90,10 @@ export function findChildrenCount(node: Node): number {
   }
 }
 
+export function getNextNodeId() : number {
+  return Date.now()
+}
+
 export function createFakeList() {
   const fakeRoot = {
     id: 1,
@@ -98,10 +102,10 @@ export function createFakeList() {
     children: []
   }
   let fakeList = [
-    { root: fakeRoot, id: 0, tittle: "gerardo de revilla" },
-    { root: fakeRoot, id: 1, tittle: "ses coffee boy" },
-    { root: fakeRoot, id: 2, tittle: "mapache maravilla" },
-    { root: fakeRoot, id: 3, tittle: "agente Mike al servicio" }
+    { root: fakeRoot, id: 0, title: "gerardo de revilla" },
+    { root: fakeRoot, id: 1, title: "ses coffee boy" },
+    { root: fakeRoot, id: 2, title: "mapache maravilla" },
+    { root: fakeRoot, id: 3, title: "agente Mike al servicio" }
   ]
   return fakeList
 }

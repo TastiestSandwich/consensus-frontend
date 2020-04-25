@@ -5,7 +5,7 @@ import "./nodeEditor.scss"
 
 interface NodeEditorProps {
   node: Node
-  save: (sentence: string, type: NodeType, href: string, description: string) => void
+  save: (sentence: string, type: NodeType, href?: string, description?: string, childType?: NodeType) => void
 }
 
 interface NodeEditorState {
@@ -16,7 +16,6 @@ enum EditorStep {
   SENTENCE,
   HREF,
   DESCRIPTION,
-  TYPE,
   ADDNODE
 }
 
@@ -33,8 +32,20 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
     if (node.type === NodeType.SOURCE) {
       this.props.save(sentence, node.type, node.href, node.description)
     } else {
-      this.props.save(sentence, node.type, "", "")
+      this.props.save(sentence, node.type)
     } 
+  }
+
+  updateType = (type: NodeType) => {
+    const node = this.props.node
+    if (type === node.type) {
+      return
+    }
+    if (node.type === NodeType.SOURCE) {
+      this.props.save(node.sentence, type, node.href, node.description)
+    } else {
+      this.props.save(node.sentence, type)
+    }
   }
 
   handleNextStep = () => {
@@ -46,18 +57,79 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
   }
 
   findNextStep() : EditorStep {
-    const childrenCount = findChildrenCount(this.props.node)
     switch(this.state.step) {
       case EditorStep.SENTENCE: {
-        return childrenCount > 0 ? EditorStep.ADDNODE : EditorStep.TYPE
+        return this.props.node.type === NodeType.SOURCE ? EditorStep.HREF : EditorStep.ADDNODE
       }
-      case EditorStep.TYPE: {
+      case EditorStep.HREF: {
+        return EditorStep.DESCRIPTION
+      }
+      case EditorStep.DESCRIPTION: {
         return EditorStep.ADDNODE
       }
       default: {
         return EditorStep.SENTENCE
       }
     }
+  }
+
+  addSourceChild = () => {
+    const node = this.props.node
+    const childrenCount = findChildrenCount(node)
+    switch(node.type) {
+      case NodeType.STATEMENT: {
+        if (childrenCount > 0) {
+          console.log("Can't add source children to statement with children")
+          return
+        } else {
+          console.log("Updating statement node to fact and adding source child")
+          this.props.save(node.sentence, NodeType.FACT, "", "", NodeType.SOURCE)
+        }
+        break
+      }
+      case NodeType.FACT: {
+        console.log("Adding source child to Fact")
+        this.props.save(node.sentence, NodeType.FACT, "", "", NodeType.SOURCE)
+        break
+      }
+      case NodeType.SOURCE: {
+        console.log("Can't add childs to sources")
+        return
+      }
+    }
+    this.handleNextStep()
+  }
+
+  addStatementChild = () => {
+    const node = this.props.node
+    const childrenCount = findChildrenCount(node)
+    switch (node.type) {
+      case NodeType.STATEMENT: {
+        console.log("Adding statement child to Statement")
+        this.props.save(node.sentence, NodeType.STATEMENT, "", "", NodeType.STATEMENT)
+        break
+      }
+      case NodeType.FACT: {
+        if (childrenCount > 0) {
+          console.log("Can't add statement children to fact with children")
+          return
+        } else {
+          console.log("Updating fact node to statement and adding statement child")
+          this.props.save(node.sentence, NodeType.STATEMENT, "", "", NodeType.STATEMENT)
+        }
+        break
+      }
+      case NodeType.SOURCE: {
+        console.log("Can't add childs to sources")
+        return
+      }
+    }
+    this.handleNextStep()
+  }
+
+  addSibling = () => {
+    console.log("add sibling")
+    return
   }
 
   renderNodePreview() {
@@ -104,30 +176,48 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
     )
   }
 
-  renderTypeStep() {
-    return(
-      <div className="node-editor__actions">
-        <div className="node-editor__message">
-          Is this a Statement, a Fact or a Source?
-        </div>
-        <div className="node-editor__type-buttons">
-          <button className="node-editor__statement-button">STATEMENT</button>
-          <button className="node-editor__fact-button">FACT</button>
-          <button className="node-editor__source-button">SOURCE</button>
-        </div>
-      </div>
-    )
-  }
-
   renderAddNodeStep() {
-     return(
+    const childrenCount = findChildrenCount(this.props.node)
+    let childSource : boolean = true
+    let childStatement : boolean = true
+
+    if (this.props.node.type === NodeType.SOURCE) {
+      // Sources can't have childs
+      childSource = false
+      childStatement = false
+    } else if (this.props.node.type === NodeType.STATEMENT && childrenCount > 0) {
+      // Statement with childs can only have statement childs
+      childSource = false
+    } else if (this.props.node.type === NodeType.FACT && childrenCount > 0) {
+      // Facts with childs can only have source childs
+      childStatement = false
+    }
+
+    return(
       <div className="node-editor__actions">
         <div className="node-editor__message">
           Add a Child or a Sibling
         </div>
         <div className="node-editor__add-node-buttons">
-          <button className="node-editor__child-button">CHILD</button>
-          <button className="node-editor__sibling-button">SIBLING</button>
+          { childSource && 
+            <button 
+            className="node-editor__child-source-button"
+            onClick={this.addSourceChild}>
+            ADD SOURCE CHILD
+            </button> 
+          }
+          { childStatement && 
+            <button 
+            className="node-editor__child-statement-button"
+            onClick={this.addStatementChild}>
+            ADD STATEMENT CHILD
+            </button> 
+          }
+          <button 
+          className="node-editor__sibling-button"
+          onClick={this.addSibling}>
+          ADD SIBLING
+          </button>
         </div>
       </div>
     )
@@ -148,9 +238,6 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
     switch(this.state.step) {
       case EditorStep.SENTENCE: {
         return this.renderSentenceStep()
-      }
-      case EditorStep.TYPE: {
-        return this.renderTypeStep()
       }
       case EditorStep.ADDNODE: {
         return this.renderAddNodeStep()
