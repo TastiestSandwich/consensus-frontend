@@ -1,17 +1,14 @@
 import React from "react"
-import { Node, NodeType, Statement, Fact, Source } from "../data/argument/argument"
+import { Node, NodeType, findChildrenCount } from "../data/argument/argument"
 
 interface NodeEditorProps {
   node: Node
   save: (sentence: string, type: NodeType, href: string, description: string) => void
+  updateSentence: (sentence: string) => void
+  updateNodeType: (type: NodeType) => void
 }
 
 interface NodeEditorState {
-  sentence: string
-  childrenCount: number
-  type: NodeType
-  href: string
-  description: string
   step: EditorStep
 }
 
@@ -26,59 +23,12 @@ enum EditorStep {
 export default class NodeEditor extends React.Component<NodeEditorProps, NodeEditorState> {
   constructor(props) {
     super(props)
-
-    switch(props.node.type) {
-      case NodeType.FACT: {
-        let node : Fact = props.node as Fact
-        this.state = {
-          sentence: node.sentence,
-          childrenCount: node.sources.length,
-          href: "",
-          description: "",
-          type: NodeType.FACT,
-          step: EditorStep.SENTENCE
-        }
-      }
-      case NodeType.SOURCE: {
-        let node : Source = props.node as Source
-        this.state = {
-          sentence: node.sentence,
-          childrenCount: 0,
-          href: node.href,
-          description: node.description,
-          type: NodeType.SOURCE,
-          step: EditorStep.SENTENCE
-        }
-      }
-      // Default is NodeType.STATEMENT
-      default: {
-        let node : Statement = props.node as Statement
-        this.state = {
-          sentence: node.sentence,
-          childrenCount: node.children ? node.children.length : 0,
-          href: "",
-          description: "",
-          type: NodeType.STATEMENT,
-          step: EditorStep.SENTENCE
-        }
-      }
+    this.state = {
+      step: EditorStep.SENTENCE
     }
   }
 
-  updateSentence = (sentence: string) => {
-    this.setState({
-      sentence: sentence
-    })
-  }
-
   handleNextStep = () => {
-    this.props.save(
-      this.state.sentence,
-      this.state.type,
-      this.state.href,
-      this.state.description
-    )
-
     let nextStep = this.findNextStep()
 
     this.setState({
@@ -87,9 +37,10 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
   }
 
   findNextStep() : EditorStep {
+    const childrenCount = findChildrenCount(this.props.node)
     switch(this.state.step) {
       case EditorStep.SENTENCE: {
-        return this.state.childrenCount > 0 ? EditorStep.ADDNODE : EditorStep.TYPE
+        return childrenCount > 0 ? EditorStep.ADDNODE : EditorStep.TYPE
       }
       case EditorStep.TYPE: {
         return EditorStep.ADDNODE
@@ -101,26 +52,28 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
   }
 
   renderNodePreview() {
-    const { sentence, childrenCount, type, href, description } = this.state
+    const node = this.props.node
+    const childrenCount = findChildrenCount(node)
+
     return(
       <div className="node-editor__node-preview">
         <div className="node-editor__sentence">
-          { sentence }
+          { node.sentence }
         </div>
         <div className="node-editor__children-count">
           { childrenCount }
         </div>
         <div className="node-editor__type">
-          { type }
+          { node.type.toString() }
         </div>
         {
-          type === NodeType.SOURCE &&
+          node.type === NodeType.SOURCE &&
           <div>
             <div className="node-editor__href">
-            { href }
+            { node.href }
             </div>
             <div className="node-editor__description">
-            { description }
+            { node.description }
             </div>
           </div>  
         }
@@ -135,8 +88,8 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
           Add a sentence
         </div>
         <input className="node-editor__sentence-input"
-        value = {this.state.sentence}
-        onChange = {e => this.updateSentence(e.target.value)}
+        value = {this.props.node.sentence}
+        onChange = {e => this.props.updateSentence(e.target.value)}
         />
       </div>
     )
@@ -185,16 +138,16 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
   renderEditorActions() {
     switch(this.state.step) {
       case EditorStep.SENTENCE: {
-        return this.renderSentenceStep
+        return this.renderSentenceStep()
       }
       case EditorStep.TYPE: {
-        return this.renderTypeStep
+        return this.renderTypeStep()
       }
       case EditorStep.ADDNODE: {
-        return this.renderAddNodeStep
+        return this.renderAddNodeStep()
       }
       default: {
-        return this.renderSentenceStep
+        return this.renderSentenceStep()
       }
     }
   }
@@ -202,9 +155,9 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
   render() {
     return(
       <div className="node-editor">
-        { this.renderNodePreview }
-        { this.renderEditorActions }
-        { this.renderNextStepButton }
+        { this.renderNodePreview() }
+        { this.renderEditorActions() }
+        { this.renderNextStepButton() }
       </div>
     )
   }

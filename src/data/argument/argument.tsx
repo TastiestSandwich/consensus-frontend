@@ -72,3 +72,18 @@ export function createEmptySource(id: number) : Source {
     description: ""
   }
 }
+
+export function findChildrenCount(node: Node) : number {
+  switch (node.type) {
+    case NodeType.STATEMENT: {
+      return node.children.length
+    }
+    case NodeType.FACT: {
+      return node.sources.length
+    }
+    //Includes SOURCE, which has no children
+    default: {
+      return 0
+    }
+  }
+}
