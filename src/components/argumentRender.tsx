@@ -2,16 +2,14 @@ import React from "react"
 import { Argument } from "../data/argument/argument"
 
 interface ArgumentRenderProps {
-  argument: Argument
-  
+	argument: Argument
+	selectedNodeId: number
 }
 
 export default class ArgumentRender extends React.Component<ArgumentRenderProps> {
 	  
-	renderArgument() {
-		return(
-
-		)
+	renderArgument(argument: Argument) {
+		return null
 	}
  	render() {
 		let { argument } = this.props
