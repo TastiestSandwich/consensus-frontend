@@ -3,15 +3,15 @@ import { Node, NodeType, Statement, Fact, Source } from "../data/argument/argume
 
 interface NodeEditorProps {
   node: Node
-  save: () => void
+  save: (sentence: string, type: NodeType, href: string, description: string) => void
 }
 
 interface NodeEditorState {
   sentence: string
   childrenCount: number
   type: NodeType
-  href?: string
-  description?: string
+  href: string
+  description: string
   step: EditorStep
 }
 
@@ -33,6 +33,8 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
         this.state = {
           sentence: node.sentence,
           childrenCount: node.sources.length,
+          href: "",
+          description: "",
           type: NodeType.FACT,
           step: EditorStep.SENTENCE
         }
@@ -54,6 +56,8 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
         this.state = {
           sentence: node.sentence,
           childrenCount: node.children ? node.children.length : 0,
+          href: "",
+          description: "",
           type: NodeType.STATEMENT,
           step: EditorStep.SENTENCE
         }
@@ -68,13 +72,58 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
   }
 
   handleNextStep = () => {
+    this.props.save(
+      this.state.sentence,
+      this.state.type,
+      this.state.href,
+      this.state.description
+    )
+
+    let nextStep = this.findNextStep()
+
+    this.setState({
+      step: nextStep
+    })
+  }
+
+  findNextStep() : EditorStep {
+    switch(this.state.step) {
+      case EditorStep.SENTENCE: {
+        return this.state.childrenCount > 0 ? EditorStep.ADDNODE : EditorStep.TYPE
+      }
+      case EditorStep.TYPE: {
+        return EditorStep.ADDNODE
+      }
+      default: {
+        return EditorStep.SENTENCE
+      }
+    }
   }
 
   renderNodePreview() {
-    const sentence = this.state.sentence
+    const { sentence, childrenCount, type, href, description } = this.state
     return(
-      <div className="node-editor__sentence">
-         { sentence }
+      <div className="node-editor__node-preview">
+        <div className="node-editor__sentence">
+          { sentence }
+        </div>
+        <div className="node-editor__children-count">
+          { childrenCount }
+        </div>
+        <div className="node-editor__type">
+          { type }
+        </div>
+        {
+          type === NodeType.SOURCE &&
+          <div>
+            <div className="node-editor__href">
+            { href }
+            </div>
+            <div className="node-editor__description">
+            { description }
+            </div>
+          </div>  
+        }
       </div>
     )
   }
@@ -85,6 +134,10 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
         <div className="node-editor__message">
           Add a sentence
         </div>
+        <input className="node-editor__sentence-input"
+        value = {this.state.sentence}
+        onChange = {e => this.updateSentence(e.target.value)}
+        />
       </div>
     )
   }
@@ -121,6 +174,9 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
   renderNextStepButton() {
     return(
       <div className="node-editor__next-step">
+        <div className="node-editor__current-step">
+          { this.state.step }
+        </div>
         <button className="node-editor__next-step-button" onClick={this.handleNextStep}>NEXT</button>
       </div>
     )
@@ -148,6 +204,7 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
       <div className="node-editor">
         { this.renderNodePreview }
         { this.renderEditorActions }
+        { this.renderNextStepButton }
       </div>
     )
   }

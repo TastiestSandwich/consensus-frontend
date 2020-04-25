@@ -19,7 +19,7 @@ export enum NodeType {
 
 export interface Statement extends NodeBase {
   type: NodeType.STATEMENT
-  children?: (Statement | Fact)[]
+  children: (Statement | Fact)[]
 }
 
 export interface Fact extends NodeBase {
@@ -39,7 +39,36 @@ export function createEmptyArgument(id: number) : Argument {
     root: {
       id: 0,
       sentence: "",
-      type: NodeType.STATEMENT
+      type: NodeType.STATEMENT,
+      children: []
     }
+  }
+}
+
+export function createEmptyStatement(id: number) : Statement {
+  return {
+    id: id,
+    sentence: "",
+    type: NodeType.STATEMENT,
+    children: []
+  }
+}
+
+export function createEmptyFact(id: number) : Fact {
+  return {
+    id: id,
+    sentence: "",
+    type: NodeType.FACT,
+    sources: []
+  }
+}
+
+export function createEmptySource(id: number) : Source {
+  return {
+    id: id,
+    sentence: "",
+    type: NodeType.SOURCE,
+    href: "",
+    description: ""
   }
 }

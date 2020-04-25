@@ -3,6 +3,9 @@ import * as api from "../../api"
 import {
 	Argument,
 	createEmptyArgument,
+	createEmptyStatement,
+	createEmptyFact,
+	createEmptySource,
 	Node,
 	NodeType
 } from "../../data/argument/argument"
@@ -37,11 +40,29 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 	handleSaveSelectedNode = (sentence: string, type: NodeType, href?: string, description?: string) => {
 		//TODO search node in argument and substitute
 		let argument = {...this.state.argument} as Argument
-		let node = {...this.state.selectedNode} as Node
+		let selectedNode = this.state.selectedNode as Node
 
+		let node
+		switch(type) {
+			case NodeType.STATEMENT: {
+				node = createEmptyStatement(selectedNode.id)
+				node.children = selectedNode.type == NodeType.STATEMENT ? selectedNode.children : []
+			}
+			case NodeType.FACT: {
+				node = createEmptyFact(selectedNode.id)
+				node.sources = selectedNode.type == NodeType.FACT ? selectedNode.sources : []
+			}
+			case NodeType.SOURCE: {
+				node = createEmptySource(selectedNode.id)
+				node.href = href
+				node.description = description
+			}
+		}
 		node.sentence = sentence
-		node.type = type
-		
+
+		//TODO find node by id
+		argument.root = node
+
 		this.setState({
 			selectedNode: node,
 			argument: argument
@@ -63,9 +84,8 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 					selectedNodeId={selectedNode.id} 
 				/>
 				<NodeEditor
-					//TODO search node from selectedNodeId
 					node={selectedNode}
-					save={() => this.handleSaveSelectedNode}
+					save={(sentence: string, type: NodeType, href: string, description: string) => this.handleSaveSelectedNode(sentence, type, href, description)}
 				/>
 			</div>
 		)
