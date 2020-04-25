@@ -1,17 +1,14 @@
-import React from 'react';
-import Argument from '../data/argument';
+import React from "react"
+import { Argument } from "../data/argument/argument"
 
 interface ArgumentRenderProps {
-	argument: Argument
+  argument: Argument
 }
 
 export default class ArgumentRender extends React.Component<ArgumentRenderProps> {
-	render() {
-		let {argument} = this.props
-		return(
-			<div className="argument">
-				{JSON.stringify(argument)}
-			</div>
-		)
-	}
+  render() {
+    let { argument } = this.props
+    console.log(argument)
+    return <div className="argument">{JSON.stringify(argument)}</div>
+  }
 }

@@ -1,48 +1,45 @@
-import React from 'react';
-import * as api from '../../api';
-import {Argument, Node, Source, createEmptyArgument} from '../../data/argument/argument';
+import React from "react"
+import * as api from "../../api"
+import {
+  Argument,
+  Node,
+  Source,
+  createEmptyArgument
+} from "../../data/argument/argument"
+import ArgumentRender from "../../components/argumentRender"
 
-interface CreatorProps {
-}
+interface CreatorProps { }
 
 interface CreatorState {
   loading: boolean
   argument?: Argument
 }
 
-export class Creator extends React.Component<CreatorProps, CreatorState> {
-
-  state = {
+export default class Creator extends React.Component<CreatorProps, CreatorState> {
+  state: CreatorState = {
     loading: true
   }
 
   componentDidMount() {
-    api.create().then((id: number) => {this.setState(
-      loading: false,
-      argument: createEmptyArgument(id)
-    )})
+    api.create().then((id: number) => {
+      this.setState({
+        loading: false,
+        argument: createEmptyArgument(id)
+      })
+    })
   }
 
-	render() {
+  render() {
     if (this.state.loading) {
-      return(
-        <div className="loading">
-          I AM LOADING
-        </div>
-      )
+      return <div className="loading">I AM LOADING</div>
     }
 
     let argument = this.state.argument as Argument
-    
-    return(
-      <div className="start-component">
-        <div className="start-component__title">
-          ARE YOU READY TO BECOME A CONSENSUS CREATOR
-        </div>
-        <button className="start-component__game-button" onClick={this.changeViewToViewer}>
-          VIEW
-        </button>
+
+    return (
+      <div className="creator-component">
+        <ArgumentRender argument={argument} />
       </div>
-    );
-	}
+    )
+  }
 }
