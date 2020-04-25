@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import Creator from './views/creator/creator'
+import Viewer from './views/viewer/viewer'
 
 import {
   BrowserRouter as Router,
@@ -27,8 +28,8 @@ class App extends React.Component<{}, {}> {
               <Creator />
             </Route>
             <Route path="/id">
-              Viewer
-          </Route>
+              <Viewer />
+            </Route>
           </Switch>
         </Router>
       </>
