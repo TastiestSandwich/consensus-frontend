@@ -95,7 +95,7 @@ export function createFakeList() {
     id: 1,
     type: NodeType.STATEMENT as NodeType.STATEMENT,
     sentence: "Habia un caballo en santiago",
-    sources: []
+    children: []
   }
   let fakeList = [
     { root: fakeRoot, id: 0, tittle: "gerardo de revilla" },
