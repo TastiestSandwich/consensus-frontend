@@ -1,9 +1,11 @@
 import React from "react"
 import { 
-	Node, 
+	Node,
+	Fact, 
 	Argument, 
 	NodeType,
-	Statement 
+	Statement,
+	Source
 } from "../data/argument/argument"
 
 interface ArgumentRenderProps {
@@ -13,6 +15,34 @@ interface ArgumentRenderProps {
 
 export default class ArgumentRender extends React.Component<ArgumentRenderProps> {
 	  
+
+	renderSource(source: Source) {
+		return (
+			<>
+			<div key={source.id} className="source">
+				{source.sentence}
+				{source.href}
+				{source.description}
+			</div>
+			</>
+		)
+	}
+
+
+	renderFact(fact: Fact) {
+		return (
+			<>
+			<div className="root fact">
+				{fact.sentence}
+			</div>
+			<div className="children">
+			{
+				fact.sources.map(child => this.renderSource(child))
+			}
+			</div>
+			</>
+		)
+	}
 
 	renderStatement(st: Statement) {
 		return (
@@ -37,9 +67,13 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 		switch(node.type) {
 			case NodeType.STATEMENT:
 				content = this.renderStatement(node)
+				break
+			case NodeType.FACT:
+				content = this.renderFact(node)
+				break
 		}
 		return(
-			<div className="tree">
+			<div key={node.id} className="tree">
 				{content}
 			</div>
 		)
