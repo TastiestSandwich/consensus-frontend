@@ -5,20 +5,18 @@ interface ViewerProps {
   changeView: (view: AppView) => void
 }
 
-export class Viewer extends React.Component<ViewerProps> {
+interface ViewerStatus {
+  node: Node
+}
+export class Viewer extends React.Component<ViewerProps, ViewerStatus> {
   changeViewToCreator = () => {
     this.props.changeView(AppView.CREATOR);
   }
 
   render() {
-    return(
-      <div className="start-component">
-        <div className="start-component__title">
-          ARE YOU READY TO BECOME A CONSENSUS VIEWER
-        </div>
-        <button className="start-component__game-button" onClick={this.changeViewToCreator}>
-          CREATE
-        </button>
+    return (
+      <div className="start-viewer">
+
       </div>
     );
   }
