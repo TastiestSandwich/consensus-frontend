@@ -8,6 +8,8 @@ import {
 	Source
 } from "../data/argument/argument"
 
+import "./style.scss"
+
 interface ArgumentRenderProps {
 	argument: Argument
 	selectedNodeId: number
@@ -20,9 +22,7 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 		return (
 			<>
 			<div key={source.id} className="source">
-				{source.sentence}
-				{source.href}
-				{source.description}
+				<a href={source.href}><div className="title" >{source.sentence}</div></a>
 			</div>
 			</>
 		)
@@ -81,7 +81,7 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
  	render() {
 		let { argument } = this.props
 		return (
-			<div className="argument-component">
+			<div className="argument-renderer-component">
 				{this.renderTree(argument.root)}
 			</div>
 		)
