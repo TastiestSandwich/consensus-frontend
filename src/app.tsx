@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import Creator from './views/creator/creator'
+import Viewer from './views/viewer/viewer'
 
 import {
   BrowserRouter as Router,
@@ -17,21 +18,16 @@ class App extends React.Component<{}, {}> {
 
   render() {
     return (
-      <>
-        <div>
-          Estic al rutert encarat
-        </div>
-        <Router>
-          <Switch>
-            <Route exact path="/">
-              <Creator />
-            </Route>
-            <Route path="/id">
-              Viewer
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <Creator />
           </Route>
-          </Switch>
-        </Router>
-      </>
+          <Route path="/id">
+            <Viewer />
+          </Route>
+        </Switch>
+      </Router>
     )
   }
 }
