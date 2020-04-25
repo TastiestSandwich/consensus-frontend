@@ -1,6 +1,6 @@
 import React from 'react';
-import NodeReviewer from 'components/nodeReviewer';
-import { Node, NodeType } from "data/argument/argument"
+import NodeReviewer from '../../components/nodeReviewer';
+import {  NodeType } from "../../data/argument/argument"
 import ArgumentRender from "../../components/argumentRender"
 
 

@@ -5,6 +5,8 @@
   "dependencies": {
     "@types/react": "^16.9.19",
     "app": "^0.1.0",
+    "components": "^0.1.0",
+    "data": "^0.6.1",
     "game": "^1.0.3",
     "react": ">=15",
     "react-dom": "^16.10.2",

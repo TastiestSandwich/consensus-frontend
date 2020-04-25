@@ -18,21 +18,16 @@ class App extends React.Component<{}, {}> {
 
   render() {
     return (
-      <>
-        <div>
-          Estic al rutert encarat
-        </div>
-        <Router>
-          <Switch>
-            <Route exact path="/">
-              <Creator />
-            </Route>
-            <Route path="/id">
-              <Viewer />
-            </Route>
-          </Switch>
-        </Router>
-      </>
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <Creator />
+          </Route>
+          <Route path="/id">
+            <Viewer />
+          </Route>
+        </Switch>
+      </Router>
     )
   }
 }
