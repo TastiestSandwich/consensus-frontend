@@ -3,12 +3,22 @@ import { Argument } from "../data/argument/argument"
 
 interface ArgumentRenderProps {
   argument: Argument
+  
 }
 
 export default class ArgumentRender extends React.Component<ArgumentRenderProps> {
-  render() {
-    let { argument } = this.props
-    console.log(argument)
-    return <div className="argument">{JSON.stringify(argument)}</div>
-  }
+	  
+	renderArgument() {
+		return(
+
+		)
+	}
+ 	render() {
+		let { argument } = this.props
+		return (
+			<div className="argument">
+				{this.renderArgument(argument)}
+			</div>
+		)
+	}
 }

@@ -1,5 +1,5 @@
 export interface Argument {
-	root?: Node
+	root: Node
 	id: number
   title?: string
 }
@@ -35,6 +35,10 @@ export interface Source extends Node{
 export function createEmptyArgument(id: number) : Argument {
   return {
     id: id,
-    root: 
+    root: {
+      id: 0,
+      sentence: "",
+      type: NodeType.STATEMENT
+    }
   }
 }
