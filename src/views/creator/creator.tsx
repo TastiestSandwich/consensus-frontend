@@ -53,7 +53,8 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 			return <div className="loading">I AM LOADING</div>
 		}
 
-		//let argument = this.state.argument as Argument
+		let argument = this.state.argument as Argument
+		/* testing
 		let argument = {
 			id: 1,
 			root: {
@@ -83,7 +84,7 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 				]
 			}
 		}
-		let selectedNode = this.state.selectedNode as Node
+*/		let selectedNode = this.state.selectedNode as Node
 
 		return (
 			<div className="creator-component">

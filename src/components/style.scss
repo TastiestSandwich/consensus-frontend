@@ -13,5 +13,10 @@
 			justify-content: center;
 			order:1;
 		}
+
+		.source{
+			display: flex;
+			flex-direction: column;
+		}
 	}
 }
