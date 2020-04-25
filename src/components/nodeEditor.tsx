@@ -60,7 +60,7 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
       }
     }
   }
-
+  handleNextStep = () => {}
   updateSentence = (sentence: string) => {
     this.setState({
       sentence: sentence
@@ -124,7 +124,7 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
   renderNextStepButton() {
     return(
       <div className="node-editor__next-step">
-        <button className="node-editor__next-step-button" onClick={this.handleNextStep}>
+        <button className="node-editor__next-step-button" onClick={this.handleNextStep} />
       </div>
     )
   }
