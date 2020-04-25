@@ -75,7 +75,7 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		}
 
 		let argument = this.state.argument as Argument
-		/* testing
+		/*
 		let argument = {
 			id: 1,
 			root: {
@@ -101,11 +101,12 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 						id:3,
 						type: NodeType.STATEMENT as NodeType.STATEMENT,
 						sentence: "Solo se permitian caballos blancos en santiago",
+						children: []
 					}
 				]
 			}
-		}
-*/		let selectedNode = this.state.selectedNode as Node
+		}*/
+		let selectedNode = this.state.selectedNode as Node
 
 		return (
 			<div className="creator-component">

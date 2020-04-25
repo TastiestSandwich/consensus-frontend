@@ -51,7 +51,7 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 				{st.sentence}
 			</div>
 			{
-				st.children &&
+				st.children.length > 0 &&
 				<div className="children">
 				{
 					st.children.map(child => this.renderTree(child))
