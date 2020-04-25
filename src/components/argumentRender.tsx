@@ -72,6 +72,7 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 				content = this.renderFact(node)
 				break
 		}
+
 		return(
 			<div key={node.id} className="tree">
 				{content}

@@ -54,15 +54,18 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 			case NodeType.STATEMENT: {
 				node = createEmptyStatement(selectedNode.id)
 				node.children = selectedNode.type == NodeType.STATEMENT ? selectedNode.children : []
+				break
 			}
 			case NodeType.FACT: {
 				node = createEmptyFact(selectedNode.id)
 				node.sources = selectedNode.type == NodeType.FACT ? selectedNode.sources : []
+				break
 			}
 			case NodeType.SOURCE: {
 				node = createEmptySource(selectedNode.id)
 				node.href = href
 				node.description = description
+				break
 			}
 		}
 		node.sentence = sentence

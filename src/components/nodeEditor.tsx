@@ -160,8 +160,6 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
   }
 
   render() {
-    console.log("he renderitzat")
-    console.log(this.props.node)
     return(
       <div className="node-editor">
         { this.renderNodePreview() }
