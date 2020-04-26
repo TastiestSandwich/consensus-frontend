@@ -122,16 +122,19 @@ export function createFakeList() {
   return fakeList
 }
 
-export function substituteNodeInArgument(argument: Argument, newNode: Node) {
+export function substituteNodeInArgument(argument: Argument, newNode: Node, erase: boolean) {
   let node = argument.root
   if (node.id === newNode.id) {
-    argument.root = newNode
+    // root can't be erased, only edited
+    if(!erase) {
+      argument.root = newNode
+    }
     return
   }
-  substituteNodeInParent(node, newNode)
+  substituteNodeInParent(node, newNode, erase)
 }
 
-function substituteNodeInParent(parent: Node, newNode: Node) {
+function substituteNodeInParent(parent: Node, newNode: Node, erase: boolean) {
   let q : Node[] = []
   switch (parent.type) {
     case NodeType.STATEMENT: {
@@ -152,12 +155,20 @@ function substituteNodeInParent(parent: Node, newNode: Node) {
 
         // substitute to children
         if (parent.type === NodeType.STATEMENT && newNode.type !== NodeType.SOURCE) {
-          parent.children[i] = newNode
+          if(erase) {
+            parent.children.splice(i,1)
+          } else {
+            parent.children[i] = newNode
+          }
           return
         }
         // substitute to sources
         if (parent.type === NodeType.FACT && newNode.type === NodeType.SOURCE) {
-          parent.sources[i] = newNode
+          if(erase) {
+            parent.sources.splice(i,1)
+          } else {
+            parent.sources[i] = newNode
+          }
           return
         }
 
@@ -165,11 +176,11 @@ function substituteNodeInParent(parent: Node, newNode: Node) {
         // we gotta get deeper
         switch(parent.type) {
           case NodeType.STATEMENT: {
-            substituteNodeInParent(parent.children[i], newNode)
+            substituteNodeInParent(parent.children[i], newNode, erase)
             break
           }
           case NodeType.FACT: {
-            substituteNodeInParent(parent.sources[i], newNode)
+            substituteNodeInParent(parent.sources[i], newNode, erase)
             break
           }
         }
@@ -264,4 +275,23 @@ export function getFactNodes(node: Fact, nodes) {
 export function getSourceNodes(node: Source, nodes) {
   nodes[node.id].href = node.href
   nodes[node.id].description = node.description
+}
+
+export function findFirstChildren(node: Node) : Node | null {
+  let q : Node[] = []
+  switch(node.type) {
+    case NodeType.STATEMENT: {
+      q = q.concat(node.children)
+      break
+    }
+    case NodeType.FACT: {
+      q = q.concat(node.sources)
+      break
+    }
+  }
+  if (q.length > 0) {
+    return q[0]
+  } else {
+    return null
+  }
 }

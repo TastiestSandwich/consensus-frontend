@@ -10,7 +10,8 @@ import {
 	NodeType,
 	getNextNodeId,
 	substituteNodeInArgument,
-	findNodeById
+	findNodeById,
+	findFirstChildren
 } from "../../data/argument/argument"
 import ArgumentRender from "../../components/argumentRender"
 import NodeEditor from "../../components/nodeEditor"
@@ -121,13 +122,31 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		}
 		node.sentence = isSibling ? selectedNode.sentence : sentence
 
-		substituteNodeInArgument(argument, node)
+		substituteNodeInArgument(argument, node, false)
 
 		if (childType != null) {
 			this.updateArgumentAndNode(argument, childNode)
 		} else {
 			this.updateArgumentAndNode(argument, node)
 		}
+	}
+
+	handleDeleteSelectedNode = () => {
+		let argument = {...this.state.argument} as Argument
+		let node = this.state.selectedNode as Node
+		// delete from argument
+		substituteNodeInArgument(argument, node, true)
+		
+		let parent = findNodeById(argument, node.parentId)
+		let newNode = findFirstChildren(parent)
+		if (newNode == null) {
+			// change parent type if it has no more children
+			// parent must always be statement or fact because it had children (sources don't have children)
+			newNode = createEmptyStatement(parent.id, parent.parentId)
+			newNode.sentence = parent.sentence
+			substituteNodeInArgument(argument, newNode, false)
+		}
+		this.updateArgumentAndNode(argument, newNode)
 	}
 
 	updateArgumentAndNode(argument: Argument, node: Node) {
@@ -143,39 +162,8 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		}
 
 		let argument = this.state.argument as Argument
-		/*let argument = {
-			id: 1,
-			root: {
-				id: 0,
-				sentence: "El caballo blanco de santiago es blanco",
-				type: NodeType.STATEMENT as NodeType.STATEMENT,
-				children: [
-					{
-						id:1,
-						type: NodeType.FACT as NodeType.FACT,
-						sentence: "Habia un caballo en santiago",
-						sources: [
-							{
-								id:2,
-								type: NodeType.SOURCE as NodeType.SOURCE,
-								sentence: "El caballo homo esta en santiago",
-								href: "http://wwww.wikipedia.com",
-								description: "La universidad de madrid vio el caballo al parecer"
-							}
-						]
-					},
-					{
-						id:3,
-						type: NodeType.STATEMENT as NodeType.STATEMENT,
-						sentence: "Solo se permitian caballos blancos en santiago",
-						children: []
-					}
-				]
-			}
-		}*/
-
 		let selectedNode = this.state.selectedNode as Node
-		const {editing} = this.state
+		const editing = this.state.editing
 		return (
 			<div className="creator-component">
 				<ArgumentRender
@@ -189,6 +177,7 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 					node={selectedNode}
 					save={this.handleSaveSelectedNode}
 					onChangeMode={this.handleChangeMode}
+					erase={this.handleDeleteSelectedNode}
 				/>
 			</div>
 		)
