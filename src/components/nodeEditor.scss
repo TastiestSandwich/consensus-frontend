@@ -23,6 +23,34 @@
 			color: #707070F0;
 		}
 	}
+	.node-editor__input-group{
+		margin:2em 0;
+		display:flex;
+		flex-direction: column;
+	}
+
+	.node-editor__edit-source {
+		display: flex;
+		margin:2em 0;
+	}
+
+	.node-editor__left{
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		input{
+			margin:0.5em;
+		}
+	}
+
+	.node-editor__error{
+		color:red;
+	}
+
+	.node-editor__right{
+		display: flex;
+		flex: 1;
+	}
 
 	.key{
 		font-family: monospace;
@@ -38,11 +66,25 @@
 	input {
 		background:none;
 		outline:none;
-		font-size:1em;
+		font-size:1.2em;
 		border:none;
 		border-bottom:2px solid #707070;
 		color: #707070;
 		text-align:center;
-
 	}
+	textarea {
+		background:none;
+		outline:none;
+		font-size:1em;
+		border:2px solid #707070;
+		padding:1em;
+		color: #707070;
+		text-align: left;
+	    width: 300px;
+	}
+	input::placeholder,
+	textarea::placeholder  {
+		color: #70707088;
+	}
+
 }

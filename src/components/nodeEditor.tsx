@@ -30,9 +30,16 @@ interface NodeEditorProps {
   erase: () => void
 }
 
-export default class NodeEditor extends React.Component<NodeEditorProps> {
+interface NodeEditorState {
+	errorMessage: string
+}
 
+export default class NodeEditor extends React.Component<NodeEditorProps, NodeEditorState> {
+	state= {
+		errorMessage: ""
+	}
 	updateSentence = (sentence: string) => {
+		this.setState({errorMessage: ""})
 		const node = this.props.node
 		if (node.type === NodeType.SOURCE) {
 			this.props.save(sentence, node.type, null, false, node.href, node.description)
@@ -42,11 +49,13 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 	}
 
 	updateHref = (href: string) => {
+		this.setState({errorMessage: ""})
 		const node = this.props.node as Source
 		this.props.save(node.sentence, node.type, null, false, href, node.description)
 	}
 
 	updateDescription = (description: string) => {
+		this.setState({errorMessage: ""})
 		const node = this.props.node as Source
 		this.props.save(node.sentence, node.type, null, false, node.href, description)
 	}
@@ -151,7 +160,21 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
   }
 
 	handleConfirm = () => {
-		console.log("Keypress [Enter] handler [CONFIRM]")
+		const {node} = this.props
+		if(node.sentence.length === 0) {
+			this.setState({
+				errorMessage: "Please, write a statement to continue"
+			})
+			return
+		}
+		if(node.type === NodeType.SOURCE) {
+			if(node.href.length === 0) {
+				this.setState({
+					errorMessage: "Please, provide the URL where the information can be found"
+				})
+				return
+			}
+		}
 		this.props.onChangeMode(false)
 	}
 
@@ -241,31 +264,65 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 		)
 	}
 
+	autoFocus = (input) => {
+		setTimeout(() => {
+			input && input.focus()
+		}, 200)
+	}
+
+	renderEditingSource(node: Source) {
+		return (
+			<div className="node-editor__edit-source">
+				<div className="node-editor__left">
+					<input ref={this.autoFocus} className="node-editor__sentence-input"
+						value = {this.props.node.sentence}
+						onChange = {this.handleUpdateSentence}
+					/>
+					<input className="node-editor__href-input"
+						value = {node.href}
+						placeholder = "http://"
+						onChange = {e => this.updateHref(e.target.value)}
+					/>
+				</div>
+				<div className="node-editor__right">
+					<textarea className="node-editor__description-input"
+						value = {node.description}
+						placeholder="Summary of the content (optional)"
+						onChange = {e => this.updateDescription(e.target.value)}
+					/>
+				</div>
+			</div>
+		)
+	}
+
+	renderEditingSentence(node: Node) {
+		return(
+			<div className="node-editor__input-group">
+				<input ref={this.autoFocus} className="node-editor__sentence-input"
+					value = {node.sentence}
+					onChange = {this.handleUpdateSentence}
+				/>
+			</div>
+		)
+	}
+
 	renderEditing(node: Node) {
 		return(
 			<div className="node-editor__actions">
 				<div className="node-editor__message">
 					{this.renderEditingText(node)}
 				</div>
-				<div className="node-editor__input-group">
-					<input className="node-editor__sentence-input"
-						value = {this.props.node.sentence}
-						onChange = {this.handleUpdateSentence}
-					/>
-					{
-						node.type === NodeType.SOURCE &&
-						<>
-						<input className="node-editor__href-input"
-							value = {node.href}
-							onChange = {e => this.updateHref(e.target.value)}
-						/>
-						<input className="node-editor__description-input"
-							value = {node.description}
-							onChange = {e => this.updateDescription(e.target.value)}
-						/>
-						</>
-					}
-				</div>
+				{
+					this.state.errorMessage &&
+					<div className="node-editor__error">
+						{this.state.errorMessage}
+					</div>
+				}
+				{
+					node.type === NodeType.SOURCE 
+						? this.renderEditingSource(node)
+						: this.renderEditingSentence(node)
+				}
 				{this.renderEditingInstructions(node)}
 			</div>
 		)
