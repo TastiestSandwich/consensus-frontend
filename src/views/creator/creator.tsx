@@ -13,7 +13,8 @@ import {
 	getNextNodeId,
 	substituteNodeInArgument,
 	findNodeById,
-	findFirstChildren
+	findFirstChildren,
+	parseArgument
 } from "../../data/argument/argument"
 import ArgumentRender from "../../components/argumentRender"
 import NodeEditor from "../../components/nodeEditor"
@@ -58,6 +59,14 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 			})
 		})
 	}
+
+	handleSaveLink = () => {
+		const argument = this.state.argument as Argument
+		let queryString = JSON.stringify(parseArgument(argument))
+		let link = window.location.host + "/" + queryString
+		alert(link)
+	}
+
 	// TODO: DRY handlers
 	handleNavigateUp = () => {
 		let argument = this.state.argument as Argument
@@ -296,6 +305,7 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 					save={this.handleSaveSelectedNode}
 					onChangeMode={this.handleChangeMode}
 					erase={this.handleDeleteSelectedNode}
+					saveLink={this.handleSaveLink}
 				/>
 				</GlobalHotKeys>
 			</div>

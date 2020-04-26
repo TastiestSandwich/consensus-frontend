@@ -19,7 +19,8 @@ const infoKeyMap = {
 	ADD_CHILD_SOURCE: "shift+tab",
 	EDIT: "backspace",
 	ERASE: "del",
-	TOGGLE_LEGEND: "h"
+	TOGGLE_LEGEND: "h",
+  SAVE: "s"
 }
 
 interface NodeEditorProps {
@@ -28,6 +29,7 @@ interface NodeEditorProps {
 	save: (sentence: string, type: NodeType, childType: NodeType | null, isSibling: boolean, href?: string, description?: string) => void
 	onChangeMode: (editing: boolean) => void
   erase: () => void
+  saveLink: () => void
 }
 
 interface NodeEditorState {
@@ -148,9 +150,14 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
 			ADD_CHILD_SOURCE: this.handleAddChildSource,
 			EDIT: this.handleEdit,
 			ERASE: this.handleDelete,
-			TOGGLE_LEGEND: this.handleShowLegend
+			TOGGLE_LEGEND: this.handleShowLegend,
+      SAVE: this.handleLink
 		}
 	}
+
+  handleLink = () => {
+    this.props.saveLink()
+  }
 
   handleDelete = () => {
     // can't delete root
@@ -286,6 +293,7 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
 				</div>
 				</div>
 				<div className="node-editor__keyline">Press <span className="key" onClick={this.handleShowLegend}> H </span> to toggle ON/OFF this legend</div>
+        <div className="node-editor__keyline">Press <span className="key" onClick={this.handleShowLegend}> S </span> to save your argument</div>
 			</div>
 
 		)

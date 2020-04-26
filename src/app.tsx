@@ -31,7 +31,7 @@ class App extends React.Component<{}, {}> {
           <Route exact path="/">
             <Creator />
           </Route>
-          <Route path="/id">
+          <Route path="/:param">
             <Viewer />
           </Route>
         </Switch>
