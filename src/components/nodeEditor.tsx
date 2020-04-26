@@ -18,7 +18,8 @@ const infoKeyMap = {
 	ADD_CHILD_STATEMENT: "tab",
 	ADD_CHILD_SOURCE: "shift+tab",
 	EDIT: "backspace",
-	NAVIGATE: ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]
+	NAVIGATE: ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"],
+  ERASE: "del"
 }
 
 interface NodeEditorProps {
@@ -26,6 +27,7 @@ interface NodeEditorProps {
 	node: Node
 	save: (sentence: string, type: NodeType, childType: NodeType | null, isSibling: boolean, href?: string, description?: string) => void
 	onChangeMode: (editing: boolean) => void
+  erase: () => void
 }
 
 export default class NodeEditor extends React.Component<NodeEditorProps> {
@@ -134,9 +136,19 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 			ADD_CHILD_STATEMENT: this.handleAddChildStatement,
 			ADD_CHILD_SOURCE: this.handleAddChildSource,
 			EDIT: this.handleEdit,
-			NAVIGATE: this.handleNavigation
+			NAVIGATE: this.handleNavigation,
+      ERASE: this.handleDelete
 		}
 	}
+
+  handleDelete = () => {
+    // can't delete root
+    if(this.props.node.parentId === -1) {
+      return
+    }
+    this.props.erase()
+    this.props.onChangeMode(false)
+  }
 
 	handleConfirm = () => {
 		console.log("Keypress [Enter] handler [CONFIRM]")
@@ -220,6 +232,11 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 					<span className="key"> Down </span> 
 					to navigate
 				</div>
+        {
+          // Can't delete Root
+          node.parentId !== -1 &&
+          <div className="node-editor__keyline">Press <span className="key" onClick={this.handleDelete}> DEL </span> to delete the selected node</div>
+        }
 			</div>
 		)
 	}

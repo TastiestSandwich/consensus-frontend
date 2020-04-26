@@ -57,7 +57,7 @@ export default class Viewer extends React.Component<ViewerProps, ViewerState> {
       }
     }
 
-    substituteNodeInArgument(argument, selectedNode)
+    substituteNodeInArgument(argument, selectedNode, false)
 
   }
 
