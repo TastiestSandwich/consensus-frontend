@@ -1,0 +1,61 @@
+.argument-renderer-component{
+	flex:1;
+	display:flex;
+	justify-content: center;
+	align-items:center;
+	width:100%;
+	overflow: auto;
+	.tree{
+		display: flex;
+		.root{
+			display: flex;
+			align-items: center;
+			order:2;
+			flex:1;
+			justify-content: flex-end;
+		}
+		.children{
+			position:relative;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			margin-right:1em;
+			order:1;
+			&:before {
+				content: "⇒";
+				display: flex;
+				justify-content: center;
+				align-items:center;
+				position: absolute;
+				top:0;
+				bottom:0;
+				right:-1em;
+				font-weight: bold;
+				font-size:1.3em;
+			}
+			&.multiple{
+				&:after{
+					content: " ";
+					position: absolute;
+					top: 0;
+					bottom: 0;
+					right: 0.3em;
+					width: 20px;
+					border: 3px solid #707070;
+					border-left: none;
+					border-radius: 5px 15px 15px 5px;
+				}
+			}
+
+		}
+		.root,
+		.source{
+			margin:1em;
+		}
+
+		.source{
+			display: flex;
+			flex-direction: column;
+		}
+	}
+}

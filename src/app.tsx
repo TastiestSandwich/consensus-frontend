@@ -9,6 +9,8 @@ import {
   Route,
 } from "react-router-dom"
 
+import "./root.scss"
+
 export enum AppView {
   CREATOR,
   VIEWER

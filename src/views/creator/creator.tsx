@@ -14,6 +14,8 @@ import {
 import ArgumentRender from "../../components/argumentRender"
 import NodeEditor from "../../components/nodeEditor"
 
+import "./style.scss"
+
 interface CreatorProps { }
 
 interface CreatorState {
@@ -118,7 +120,7 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		}
 
 		let argument = this.state.argument as Argument
-		/* let argument = {
+		/*let argument = {
 			id: 1,
 			root: {
 				id: 0,
@@ -147,9 +149,10 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 					}
 				]
 			}
-		}
-		*/
+		}*/
+
 		let selectedNode = this.state.selectedNode as Node
+		
 		console.log(argument)
 		console.log(selectedNode)
 
