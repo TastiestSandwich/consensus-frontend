@@ -10,6 +10,7 @@
     "game": "^1.0.3",
     "react": ">=15",
     "react-dom": "^16.10.2",
+    "react-hotkeys": "^2.0.0",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.3.1",

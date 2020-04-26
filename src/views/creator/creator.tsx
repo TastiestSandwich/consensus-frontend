@@ -45,6 +45,12 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		})
 	}
 
+	handleChangeMode = (editing: boolean) => {
+		this.setState({
+			editing
+		})
+	}
+
 	handleChangeSelectedNode = (node: Node) => {
 		if(this.state.selectedNode != null && this.state.selectedNode.sentence === "") {
 			return
@@ -182,6 +188,7 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 					editing={editing} 
 					node={selectedNode}
 					save={this.handleSaveSelectedNode}
+					onChangeMode={this.handleChangeMode}
 				/>
 			</div>
 		)

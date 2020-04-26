@@ -1,17 +1,31 @@
 import React from "react"
+import { GlobalHotKeys } from "react-hotkeys"
 import { 
 	Node, 
 	NodeType, 
-//	findChildrenCount, 
+	findChildrenCount, 
 	Source 
 } from "../data/argument/argument"
 
 import "./nodeEditor.scss"
 
+const editingKeyMap = {
+	CONFIRM: "Enter",
+}
+
+const infoKeyMap = {
+	ADD_SIBLING: "enter",
+	ADD_CHILD_STATEMENT: "tab",
+	ADD_CHILD_SOURCE: "shift+tab",
+	EDIT: "backspace",
+	NAVIGATE: ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]
+}
+
 interface NodeEditorProps {
 	editing: boolean
 	node: Node
 	save: (sentence: string, type: NodeType, childType: NodeType | null, isSibling: boolean, href?: string, description?: string) => void
+	onChangeMode: (editing: boolean) => void
 }
 
 export default class NodeEditor extends React.Component<NodeEditorProps> {
@@ -46,7 +60,7 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 			this.props.save(node.sentence, type, null, false)
 		}
 	}
-/*
+
 	addSourceChild = () => {
 		const node = this.props.node
 		const childrenCount = findChildrenCount(node)
@@ -71,7 +85,6 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 				return
 			}
 		}
-		this.handleNextStep()
 	}
 
 	addStatementChild = () => {
@@ -98,7 +111,6 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 				return
 			}
 		}
-		this.handleNextStep()
 	}
 
 	addSibling = () => {
@@ -113,173 +125,48 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 			console.log("Adding source sibling")
 			this.props.save(node.sentence, node.type, NodeType.SOURCE, true)
 		}
-		this.handleNextStep()
 	}
 
-	renderNodePreview() {
-		const node = this.props.node
-		const childrenCount = findChildrenCount(node)
-
-		return(
-			<div className="node-editor__node-preview">
-			<div className="node-editor__sentence">
-			{ node.sentence }
-			</div>
-			<div className="node-editor__children-count">
-			{ childrenCount }
-			</div>
-			<div className="node-editor__type">
-			{ NodeType[node.type] }
-			</div>
-			{
-				node.type === NodeType.SOURCE &&
-				<div>
-				<div className="node-editor__href">
-				{ node.href }
-				</div>
-				<div className="node-editor__description">
-				{ node.description }
-				</div>
-				</div>  
-			}
-			</div>
-			)
-	}
-
-	renderSentenceStep() {
-		return(
-			<div className="node-editor__actions">
-			<div className="node-editor__message">
-			Add a sentence
-			</div>
-			<input className="node-editor__sentence-input"
-			value = {this.props.node.sentence}
-			onChange = {e => this.updateSentence(e.target.value)}
-			/>
-			</div>
-			)
-	}
-
-	renderHrefStep() {
-		const node = this.props.node
-		if (node.type !== NodeType.SOURCE) {
-			return
-		}
-		return(
-			<div className="node-editor__actions">
-			<div className="node-editor__message">
-			Add a link
-			</div>
-			<input className="node-editor__href-input"
-			value = {node.href}
-			onChange = {e => this.updateHref(e.target.value)}
-			/>
-			</div>
-			)
-	}
-
-	renderDescriptionStep() {
-		const node = this.props.node
-		if (node.type !== NodeType.SOURCE) {
-			return
-		}
-		return(
-			<div className="node-editor__actions">
-			<div className="node-editor__message">
-			Add a description
-			</div>
-			<input className="node-editor__description-input"
-			value = {node.description}
-			onChange = {e => this.updateDescription(e.target.value)}
-			/>
-			</div>
-			)
-	}
-
-	renderAddNodeStep() {
-		const childrenCount = findChildrenCount(this.props.node)
-		let childSource : boolean = true
-		let childStatement : boolean = true
-		let sibling : boolean = true
-
-		if (this.props.node.type === NodeType.SOURCE) {
-			// Sources can't have childs
-			childSource = false
-			childStatement = false
-		} else if (this.props.node.type === NodeType.STATEMENT && childrenCount > 0) {
-			// Statement with childs can only have statement childs
-			childSource = false
-		} else if (this.props.node.type === NodeType.FACT && childrenCount > 0) {
-			// Facts with childs can only have source childs
-			childStatement = false
-		} else if (this.props.node.parentId === -1) {
-			sibling = false
-		}
-
-		return(
-			<div className="node-editor__actions">
-			<div className="node-editor__message">
-			Add a Child or a Sibling
-			</div>
-			<div className="node-editor__add-node-buttons">
-			{ childSource && 
-				<button 
-				className="node-editor__child-source-button"
-				onClick={this.addSourceChild}>
-				ADD SOURCE
-				</button> 
-			}
-			{ childStatement && 
-				<button 
-				className="node-editor__child-statement-button"
-				onClick={this.addStatementChild}>
-				ADD STATEMENT
-				</button> 
-			}
-			{
-				sibling &&
-				<button 
-				className="node-editor__sibling-button"
-				onClick={this.addSibling}>
-				ADD SIBLING
-				</button>
-			}
-			</div>
-			</div>
-			)
-	}
-
-	renderNextStepButton() {
-		return(
-			<div className="node-editor__next-step">
-			<div className="node-editor__current-step">
-			{ EditorStep[this.state.step] }
-			</div>
-			<button className="node-editor__next-step-button" onClick={this.handleNextStep}>NEXT</button>
-			</div>
-			)
-	}
-
-	renderEditorActions() {
-		switch(this.state.step) {
-			case EditorStep.SENTENCE: {
-				return this.renderSentenceStep()
-			}
-			case EditorStep.ADDNODE: {
-				return this.renderAddNodeStep()
-			}
-			case EditorStep.HREF: {
-				return this.renderHrefStep()
-			}
-			case EditorStep.DESCRIPTION: {
-				return this.renderDescriptionStep()
-			}
-			default: {
-				return this.renderSentenceStep()
-			}
+	getHotKeyHandlers() {
+		return {
+			CONFIRM: this.handleConfirm,
+			ADD_SIBLING: this.handleAddSibling,
+			ADD_CHILD_STATEMENT: this.handleAddChildStatement,
+			ADD_CHILD_SOURCE: this.handleAddChildSource,
+			EDIT: this.handleEdit,
+			NAVIGATE: this.handleNavigation
 		}
 	}
-*/
+
+	handleConfirm = () => {
+		console.log("Keypress [Enter] handler [CONFIRM]")
+		this.props.onChangeMode(false)
+	}
+
+	handleAddSibling = () => {
+		this.addSibling()
+		this.props.onChangeMode(true)
+	}
+
+	handleAddChildStatement = () => {
+		this.addStatementChild()
+		this.props.onChangeMode(true)
+	}
+
+	handleAddChildSource = () => {
+		this.addSourceChild()
+		this.props.onChangeMode(true)
+	}
+
+	handleEdit = () => {
+		this.props.onChangeMode(true)
+	}
+
+	handleNavigation = () => {
+		//TODO
+		console.log("Not implemented yet")
+	}
+
 	handleUpdateSentence = (e) => {
 		this.updateSentence(e.target.value)
 	}
@@ -291,7 +178,50 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 			return "Insert a source"
 		}
 
-		return "Write an affirmation"
+		return "Write an statement"
+	}
+
+	renderEditingInstructions(node: Node) {
+		return(
+			<div className="node-editor__instructions">
+				<div className="node-editor__keyline">
+					Press 
+					<span className="key" onClick={this.handleConfirm}> Return </span> 
+					to confirm
+				</div>
+				{
+					node.type === NodeType.SOURCE &&
+					<div className="node-editor__keyline">Press <span className="key"> Tab </span> to focus next input </div>
+				}
+			</div>
+		)
+	}
+
+	renderNoEditingInstructions(node: Node) {
+		return(
+			<div className="node-editor__instructions">
+				{
+					// Root has no siblings
+					node.parentId !== -1 &&
+					(
+						node.type === NodeType.SOURCE 
+							? <div className="node-editor__keyline">Press <span className="key" onClick={this.handleAddSibling}> Return </span> to add a sibling source</div>
+							: <div className="node-editor__keyline">Press <span className="key" onClick={this.handleAddSibling}> Return </span> to add a sibling statement</div>
+					)  
+				}
+				<div className="node-editor__keyline">Press <span className="key" onClick={this.handleAddChildStatement}> TAB </span> to add a child statement</div>
+				<div className="node-editor__keyline">Press <span className="key" onClick={this.handleAddChildSource}> SHIFT </span> + <span className="key" onClick={this.handleAddChildSource}> TAB </span> to add a child source</div>
+				<div className="node-editor__keyline">Press <span className="key" onClick={this.handleEdit}> Backspace </span> to edit the selected node</div>
+				<div className="node-editor__keyline">
+					Use 
+					<span className="key"> Up </span> 
+					<span className="key"> Left </span> 
+					<span className="key"> Right </span> 
+					<span className="key"> Down </span> 
+					to navigate
+				</div>
+			</div>
+		)
 	}
 
 	renderEditing(node: Node) {
@@ -319,24 +249,33 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 						</>
 					}
 				</div>
+				{this.renderEditingInstructions(node)}
 			</div>
 		)
 	}
 
 	renderInfo(node: Node) {
-		return null
+		return(
+			<div className="node-editor__actions">
+				{this.renderNoEditingInstructions(node)}
+			</div>
+		)
 	}
 
 	render() {
 		const {node, editing} = this.props
+		const keymap = editing ? editingKeyMap : infoKeyMap
 		return(
-			<div className="node-editor-component">
-			{
-				editing
-					? this.renderEditing(node)
-					: this.renderInfo(node)
-			}
-			</div>
+			<GlobalHotKeys keyMap = {keymap} handlers={this.getHotKeyHandlers()} allowChanges={true} >
+				<div className="node-editor-component">
+				{
+					editing
+						? this.renderEditing(node)
+						: this.renderInfo(node)
+				}
+				</div>
+			</GlobalHotKeys>
+
 		)
 	}
 
