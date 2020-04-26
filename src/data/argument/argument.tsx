@@ -204,12 +204,10 @@ export function findNodeById(argument: Argument, id: number) : Node {
       return node
     }
   }
+
   // root if we didn't find
   console.log("Couldnt find node with id: " + id)
   return argument.root
-}
-  // null if we didn't find
-  return null
 }
 
 export parseArgument(argument: Argument) {
