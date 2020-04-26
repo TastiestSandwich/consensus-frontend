@@ -224,31 +224,59 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 		)
 	}
 
+	autoFocus = (input) => {
+		setTimeout(() => {
+			input && input.focus()
+		}, 200)
+	}
+
+	renderEditingSource(node: Source) {
+		return (
+			<div className="node-editor__edit-source">
+				<div className="node-editor__left">
+					<input ref={this.autoFocus} className="node-editor__sentence-input"
+						value = {this.props.node.sentence}
+						onChange = {this.handleUpdateSentence}
+					/>
+					<input className="node-editor__href-input"
+						value = {node.href}
+						placeholder = "http://"
+						onChange = {e => this.updateHref(e.target.value)}
+					/>
+				</div>
+				<div className="node-editor__right">
+					<textarea className="node-editor__description-input"
+						value = {node.description}
+						placeholder="Summary of the content (optional)"
+						onChange = {e => this.updateDescription(e.target.value)}
+					/>
+				</div>
+			</div>
+		)
+	}
+
+	renderEditingSentence(node: Node) {
+		return(
+			<div className="node-editor__input-group">
+				<input ref={this.autoFocus} className="node-editor__sentence-input"
+					value = {node.sentence}
+					onChange = {this.handleUpdateSentence}
+				/>
+			</div>
+		)
+	}
+
 	renderEditing(node: Node) {
 		return(
 			<div className="node-editor__actions">
 				<div className="node-editor__message">
 					{this.renderEditingText(node)}
 				</div>
-				<div className="node-editor__input-group">
-					<input className="node-editor__sentence-input"
-						value = {this.props.node.sentence}
-						onChange = {this.handleUpdateSentence}
-					/>
-					{
-						node.type === NodeType.SOURCE &&
-						<>
-						<input className="node-editor__href-input"
-							value = {node.href}
-							onChange = {e => this.updateHref(e.target.value)}
-						/>
-						<input className="node-editor__description-input"
-							value = {node.description}
-							onChange = {e => this.updateDescription(e.target.value)}
-						/>
-						</>
-					}
-				</div>
+				{
+					node.type === NodeType.SOURCE 
+						? this.renderEditingSource(node)
+						: this.renderEditingSentence(node)
+				}
 				{this.renderEditingInstructions(node)}
 			</div>
 		)
