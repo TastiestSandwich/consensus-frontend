@@ -210,23 +210,23 @@ export function findNodeById(argument: Argument, id: number) : Node {
   return argument.root
 }
 
-export parseArgument(argument: Argument) {
-  argumentJson = {}
-  argumentJson.title = argument.title
-  argumentJson.root_id = argument.root.id
-  argumentJson.nodes = getNodes(argument.root)
+export function parseArgument(argument: Argument) {
+  let argumentJson = {
+    title: argument.title,
+    root_id: argument.root.id,
+    nodes: getNodes(argument.root)
+  }
   return argumentJson
 }
 
-export getNodes(node: Node) {
-  nodes = {
-    node.id = {
-      'sentence': node.sentence,
-      // 'evaluation': node.evaluation
-    },
+export function getNodes(node: Node) {
+  let id = node.id
+  let nodes = {}
+  nodes[id] = {
+    sentence: node.sentence
   }
   switch(node.type) {
-    case NodeType.STATEMENT {
+    case NodeType.STATEMENT: {
       getStatementNodes(node, nodes)
       break
     }
@@ -242,19 +242,19 @@ export getNodes(node: Node) {
   return nodes
 }
 
-export getStatementNodes(node: Statement, nodes) {
-  for (let children in node.children) {
+export function getStatementNodes(node: Statement, nodes) {
+  node.children.forEach(() => {
     nodes = Object.assign(getNodes(node), nodes)
-  }
+  })
 }
 
-export getFactNodes(node: Fact, nodes) {
-  for (let children in node.sources) {
+export function getFactNodes(node: Fact, nodes) {
+  node.sources.forEach(() => {
     nodes = Object.assign(getNodes(node), nodes)
-  }
+  })
 }
 
-export getSourceNodes(node: Source, nodes) {
+export function getSourceNodes(node: Source, nodes) {
   nodes[node.id].href = node.href
   nodes[node.id].description = node.description
 }

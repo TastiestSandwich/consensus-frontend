@@ -13,15 +13,16 @@ import "./argumentRenderer.scss"
 interface ArgumentRenderProps {
 	argument: Argument
 	selectedNodeId: number
+	changeSelected: (node: Node) => void
 }
 
 export default class ArgumentRender extends React.Component<ArgumentRenderProps> {
-	  
 
 	renderSource(source: Source) {
 		return (
 			<>
-			<div key={source.id} className="source">
+			<div key={source.id} className="source"
+			onClick={() => this.props.changeSelected(source)}>
 				<a href={source.href}><div className="title" >{source.sentence}</div></a>
 			</div>
 			</>
@@ -33,7 +34,8 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 		const multipleChildClass = fact.sources.length > 1 ? "multiple" : ""
 		return (
 			<>
-			<div className="root fact">
+			<div className="root fact"
+			onClick={() => this.props.changeSelected(fact)}>
 				{fact.sentence}
 			</div>
 			<div className={`children ${multipleChildClass}`}>
@@ -50,7 +52,8 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 		const multipleChildClass = st.children.length > 1 ? "multiple" : ""
 		return (
 			<>
-			<div className="root statement">
+			<div className="root statement"
+			onClick={() => this.props.changeSelected(st)}>
 				{st.sentence}
 			</div>
 			{

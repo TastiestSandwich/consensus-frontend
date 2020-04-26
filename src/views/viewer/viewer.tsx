@@ -57,6 +57,7 @@ export default class Viewer extends React.Component<{}> {
         <ArgumentRender
           argument={argument}
           selectedNodeId={0}
+          changeSelected={() => {return}}
         />
         <NodeReviewer
           node={node}

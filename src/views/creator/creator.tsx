@@ -42,6 +42,15 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		})
 	}
 
+	handleChangeSelectedNode = (node: Node) => {
+		if(this.state.selectedNode != null && this.state.selectedNode.sentence === "") {
+			return
+		}
+		this.setState({
+			selectedNode: node
+		})
+	}
+
 	handleSaveSelectedNode = (sentence: string, type: NodeType, childType: NodeType | null, isSibling: boolean, href?: string, description?: string) => {
 		let argument = {...this.state.argument} as Argument
 		let selectedNode = this.state.selectedNode as Node
@@ -165,7 +174,8 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 			<div className="creator-component">
 				<ArgumentRender 
 					argument={argument} 
-					selectedNodeId={selectedNode.id} 
+					selectedNodeId={selectedNode.id}
+					changeSelected={this.handleChangeSelectedNode}
 				/>
 				<NodeEditor
 					node={selectedNode}
