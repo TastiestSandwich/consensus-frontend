@@ -1,6 +1,6 @@
 import React from 'react';
 import NodeReviewer, { ReviewerStep } from '../../components/nodeReviewer';
-import { Node, Argument, NodeReview, substituteNodeInArgument } from "../../data/argument/argument"
+import { Node, Argument, NodeReview, substituteNodeInArgument, findFirstChildren, findFirstUnreviewedSibling, findNodeById } from "../../data/argument/argument"
 import ArgumentRender from "../../components/argumentRender"
 import * as api from "../../api"
 
@@ -14,8 +14,6 @@ interface ViewerState {
   reviewerStep: ReviewerStep
 }
 
-
-
 export default class Viewer extends React.Component<ViewerProps, ViewerState> {
 
   state: ViewerState = {
@@ -26,13 +24,18 @@ export default class Viewer extends React.Component<ViewerProps, ViewerState> {
 
   componentDidMount() {
     const argumentId = 3
-    api.fetch(argumentId).then((arg: Argument) => {
-      const argument = arg
+    api.fetch(argumentId).then((argument: Argument) => {
       this.setState({
         loading: false,
         argument: argument,
         selectedNode: argument.root
       })
+    })
+  }
+
+  handleChangeStep = (step: ReviewerStep) => {
+    this.setState({
+      reviewerStep: step
     })
   }
 
@@ -55,13 +58,17 @@ export default class Viewer extends React.Component<ViewerProps, ViewerState> {
         selectedNode.implicationReview = review
         break
       }
+      case ReviewerStep.FINISHED: {
+        return
+      }
     }
 
     substituteNodeInArgument(argument, selectedNode, false)
-
+    let newNode = this.findNextNodeToReview(argument, selectedNode, review)
+    this.updateArgumentAndNode(argument, newNode)
   }
 
-  findNextNodeToReview(argument: Argument, currentNode: Node) : Node {
+  findNextNodeToReview(argument: Argument, currentNode: Node, review: NodeReview) : Node {
     switch(this.state.reviewerStep) {
       case ReviewerStep.REVIEW:{
         //if review is yes, find unreviewed sibling to review
@@ -70,7 +77,17 @@ export default class Viewer extends React.Component<ViewerProps, ViewerState> {
         //if review is no, go to first children in review mode
         //if no children, find unreviewed sibling
         //if no unreviewed sibling, go to parent and swap to implication
-        break
+
+        //will go inside even if yes, cause its more fun i think
+        let newNode = findFirstChildren(currentNode)
+        if(newNode == null) {
+          newNode = findFirstUnreviewedSibling(argument, currentNode)
+          if (newNode == null) {
+            newNode = findNodeById(argument, currentNode.parentId)
+            this.handleChangeStep(ReviewerStep.IMPLICATION)
+          }
+        }
+        return newNode
       }
       case ReviewerStep.IMPLICATION:{
         //if implication is yes but childrens are no, find unreviewed sibling and swap to review
@@ -79,10 +96,24 @@ export default class Viewer extends React.Component<ViewerProps, ViewerState> {
 
         //if implication is no, find unreviewed sibling and swap to review
         //if no unreviewed siblings, keep implication and go to parent
-        break
+
+        //if we were in implication with root, we're FINISHED
+        if (currentNode.parentId === -1) {
+          this.handleChangeStep(ReviewerStep.FINISHED)
+          return currentNode
+        }
+        let newNode = findFirstUnreviewedSibling(argument, currentNode)
+        if (newNode != null) {
+          this.handleChangeStep(ReviewerStep.REVIEW)
+        } else {
+          newNode = findNodeById(argument, currentNode.parentId)
+        }
+        return newNode
+      }
+      case ReviewerStep.FINISHED:{
+        return currentNode
       }
     }
-    return currentNode
   }
 
   updateArgumentAndNode(argument: Argument, node: Node) {
@@ -112,6 +143,7 @@ export default class Viewer extends React.Component<ViewerProps, ViewerState> {
         <NodeReviewer
           node={node}
           step={step}
+          review={this.handleReviewAction}
         />
       </div>
     );
