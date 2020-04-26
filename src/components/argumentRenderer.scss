@@ -52,14 +52,16 @@
 		.source{
 			margin:1em;
 			border-bottom:2px solid transparent;
-			transition: border-color 200ms;
+			&.sentence{
+				transition: border-color 200ms;
+			}
 		}
 
 		.source{
 			display: flex;
 			flex-direction: column;
 		}
-		.selected{
+		.selected .sentence{
 			border-bottom: 2px solid #AACBCB;
 		}
 	}

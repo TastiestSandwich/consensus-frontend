@@ -322,9 +322,10 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
 	render() {
 		const {node, editing} = this.props
 		const keymap = editing ? editingKeyMap : infoKeyMap
+		const editingClass = editing? "editing" : ""
 		return(
 			<GlobalHotKeys keyMap = {keymap} handlers={this.getHotKeyHandlers()} allowChanges={true} >
-				<div className="node-editor-component">
+				<div className={`node-editor-component ${editingClass} `}>
 				{
 					editing
 						? this.renderEditing(node)

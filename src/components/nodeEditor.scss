@@ -1,10 +1,17 @@
 .node-editor-component{
-	flex:1;
-	display:flex;
-	width:100%;
+	display: flex;
+	position: absolute;
 	justify-content: center;
-	align-items:center;
+	align-items: center;
+	background-color: #f4f4f4ee;
+	bottom: 1em;
+	left: 1em;
+	padding:2em;
 	flex-direction: column;
+	&.editing{
+		left: unset;
+		bottom:10%;
+	}
 	.node-editor__actions{
 		font-size:1.2em;
 		display: flex;
@@ -88,3 +95,17 @@
 	}
 
 }
+/*
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f4ee;
+    bottom: 1em;
+    left: 1em;
+    flex-direction: column;
+
+    left:unset
+    bottom: 20%;
+    padding: 2em;
+*/

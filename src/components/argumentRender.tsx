@@ -28,7 +28,9 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 				className={`source ${selectedClass}`} 
 				onClick={() => this.props.changeSelected(source)}
 			>
+			<div className="sentence">
 				<a href={source.href}><div className="title" >{source.sentence}</div></a>
+			</div>
 			</div>
 			</>
 		)
@@ -44,7 +46,7 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 				className={`root fact ${selectedClass}`}
 				onClick={() => this.props.changeSelected(fact)}
 			>
-				{fact.sentence}
+				<div className="sentence">{fact.sentence}</div>
 			</div>
 			<div className={`children ${multipleChildClass}`}>
 
@@ -65,7 +67,7 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 				className={`root statement ${selectedClass}`}
 				onClick={() => this.props.changeSelected(st)}
 			>
-				{st.sentence}
+				<div className="sentence">{st.sentence}</div>
 			</div>
 			{
 				st.children.length > 0 &&
