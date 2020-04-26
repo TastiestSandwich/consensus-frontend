@@ -1,69 +1,118 @@
 import React from 'react';
-import NodeReviewer from '../../components/nodeReviewer';
-import {  NodeType } from "../../data/argument/argument"
+import NodeReviewer, { ReviewerStep } from '../../components/nodeReviewer';
+import { Node, Argument, NodeReview, substituteNodeInArgument } from "../../data/argument/argument"
 import ArgumentRender from "../../components/argumentRender"
+import * as api from "../../api"
+
+interface ViewerProps {
+}
+
+interface ViewerState {
+  loading: boolean
+  selectedNode: Node | null
+  argument?: Argument
+  reviewerStep: ReviewerStep
+}
 
 
-export default class Viewer extends React.Component<{}> {
 
-  componentDidMount() { }
+export default class Viewer extends React.Component<ViewerProps, ViewerState> {
 
-  render() {
-    let argument = {
-      id: 1,
-      root: {
-        id: 0,
-        parentId: -1,
-        sentence: "El caballo blanco de santiago es blanco",
-        type: NodeType.STATEMENT as NodeType.STATEMENT,
-        children: [
-          {
-            id: 1,
-            parentId: 0,
-            type: NodeType.FACT as NodeType.FACT,
-            sentence: "Habia un caballo en santiago",
-            sources: [
-              {
-                id: 2,
-                parentId: 1,
-                type: NodeType.SOURCE as NodeType.SOURCE,
-                sentence: "El caballo homo esta en santiago",
-                href: "http://wwww.wikipedia.com",
-                description: "La universidad de madrid vio el caballo al parecer"
-              }
-            ]
-          },
-          {
-            id: 3,
-            parentId: 0,
-            type: NodeType.STATEMENT as NodeType.STATEMENT,
-            sentence: "Solo se permitian caballos blancos en santiago",
-            children: []
-          }
-        ]
+  state: ViewerState = {
+    loading: true,
+    selectedNode: null,
+    reviewerStep: ReviewerStep.REVIEW
+  }
+
+  componentDidMount() {
+    const argumentId = 3
+    api.fetch(argumentId).then((arg: Argument) => {
+      const argument = arg
+      this.setState({
+        loading: false,
+        argument: argument,
+        selectedNode: argument.root
+      })
+    })
+  }
+
+  handleChangeSelectedNode = (node: Node) => {
+    this.setState({
+      selectedNode: node
+    })
+  }
+
+  handleReviewAction = (review: NodeReview) => {
+    let argument = {...this.state.argument} as Argument
+    let selectedNode = {...this.state.selectedNode} as Node
+
+    switch(this.state.reviewerStep) {
+      case ReviewerStep.REVIEW: {
+        selectedNode.review = review
+        break
+      }
+      case ReviewerStep.IMPLICATION: {
+        selectedNode.implicationReview = review
+        break
       }
     }
 
-    let node = {
-      id: 3,
-      parentId: 0,
-      type: NodeType.STATEMENT as NodeType.STATEMENT,
-      sentence: "Solo se permitian caballos blancos en santiago",
-      children: []
+    substituteNodeInArgument(argument, selectedNode)
+
+  }
+
+  findNextNodeToReview(argument: Argument, currentNode: Node) : Node {
+    switch(this.state.reviewerStep) {
+      case ReviewerStep.REVIEW:{
+        //if review is yes, find unreviewed sibling to review
+        //if no unreviewed siblings, go to parent and swap to implication
+
+        //if review is no, go to first children in review mode
+        //if no children, find unreviewed sibling
+        //if no unreviewed sibling, go to parent and swap to implication
+        break
+      }
+      case ReviewerStep.IMPLICATION:{
+        //if implication is yes but childrens are no, find unreviewed sibling and swap to review
+        //if implication is yes and childrens are yes but review is no, inform, change review to yes, find unreviewed sibling and swap to review
+        //if no unreviewed sibling, keep implication and go to parent
+
+        //if implication is no, find unreviewed sibling and swap to review
+        //if no unreviewed siblings, keep implication and go to parent
+        break
+      }
     }
+    return currentNode
+  }
+
+  updateArgumentAndNode(argument: Argument, node: Node) {
+    this.setState({
+      selectedNode: node,
+      argument: argument
+    })
+  }
+
+  render() {
+    if (this.state.loading) {
+      return <div className="loading">I AM LOADING</div>
+    }
+
+    const argument = this.state.argument as Argument
+    const node = this.state.selectedNode as Node
+    const step = this.state.reviewerStep
 
     return (
       <div className="viewer-component">
         <ArgumentRender
           editing={false}
           argument={argument}
-          selectedNodeId={0}
-          changeSelected={() => {return}}
+          selectedNodeId={node.id}
+          changeSelected={this.handleChangeSelectedNode}
         />
         <NodeReviewer
           node={node}
+          step={step}
         />
-
       </div>
     );
   }

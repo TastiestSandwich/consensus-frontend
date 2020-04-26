@@ -303,7 +303,6 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 				}
 				</div>
 			</GlobalHotKeys>
-
 		)
 	}
 
