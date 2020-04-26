@@ -1,4 +1,6 @@
 import React from "react"
+import { GlobalHotKeys } from "react-hotkeys"
+
 import * as api from "../../api"
 import {
 	Argument,
@@ -17,6 +19,17 @@ import ArgumentRender from "../../components/argumentRender"
 import NodeEditor from "../../components/nodeEditor"
 
 import "./style.scss"
+
+const keyMap = {
+	UP: "ArrowUp",
+	DOWN: "ArrowDown",
+	LEFT: "ArrowLeft",
+	RIGHT: "ArrowRight",
+}
+
+function mod(n, m) {
+	return ((n % m) + m) % m;
+}
 
 interface CreatorProps { }
 
@@ -44,6 +57,100 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 				editing: true
 			})
 		})
+	}
+	// TODO: DRY handlers
+	handleNavigateUp = () => {
+		let argument = this.state.argument as Argument
+		let selectedNode = this.state.selectedNode as Node
+		if(selectedNode.parentId == -1)
+			return
+		const parent = findNodeById(argument, selectedNode.parentId)
+		switch(parent.type) {
+			case NodeType.STATEMENT:
+				if(parent.children.length >= 1) {
+					const selectedIndex = parent.children.findIndex(child => child.id === selectedNode.id)
+					const siblingIndex = mod(selectedIndex-1, parent.children.length)
+					console.log(siblingIndex)
+					console.log(parent)
+					this.setState({
+						selectedNode: parent.children[siblingIndex] as Node
+					}) 
+				}
+				return
+			case NodeType.FACT:
+				if(parent.sources.length >= 1) {
+					const selectedIndex = parent.sources.findIndex(child => child.id === selectedNode.id)
+					const siblingIndex = mod(selectedIndex-1, parent.sources.length)
+					this.setState({
+						selectedNode: parent.sources[siblingIndex] as Node
+					}) 
+				}
+				return
+		}
+	}
+
+	handleNavigateDown = () => {
+		let argument = this.state.argument as Argument
+		let selectedNode = this.state.selectedNode as Node
+		if(selectedNode.parentId == -1)
+			return
+		const parent = findNodeById(argument, selectedNode.parentId)
+		switch(parent.type) {
+			case NodeType.STATEMENT:
+				if(parent.children.length >= 1) {
+					const selectedIndex = parent.children.findIndex(child => child.id === selectedNode.id)
+					const siblingIndex = mod(selectedIndex+1, parent.children.length)
+					console.log(siblingIndex)
+					console.log(parent)
+					this.setState({
+						selectedNode: parent.children[siblingIndex] as Node
+					}) 
+				}
+				return
+			case NodeType.FACT:
+				if(parent.sources.length >= 1) {
+					const selectedIndex = parent.sources.findIndex(child => child.id === selectedNode.id)
+					const siblingIndex = mod(selectedIndex+1, parent.sources.length)
+					this.setState({
+						selectedNode: parent.sources[siblingIndex] as Node
+					}) 
+				}
+				return
+		}
+	}
+
+
+	handleNavigateLeft = () => {
+		let selectedNode = this.state.selectedNode as Node
+		if(selectedNode.type === NodeType.SOURCE)
+			return
+		switch(selectedNode.type) {
+			case NodeType.STATEMENT:
+				if(selectedNode.children.length >= 1) {
+					this.setState({
+						selectedNode: selectedNode.children[0] as Node
+					}) 
+				}
+				return
+			case NodeType.FACT:
+				if(selectedNode.sources.length >= 1) {
+					this.setState({
+						selectedNode: selectedNode.sources[0] as Node
+					}) 
+				}
+				return
+		}
+	}
+
+	handleNavigateRight = () => {
+		let argument = this.state.argument as Argument
+		let selectedNode = this.state.selectedNode as Node
+		if(selectedNode.parentId == -1)
+			return
+		const parent = findNodeById(argument, selectedNode.parentId)
+		this.setState({
+			selectedNode: parent as Node
+		}) 
 	}
 
 	handleChangeMode = (editing: boolean) => {
@@ -156,9 +263,18 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		})
 	}
 
+	getHotKeyHandlers() {
+		return {
+			UP: this.handleNavigateUp,
+			LEFT: this.handleNavigateLeft,
+			RIGHT: this.handleNavigateRight,
+			DOWN: this.handleNavigateDown,
+		}
+	}
+
 	render() {
 		if (this.state.loading) {
-			return <div className="loading">I AM LOADING</div>
+			return <div className="loading">LOADING</div>
 		}
 
 		let argument = this.state.argument as Argument
@@ -166,6 +282,8 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		const editing = this.state.editing
 		return (
 			<div className="creator-component">
+			<GlobalHotKeys keyMap = {keyMap} handlers={this.getHotKeyHandlers()} allowChanges={true} >
+
 				<ArgumentRender
 					editing={editing} 
 					argument={argument} 
@@ -179,6 +297,7 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 					onChangeMode={this.handleChangeMode}
 					erase={this.handleDeleteSelectedNode}
 				/>
+				</GlobalHotKeys>
 			</div>
 		)
 	}

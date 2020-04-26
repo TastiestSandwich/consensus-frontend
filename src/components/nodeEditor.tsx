@@ -18,7 +18,6 @@ const infoKeyMap = {
 	ADD_CHILD_STATEMENT: "tab",
 	ADD_CHILD_SOURCE: "shift+tab",
 	EDIT: "backspace",
-	NAVIGATE: ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"],
 	ERASE: "del",
 	TOGGLE_LEGEND: "h"
 }
@@ -148,7 +147,6 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
 			ADD_CHILD_STATEMENT: this.handleAddChildStatement,
 			ADD_CHILD_SOURCE: this.handleAddChildSource,
 			EDIT: this.handleEdit,
-			NAVIGATE: this.handleNavigation,
 			ERASE: this.handleDelete,
 			TOGGLE_LEGEND: this.handleShowLegend
 		}
@@ -207,11 +205,6 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
 
 	handleEdit = () => {
 		this.props.onChangeMode(true)
-	}
-
-	handleNavigation = () => {
-		//TODO
-		console.log("Not implemented yet")
 	}
 
 	handleUpdateSentence = (e) => {
