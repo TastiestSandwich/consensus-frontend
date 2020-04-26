@@ -227,7 +227,7 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
     return(
       <div className="node-editor__next-step">
         <div className="node-editor__current-step">
-          { this.state.step }
+          { EditorStep[this.state.step] }
         </div>
         <button className="node-editor__next-step-button" onClick={this.handleNextStep}>NEXT</button>
       </div>

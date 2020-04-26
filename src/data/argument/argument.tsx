@@ -123,11 +123,11 @@ function substituteNodeInParent(parent: Node, newNode: Node) {
   let q : Node[] = []
   switch (parent.type) {
     case NodeType.STATEMENT: {
-      q.concat(parent.children)
+      q = q.concat(parent.children)
       break
     }
     case NodeType.FACT: {
-      q.concat(parent.sources)
+      q = q.concat(parent.sources)
       break
     }
   }
@@ -151,7 +151,16 @@ function substituteNodeInParent(parent: Node, newNode: Node) {
 
       } else {
         // we gotta get deeper
-        substituteNodeInParent(q[i], newNode)
+        switch(parent.type) {
+          case NodeType.STATEMENT: {
+            substituteNodeInParent(parent.children[i], newNode)
+            break
+          }
+          case NodeType.FACT: {
+            substituteNodeInParent(parent.sources[i], newNode)
+            break
+          }
+        }
         i = i + 1
       }
     }
@@ -175,11 +184,11 @@ export function findNodeById(argument: Argument, id: number) : Node | null {
     // add children to q
     switch (node.type) {
       case NodeType.STATEMENT: {
-        q.concat(node.children)
+        q = q.concat(node.children)
         break
       }
       case NodeType.FACT: {
-        q.concat(node.sources)
+        q = q.concat(node.sources)
         break
       }
     }
