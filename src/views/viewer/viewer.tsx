@@ -4,6 +4,8 @@ import { Node, Argument, NodeReview, substituteNodeInArgument, findFirstChildren
 import ArgumentRender from "../../components/argumentRender"
 import * as api from "../../api"
 
+import "./style.scss"
+
 interface ViewerProps {
 }
 

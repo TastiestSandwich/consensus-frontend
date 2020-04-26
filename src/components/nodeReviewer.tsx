@@ -1,6 +1,13 @@
 import React from "react"
 import { Node, NodeType, NodeReview } from "../data/argument/argument"
+import { GlobalHotKeys } from "react-hotkeys"
 
+import "./nodeReviewer.scss"
+
+const keyMap = {
+  NO: "n",
+  YES: "y"
+}
 
 export enum ReviewerStep {
   REVIEW,
@@ -84,14 +91,9 @@ export default class NodeReviewer extends React.Component<NodeReviewerProps>{
         Do you agree with this statement?
         </div>
         <div className="node-reviewer__review-action-buttons">
-          <button className="node-reviewer__review-action-yes"
-          onClick={this.handleYes}>
-          { NodeReview[NodeReview.YES]}
-          </button>
-          <button className="node-reviewer__review-action-no"
-          onClick={this.handleNo}>
-          { NodeReview[NodeReview.NO]}
-          </button>
+          <div className="node-editor__keyline">No <span className="key no" onClick={this.handleNo}> N </span> </div>
+          <div className="node-editor__keyline">Yes <span className="key yes" onClick={this.handleYes}> Y </span> </div>
+            
         </div>
       </div>
     )
@@ -104,14 +106,8 @@ export default class NodeReviewer extends React.Component<NodeReviewerProps>{
         Do this statement's children imply the statement?
         </div>
         <div className="node-reviewer__implication-action-buttons">
-          <button className="node-reviewer__implication-action-yes"
-          onClick={this.handleYes}>
-          { NodeReview[NodeReview.YES]}
-          </button>
-          <button className="node-reviewer__implication-action-no"
-          onClick={this.handleNo}>
-          { NodeReview[NodeReview.NO]}
-          </button>
+          <div className="node-editor__keyline">No <span className="key no" onClick={this.handleNo}> N </span> </div>
+          <div className="node-editor__keyline">Yes <span className="key yes" onClick={this.handleYes}> Y </span> </div>
         </div>
       </div>
     )
@@ -133,12 +129,22 @@ export default class NodeReviewer extends React.Component<NodeReviewerProps>{
     }
   }
 
+  getHotKeyHandlers() {
+    return {
+      NO: this.handleNo,
+      YES: this.handleYes
+    }
+  }
+
   render() {
     return (
-      <div className="node-reviewer">
-        { this.renderNodePreview() }
+      <div className="node-reviewer-component">
+      <GlobalHotKeys keyMap = {keyMap} handlers={this.getHotKeyHandlers()} allowChanges={true} >
+
+        {/* this.renderNodePreview() */}
         { this.renderNodeReview() }
         { this.renderReviewerActions() }
+        </GlobalHotKeys>
       </div>
     )
   }
