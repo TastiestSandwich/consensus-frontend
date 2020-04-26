@@ -55,8 +55,10 @@ export default class Viewer extends React.Component<{}> {
     return (
       <div className="viewer-component">
         <ArgumentRender
+          editing={false}
           argument={argument}
           selectedNodeId={0}
+          changeSelected={() => {return}}
         />
         <NodeReviewer
           node={node}

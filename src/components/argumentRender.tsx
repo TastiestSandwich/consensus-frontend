@@ -14,16 +14,20 @@ interface ArgumentRenderProps {
 	argument: Argument
 	selectedNodeId: number
 	editing: boolean
+	changeSelected: (node: Node) => void
 }
 
 export default class ArgumentRender extends React.Component<ArgumentRenderProps> {
-	  
 
 	renderSource(source: Source) {
 		const selectedClass = source.id === this.props.selectedNodeId ? "selected" : ""
 		return (
 			<>
-			<div key={source.id} className={`source ${selectedClass}`}>
+			<div 
+				key={source.id} 
+				className={`source ${selectedClass}`} 
+				onClick={() => this.props.changeSelected(source)}
+			>
 				<a href={source.href}><div className="title" >{source.sentence}</div></a>
 			</div>
 			</>
@@ -36,7 +40,10 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 		const multipleChildClass = fact.sources.length > 1 ? "multiple" : ""
 		return (
 			<>
-			<div className={`root fact ${selectedClass}`}>
+			<div 
+				className={`root fact ${selectedClass}`}
+				onClick={() => this.props.changeSelected(fact)}
+			>
 				{fact.sentence}
 			</div>
 			<div className={`children ${multipleChildClass}`}>
@@ -54,7 +61,10 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 		const multipleChildClass = st.children.length > 1 ? "multiple" : ""
 		return (
 			<>
-			<div className={`root statement ${selectedClass}`}>
+			<div 
+				className={`root statement ${selectedClass}`}
+				onClick={() => this.props.changeSelected(st)}
+			>
 				{st.sentence}
 			</div>
 			{
