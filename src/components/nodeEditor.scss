@@ -5,4 +5,44 @@
 	justify-content: center;
 	align-items:center;
 	flex-direction: column;
+	.node-editor__actions{
+		font-size:1.2em;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+	.node-editor__message{
+		font-size:1.2em;
+	}
+	.node-editor__keyline{
+		cursor: default;
+		color: #70707077;
+		transition:color 300ms;
+		&:hover{
+			color: #707070F0;
+		}
+	}
+
+	.key{
+		font-family: monospace;
+		display: inline-block;
+		background-color: #0383f277;
+		color:white;
+		border:thin solid black;
+		border-radius:4px;
+		padding: 0.25em 0.5em;
+		margin:0.5em;
+		cursor:pointer;
+	}
+	input {
+		background:none;
+		outline:none;
+		font-size:1em;
+		border:none;
+		border-bottom:2px solid #707070;
+		color: #707070;
+		text-align:center;
+
+	}
 }

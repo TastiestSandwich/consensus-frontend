@@ -104,6 +104,7 @@ export default class Viewer extends React.Component<ViewerProps, ViewerState> {
     return (
       <div className="viewer-component">
         <ArgumentRender
+          editing={false}
           argument={argument}
           selectedNodeId={node.id}
           changeSelected={this.handleChangeSelectedNode}

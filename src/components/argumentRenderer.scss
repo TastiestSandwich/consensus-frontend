@@ -51,11 +51,16 @@
 		.root,
 		.source{
 			margin:1em;
+			border-bottom:2px solid transparent;
+			transition: border-color 200ms;
 		}
 
 		.source{
 			display: flex;
 			flex-direction: column;
+		}
+		.selected{
+			border-bottom: 2px solid #AACBCB;
 		}
 	}
 }
