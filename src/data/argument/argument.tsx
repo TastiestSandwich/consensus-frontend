@@ -12,6 +12,13 @@ export interface NodeBase {
   id: number
   parentId: number
   sentence: string
+  review?: NodeReview
+  implicationReview?: NodeReview
+}
+
+export enum NodeReview {
+  NO,
+  YES
 }
 
 export enum NodeType {

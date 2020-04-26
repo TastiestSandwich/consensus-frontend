@@ -318,7 +318,7 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
 
   render() {
     return(
-      <div className="node-editor-component">
+      <div className="node-editor">
         { this.renderNodePreview() }
         { this.renderEditorActions() }
         { this.renderNextStepButton() }
