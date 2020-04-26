@@ -9,7 +9,8 @@ import {
 	Node,
 	NodeType,
 	getNextNodeId,
-	substituteNodeInArgument
+	substituteNodeInArgument,
+	findNodeById
 } from "../../data/argument/argument"
 import ArgumentRender from "../../components/argumentRender"
 import NodeEditor from "../../components/nodeEditor"
@@ -41,38 +42,42 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		})
 	}
 
-	handleSaveSelectedNode = (sentence: string, type: NodeType, childType: NodeType | null, href?: string, description?: string) => {
+	handleSaveSelectedNode = (sentence: string, type: NodeType, childType: NodeType | null, isSibling: boolean, href?: string, description?: string) => {
 		let argument = {...this.state.argument} as Argument
 		let selectedNode = this.state.selectedNode as Node
 
-		console.log(childType)
+		if(isSibling) {
+			selectedNode = findNodeById(argument, selectedNode.parentId)
+		}
 
 		// create childNode if exists
 		let childNode
 		if (childType != null) {
 			switch(childType) {
 				case NodeType.STATEMENT: {
-					console.log("Creating child statement")
-					childNode = createEmptyStatement(getNextNodeId())
+					console.log("Creating new statement")
+					childNode = createEmptyStatement(getNextNodeId(), selectedNode.id)
 					break
 				}
 				case NodeType.FACT: {
-					console.log("Creating child fact")
-					childNode = createEmptyFact(getNextNodeId())
+					console.log("Creating new fact")
+					childNode = createEmptyFact(getNextNodeId(), selectedNode.id)
 					break
 				}
 				case NodeType.SOURCE: {
-					console.log("Creating child source")
-					childNode = createEmptySource(getNextNodeId())
+					console.log("Creating new source")
+					childNode = createEmptySource(getNextNodeId(), selectedNode.id)
 					break
 				}
 			}
 		}
 
+		// if creating sibling, node is a copy of parent. Else, node is copy of whatever we're doing with selectedNode
+		type = isSibling ? selectedNode.type : type
 		let node
 		switch(type) {
 			case NodeType.STATEMENT: {
-				node = createEmptyStatement(selectedNode.id)
+				node = createEmptyStatement(selectedNode.id, selectedNode.parentId)
 				node.children = selectedNode.type == NodeType.STATEMENT ? selectedNode.children : []
 				if (childType != null) {
 					console.log("Pushing child to node.children")
@@ -81,7 +86,7 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 				break
 			}
 			case NodeType.FACT: {
-				node = createEmptyFact(selectedNode.id)
+				node = createEmptyFact(selectedNode.id, selectedNode.parentId)
 				node.sources = selectedNode.type == NodeType.FACT ? selectedNode.sources : []
 				if (childType != null) {
 					console.log("Pushing child to node.sources")
@@ -90,13 +95,13 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 				break
 			}
 			case NodeType.SOURCE: {
-				node = createEmptySource(selectedNode.id)
+				node = createEmptySource(selectedNode.id, selectedNode.parentId)
 				node.href = href
 				node.description = description
 				break
 			}
 		}
-		node.sentence = sentence
+		node.sentence = isSibling ? selectedNode.sentence : sentence
 
 		substituteNodeInArgument(argument, node)
 
@@ -152,7 +157,7 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		}*/
 
 		let selectedNode = this.state.selectedNode as Node
-		
+
 		console.log(argument)
 		console.log(selectedNode)
 

@@ -1,11 +1,11 @@
 import React from "react"
-import { Node, NodeType, findChildrenCount } from "../data/argument/argument"
+import { Node, NodeType, findChildrenCount, Source } from "../data/argument/argument"
 
 import "./nodeEditor.scss"
 
 interface NodeEditorProps {
   node: Node
-  save: (sentence: string, type: NodeType, childType: NodeType | null, href?: string, description?: string) => void
+  save: (sentence: string, type: NodeType, childType: NodeType | null, isSibling: boolean, href?: string, description?: string) => void
 }
 
 interface NodeEditorState {
@@ -30,10 +30,20 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
   updateSentence = (sentence: string) => {
     const node = this.props.node
     if (node.type === NodeType.SOURCE) {
-      this.props.save(sentence, node.type, null, node.href, node.description)
+      this.props.save(sentence, node.type, null, false, node.href, node.description)
     } else {
-      this.props.save(sentence, node.type, null)
+      this.props.save(sentence, node.type, null, false)
     } 
+  }
+
+  updateHref = (href: string) => {
+    const node = this.props.node as Source
+    this.props.save(node.sentence, node.type, null, false, href, node.description)
+  }
+
+  updateDescription = (description: string) => {
+    const node = this.props.node as Source
+    this.props.save(node.sentence, node.type, null, false, node.href, description)
   }
 
   updateType = (type: NodeType) => {
@@ -42,9 +52,9 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
       return
     }
     if (node.type === NodeType.SOURCE) {
-      this.props.save(node.sentence, type, null, node.href, node.description)
+      this.props.save(node.sentence, type, null, false, node.href, node.description)
     } else {
-      this.props.save(node.sentence, type, null)
+      this.props.save(node.sentence, type, null, false)
     }
   }
 
@@ -83,13 +93,13 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
           return
         } else {
           console.log("Updating statement node to fact and adding source child")
-          this.props.save(node.sentence, NodeType.FACT, NodeType.SOURCE, "", "")
+          this.props.save(node.sentence, NodeType.FACT, NodeType.SOURCE, false)
         }
         break
       }
       case NodeType.FACT: {
         console.log("Adding source child to Fact")
-        this.props.save(node.sentence, NodeType.FACT, NodeType.SOURCE, "", "")
+        this.props.save(node.sentence, NodeType.FACT, NodeType.SOURCE, false)
         break
       }
       case NodeType.SOURCE: {
@@ -106,7 +116,7 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
     switch (node.type) {
       case NodeType.STATEMENT: {
         console.log("Adding statement child to Statement")
-        this.props.save(node.sentence, NodeType.STATEMENT, NodeType.STATEMENT, "", "")
+        this.props.save(node.sentence, NodeType.STATEMENT, NodeType.STATEMENT, false)
         break
       }
       case NodeType.FACT: {
@@ -115,7 +125,7 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
           return
         } else {
           console.log("Updating fact node to statement and adding statement child")
-          this.props.save(node.sentence, NodeType.STATEMENT, NodeType.STATEMENT, "", "")
+          this.props.save(node.sentence, NodeType.STATEMENT, NodeType.STATEMENT, false)
         }
         break
       }
@@ -129,7 +139,17 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
 
   addSibling = () => {
     console.log("add sibling")
-    return
+    const node = this.props.node
+
+    if (node.type === NodeType.STATEMENT || node.type === NodeType.FACT) {
+      console.log("Adding statement sibling")
+      this.props.save(node.sentence, node.type, NodeType.STATEMENT, true)
+
+    } else if (node.type === NodeType.SOURCE) {
+      console.log("Adding source sibling")
+      this.props.save(node.sentence, node.type, NodeType.SOURCE, true)
+    }
+    this.handleNextStep()
   }
 
   renderNodePreview() {
@@ -176,10 +196,47 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
     )
   }
 
+  renderHrefStep() {
+    const node = this.props.node
+    if (node.type !== NodeType.SOURCE) {
+      return
+    }
+    return(
+      <div className="node-editor__actions">
+        <div className="node-editor__message">
+          Add a link
+        </div>
+        <input className="node-editor__href-input"
+        value = {node.href}
+        onChange = {e => this.updateHref(e.target.value)}
+        />
+      </div>
+    )
+  }
+
+  renderDescriptionStep() {
+    const node = this.props.node
+    if (node.type !== NodeType.SOURCE) {
+      return
+    }
+    return(
+      <div className="node-editor__actions">
+        <div className="node-editor__message">
+          Add a description
+        </div>
+        <input className="node-editor__description-input"
+        value = {node.description}
+        onChange = {e => this.updateDescription(e.target.value)}
+        />
+      </div>
+    )
+  }
+
   renderAddNodeStep() {
     const childrenCount = findChildrenCount(this.props.node)
     let childSource : boolean = true
     let childStatement : boolean = true
+    let sibling : boolean = true
 
     if (this.props.node.type === NodeType.SOURCE) {
       // Sources can't have childs
@@ -191,6 +248,8 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
     } else if (this.props.node.type === NodeType.FACT && childrenCount > 0) {
       // Facts with childs can only have source childs
       childStatement = false
+    } else if (this.props.node.parentId === -1) {
+      sibling = false
     }
 
     return(
@@ -203,21 +262,24 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
             <button 
             className="node-editor__child-source-button"
             onClick={this.addSourceChild}>
-            ADD SOURCE CHILD
+            ADD SOURCE
             </button> 
           }
           { childStatement && 
             <button 
             className="node-editor__child-statement-button"
             onClick={this.addStatementChild}>
-            ADD STATEMENT CHILD
+            ADD STATEMENT
             </button> 
           }
-          <button 
-          className="node-editor__sibling-button"
-          onClick={this.addSibling}>
-          ADD SIBLING
-          </button>
+          {
+            sibling &&
+            <button 
+            className="node-editor__sibling-button"
+            onClick={this.addSibling}>
+            ADD SIBLING
+            </button>
+          }
         </div>
       </div>
     )
@@ -241,6 +303,12 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
       }
       case EditorStep.ADDNODE: {
         return this.renderAddNodeStep()
+      }
+      case EditorStep.HREF: {
+        return this.renderHrefStep()
+      }
+      case EditorStep.DESCRIPTION: {
+        return this.renderDescriptionStep()
       }
       default: {
         return this.renderSentenceStep()

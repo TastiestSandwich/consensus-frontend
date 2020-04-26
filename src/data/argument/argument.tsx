@@ -10,6 +10,7 @@ export type Node = Statement | Fact | Source
 
 export interface NodeBase {
   id: number
+  parentId: number
   sentence: string
 }
 
@@ -40,6 +41,7 @@ export function createEmptyArgument(id: number): Argument {
     id: id,
     root: {
       id: 0,
+      parentId: -1,
       sentence: "",
       type: NodeType.STATEMENT,
       children: []
@@ -47,27 +49,30 @@ export function createEmptyArgument(id: number): Argument {
   }
 }
 
-export function createEmptyStatement(id: number): Statement {
+export function createEmptyStatement(id: number, parentId: number): Statement {
   return {
     id: id,
+    parentId: parentId,
     sentence: "",
     type: NodeType.STATEMENT,
     children: []
   }
 }
 
-export function createEmptyFact(id: number): Fact {
+export function createEmptyFact(id: number, parentId: number): Fact {
   return {
     id: id,
+    parentId: parentId,
     sentence: "",
     type: NodeType.FACT,
     sources: []
   }
 }
 
-export function createEmptySource(id: number): Source {
+export function createEmptySource(id: number, parentId: number): Source {
   return {
     id: id,
+    parentId: parentId,
     sentence: "",
     type: NodeType.SOURCE,
     href: "",
@@ -167,7 +172,7 @@ function substituteNodeInParent(parent: Node, newNode: Node) {
   }
 }
 
-export function findNodeById(argument: Argument, id: number) : Node | null {
+export function findNodeById(argument: Argument, id: number) : Node {
   // q contains the root initially
   let q : Node[] = []
   q.push(argument.root)
@@ -177,8 +182,9 @@ export function findNodeById(argument: Argument, id: number) : Node | null {
     // get first item in q
     let node = q.shift()
     if (!node) {
-      // return null if list is empty
-      return null
+      // return root if list is empty
+      console.log("Couldn't find node with id: " + id)
+      return argument.root
     }
 
     // add children to q
@@ -199,6 +205,7 @@ export function findNodeById(argument: Argument, id: number) : Node | null {
     }
   }
 
-  // null if we didn't find
-  return null
+  // root if we didn't find
+  console.log("Couldnt find node with id: " + id)
+  return argument.root
 }
