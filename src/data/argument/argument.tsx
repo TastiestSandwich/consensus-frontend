@@ -320,3 +320,24 @@ export function findFirstUnreviewedSibling(argument: Argument, currentNode: Node
   }
   return null
 }
+
+export function areAllChildrenReviewYes(node: Node) : boolean {
+  let q : Node[] = []
+  switch(node.type) {
+    case NodeType.STATEMENT: {
+      q = q.concat(node.children)
+      break
+    }
+    case NodeType.FACT: {
+      q = q.concat(node.sources)
+      break
+    }
+  }
+  while (q.length > 0) {
+    let newNode = q.shift() as Node
+    if(newNode.review == undefined || newNode.review === NodeReview.NO) {
+      return false
+    }
+  }
+  return true
+}

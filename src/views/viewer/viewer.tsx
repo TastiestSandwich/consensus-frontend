@@ -1,6 +1,6 @@
 import React from 'react';
 import NodeReviewer, { ReviewerStep } from '../../components/nodeReviewer';
-import { Node, Argument, NodeReview, substituteNodeInArgument, findFirstChildren, findFirstUnreviewedSibling, findNodeById } from "../../data/argument/argument"
+import { Node, Argument, NodeReview, substituteNodeInArgument, findFirstChildren, findFirstUnreviewedSibling, findNodeById, areAllChildrenReviewYes } from "../../data/argument/argument"
 import ArgumentRender from "../../components/argumentRender"
 import * as api from "../../api"
 
@@ -79,9 +79,10 @@ export default class Viewer extends React.Component<ViewerProps, ViewerState> {
         //if review is no, go to first children in review mode
         //if no children, find unreviewed sibling
         //if no unreviewed sibling, go to parent and swap to implication
-
-        //will go inside even if yes, cause its more fun i think
-        let newNode = findFirstChildren(currentNode)
+        let newNode : Node | null = null
+        if(review === NodeReview.NO) {
+          newNode = findFirstChildren(currentNode)
+        }
         if(newNode == null) {
           newNode = findFirstUnreviewedSibling(argument, currentNode)
           if (newNode == null) {
@@ -98,12 +99,20 @@ export default class Viewer extends React.Component<ViewerProps, ViewerState> {
 
         //if implication is no, find unreviewed sibling and swap to review
         //if no unreviewed siblings, keep implication and go to parent
+        if (review === NodeReview.YES) {
+          if (areAllChildrenReviewYes(currentNode) && currentNode.review === NodeReview.NO) {
+            alert("You didn't agree to this statement, but agreed to its premises and their implications! We're marking that as an agreement")
+            currentNode.review = NodeReview.YES
+            substituteNodeInArgument(argument, currentNode, false)
+          }
+        }
 
         //if we were in implication with root, we're FINISHED
         if (currentNode.parentId === -1) {
           this.handleChangeStep(ReviewerStep.FINISHED)
           return currentNode
         }
+
         let newNode = findFirstUnreviewedSibling(argument, currentNode)
         if (newNode != null) {
           this.handleChangeStep(ReviewerStep.REVIEW)
