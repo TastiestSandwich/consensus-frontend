@@ -3,7 +3,7 @@ import { Node, NodeType, findChildrenCount } from "../data/argument/argument"
 
 interface NodeEditorProps {
   node: Node
-  save: (sentence: string, type: NodeType, href?: string, description?: string, childType?: NodeType) => void
+  save: (sentence: string, type: NodeType, childType: NodeType | null, href?: string, description?: string) => void
 }
 
 interface NodeEditorState {
@@ -28,9 +28,9 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
   updateSentence = (sentence: string) => {
     const node = this.props.node
     if (node.type === NodeType.SOURCE) {
-      this.props.save(sentence, node.type, node.href, node.description)
+      this.props.save(sentence, node.type, null, node.href, node.description)
     } else {
-      this.props.save(sentence, node.type)
+      this.props.save(sentence, node.type, null)
     } 
   }
 
@@ -40,9 +40,9 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
       return
     }
     if (node.type === NodeType.SOURCE) {
-      this.props.save(node.sentence, type, node.href, node.description)
+      this.props.save(node.sentence, type, null, node.href, node.description)
     } else {
-      this.props.save(node.sentence, type)
+      this.props.save(node.sentence, type, null)
     }
   }
 
@@ -81,13 +81,13 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
           return
         } else {
           console.log("Updating statement node to fact and adding source child")
-          this.props.save(node.sentence, NodeType.FACT, "", "", NodeType.SOURCE)
+          this.props.save(node.sentence, NodeType.FACT, NodeType.SOURCE, "", "")
         }
         break
       }
       case NodeType.FACT: {
         console.log("Adding source child to Fact")
-        this.props.save(node.sentence, NodeType.FACT, "", "", NodeType.SOURCE)
+        this.props.save(node.sentence, NodeType.FACT, NodeType.SOURCE, "", "")
         break
       }
       case NodeType.SOURCE: {
@@ -104,7 +104,7 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
     switch (node.type) {
       case NodeType.STATEMENT: {
         console.log("Adding statement child to Statement")
-        this.props.save(node.sentence, NodeType.STATEMENT, "", "", NodeType.STATEMENT)
+        this.props.save(node.sentence, NodeType.STATEMENT, NodeType.STATEMENT, "", "")
         break
       }
       case NodeType.FACT: {
@@ -113,7 +113,7 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
           return
         } else {
           console.log("Updating fact node to statement and adding statement child")
-          this.props.save(node.sentence, NodeType.STATEMENT, "", "", NodeType.STATEMENT)
+          this.props.save(node.sentence, NodeType.STATEMENT, NodeType.STATEMENT, "", "")
         }
         break
       }

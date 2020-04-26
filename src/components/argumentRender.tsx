@@ -51,7 +51,7 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 				{st.sentence}
 			</div>
 			{
-				st.children.length > 0 &&
+				st.children &&
 				<div className="children">
 				{
 					st.children.map(child => this.renderTree(child))
@@ -72,7 +72,6 @@ export default class ArgumentRender extends React.Component<ArgumentRenderProps>
 				content = this.renderFact(node)
 				break
 		}
-
 		return(
 			<div key={node.id} className="tree">
 				{content}

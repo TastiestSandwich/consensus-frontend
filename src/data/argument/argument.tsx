@@ -109,3 +109,87 @@ export function createFakeList() {
   ]
   return fakeList
 }
+
+export function substituteNodeInArgument(argument: Argument, newNode: Node) {
+  let node = argument.root
+  if (node.id === newNode.id) {
+    argument.root = newNode
+    return
+  }
+  substituteNodeInParent(node, newNode)
+}
+
+function substituteNodeInParent(parent: Node, newNode: Node) {
+  let q : Node[] = []
+  switch (parent.type) {
+    case NodeType.STATEMENT: {
+      q.concat(parent.children)
+      break
+    }
+    case NodeType.FACT: {
+      q.concat(parent.sources)
+      break
+    }
+  }
+
+  if (q.length > 0) {
+    let i = 0
+    while (i < q.length) {
+      // iterate over the parent children until we find the id
+      if (q[i].id === newNode.id) {
+
+        // substitute to children
+        if (parent.type === NodeType.STATEMENT && newNode.type !== NodeType.SOURCE) {
+          parent.children[i] = newNode
+          return
+        }
+        // substitute to sources
+        if (parent.type === NodeType.FACT && newNode.type === NodeType.SOURCE) {
+          parent.sources[i] = newNode
+          return
+        }
+
+      } else {
+        // we gotta get deeper
+        substituteNodeInParent(q[i], newNode)
+        i = i + 1
+      }
+    }
+  }
+}
+
+export function findNodeById(argument: Argument, id: number) : Node | null {
+  // q contains the root initially
+  let q : Node[] = []
+  q.push(argument.root)
+
+  // check until q is empty
+  while(q.length > 0) {
+    // get first item in q
+    let node = q.shift()
+    if (!node) {
+      // return null if list is empty
+      return null
+    }
+
+    // add children to q
+    switch (node.type) {
+      case NodeType.STATEMENT: {
+        q.concat(node.children)
+        break
+      }
+      case NodeType.FACT: {
+        q.concat(node.sources)
+        break
+      }
+    }
+
+    // is node the one we're looking for?
+    if(node.id === id) {
+      return node
+    }
+  }
+
+  // null if we didn't find
+  return null
+}

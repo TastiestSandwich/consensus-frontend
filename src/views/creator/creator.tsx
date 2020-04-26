@@ -8,7 +8,8 @@ import {
 	createEmptySource,
 	Node,
 	NodeType,
-	getNextNodeId
+	getNextNodeId,
+	substituteNodeInArgument
 } from "../../data/argument/argument"
 import ArgumentRender from "../../components/argumentRender"
 import NodeEditor from "../../components/nodeEditor"
@@ -38,8 +39,7 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		})
 	}
 
-	handleSaveSelectedNode = (sentence: string, type: NodeType, href?: string, description?: string, childType?: NodeType) => {
-		//TODO search node in argument and substitute
+	handleSaveSelectedNode = (sentence: string, type: NodeType, childType: NodeType | null, href?: string, description?: string) => {
 		let argument = {...this.state.argument} as Argument
 		let selectedNode = this.state.selectedNode as Node
 
@@ -47,8 +47,8 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 
 		// create childNode if exists
 		let childNode
-		if (childType) {
-			switch(type) {
+		if (childType != null) {
+			switch(childType) {
 				case NodeType.STATEMENT: {
 					console.log("Creating child statement")
 					childNode = createEmptyStatement(getNextNodeId())
@@ -72,7 +72,7 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 			case NodeType.STATEMENT: {
 				node = createEmptyStatement(selectedNode.id)
 				node.children = selectedNode.type == NodeType.STATEMENT ? selectedNode.children : []
-				if (childType) {
+				if (childType != null) {
 					console.log("Pushing child to node.children")
 					node.children.push(childNode)
 				}
@@ -81,7 +81,7 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 			case NodeType.FACT: {
 				node = createEmptyFact(selectedNode.id)
 				node.sources = selectedNode.type == NodeType.FACT ? selectedNode.sources : []
-				if (childType) {
+				if (childType != null) {
 					console.log("Pushing child to node.sources")
 					node.sources.push(childNode)
 				}
@@ -96,10 +96,9 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		}
 		node.sentence = sentence
 
-		//TODO find node by id
-		argument.root = node
+		substituteNodeInArgument(argument, node)
 
-		if (childType) {
+		if (childType != null) {
 			this.updateArgumentAndNode(argument, childNode)
 		} else {
 			this.updateArgumentAndNode(argument, node)
@@ -152,6 +151,7 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		*/
 		let selectedNode = this.state.selectedNode as Node
 		console.log(argument)
+		console.log(selectedNode)
 
 		return (
 			<div className="creator-component">
