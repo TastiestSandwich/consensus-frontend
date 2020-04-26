@@ -28,9 +28,16 @@ interface NodeEditorProps {
 	onChangeMode: (editing: boolean) => void
 }
 
-export default class NodeEditor extends React.Component<NodeEditorProps> {
+interface NodeEditorState {
+	errorMessage: string
+}
 
+export default class NodeEditor extends React.Component<NodeEditorProps, NodeEditorState> {
+	state= {
+		errorMessage: ""
+	}
 	updateSentence = (sentence: string) => {
+		this.setState({errorMessage: ""})
 		const node = this.props.node
 		if (node.type === NodeType.SOURCE) {
 			this.props.save(sentence, node.type, null, false, node.href, node.description)
@@ -40,11 +47,13 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 	}
 
 	updateHref = (href: string) => {
+		this.setState({errorMessage: ""})
 		const node = this.props.node as Source
 		this.props.save(node.sentence, node.type, null, false, href, node.description)
 	}
 
 	updateDescription = (description: string) => {
+		this.setState({errorMessage: ""})
 		const node = this.props.node as Source
 		this.props.save(node.sentence, node.type, null, false, node.href, description)
 	}
@@ -139,7 +148,21 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 	}
 
 	handleConfirm = () => {
-		console.log("Keypress [Enter] handler [CONFIRM]")
+		const {node} = this.props
+		if(node.sentence.length === 0) {
+			this.setState({
+				errorMessage: "Please, write a statement to continue"
+			})
+			return
+		}
+		if(node.type === NodeType.SOURCE) {
+			if(node.href.length === 0) {
+				this.setState({
+					errorMessage: "Please, provide the URL where the information can be found"
+				})
+				return
+			}
+		}
 		this.props.onChangeMode(false)
 	}
 
@@ -272,6 +295,12 @@ export default class NodeEditor extends React.Component<NodeEditorProps> {
 				<div className="node-editor__message">
 					{this.renderEditingText(node)}
 				</div>
+				{
+					this.state.errorMessage &&
+					<div className="node-editor__error">
+						{this.state.errorMessage}
+					</div>
+				}
 				{
 					node.type === NodeType.SOURCE 
 						? this.renderEditingSource(node)
