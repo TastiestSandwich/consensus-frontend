@@ -23,12 +23,14 @@ interface CreatorState {
 	loading: boolean
 	selectedNode: Node | null
 	argument?: Argument
+	editing: boolean
 }
 
 export default class Creator extends React.Component<CreatorProps, CreatorState> {
 	state: CreatorState = {
 		loading: true,
-		selectedNode: null
+		selectedNode: null,
+		editing: false
 	}
 
 	componentDidMount() {
@@ -37,7 +39,8 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 			this.setState({
 				loading: false,
 				argument: argument,
-				selectedNode: argument.root
+				selectedNode: argument.root,
+				editing: true
 			})
 		})
 	}
@@ -157,17 +160,16 @@ export default class Creator extends React.Component<CreatorProps, CreatorState>
 		}*/
 
 		let selectedNode = this.state.selectedNode as Node
-
-		console.log(argument)
-		console.log(selectedNode)
-
+		const {editing} = this.state
 		return (
 			<div className="creator-component">
-				<ArgumentRender 
+				<ArgumentRender
+					editing={editing} 
 					argument={argument} 
 					selectedNodeId={selectedNode.id} 
 				/>
 				<NodeEditor
+					editing={editing} 
 					node={selectedNode}
 					save={this.handleSaveSelectedNode}
 				/>
