@@ -19,7 +19,8 @@ const infoKeyMap = {
 	ADD_CHILD_SOURCE: "shift+tab",
 	EDIT: "backspace",
 	NAVIGATE: ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"],
-  ERASE: "del"
+	ERASE: "del",
+	TOGGLE_LEGEND: "h"
 }
 
 interface NodeEditorProps {
@@ -32,11 +33,13 @@ interface NodeEditorProps {
 
 interface NodeEditorState {
 	errorMessage: string
+	showLegend: boolean
 }
 
 export default class NodeEditor extends React.Component<NodeEditorProps, NodeEditorState> {
 	state= {
-		errorMessage: ""
+		errorMessage: "",
+		showLegend: true
 	}
 	updateSentence = (sentence: string) => {
 		this.setState({errorMessage: ""})
@@ -146,7 +149,8 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
 			ADD_CHILD_SOURCE: this.handleAddChildSource,
 			EDIT: this.handleEdit,
 			NAVIGATE: this.handleNavigation,
-      ERASE: this.handleDelete
+			ERASE: this.handleDelete,
+			TOGGLE_LEGEND: this.handleShowLegend
 		}
 	}
 
@@ -179,16 +183,24 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
 	}
 
 	handleAddSibling = () => {
+		if(this.props.node.parentId === -1)
+			return
 		this.addSibling()
 		this.props.onChangeMode(true)
 	}
 
-	handleAddChildStatement = () => {
+	handleAddChildStatement = (e) => {
+		e.preventDefault()
+		if(this.props.node.type === NodeType.SOURCE)
+			return
 		this.addStatementChild()
 		this.props.onChangeMode(true)
 	}
 
-	handleAddChildSource = () => {
+	handleAddChildSource = (e) => {
+		e.preventDefault()
+		if(this.props.node.type === NodeType.SOURCE)
+			return
 		this.addSourceChild()
 		this.props.onChangeMode(true)
 	}
@@ -204,6 +216,14 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
 
 	handleUpdateSentence = (e) => {
 		this.updateSentence(e.target.value)
+	}
+
+	handleShowLegend = () => {
+		this.setState((prev) => {
+			return {
+				showLegend: !prev.showLegend
+			}
+		})
 	}
 
 	renderEditingText(node: Node) {
@@ -233,20 +253,36 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
 	}
 
 	renderNoEditingInstructions(node: Node) {
+		const {showLegend} = this.state
+		const hiddenClass = showLegend ? "" : "hidden"
+		const isRoot = node.parentId === -1
 		return(
 			<div className="node-editor__instructions">
+				<div className={hiddenClass}>
 				{
 					// Root has no siblings
-					node.parentId !== -1 &&
+					!isRoot &&
 					(
 						node.type === NodeType.SOURCE 
 							? <div className="node-editor__keyline">Press <span className="key" onClick={this.handleAddSibling}> Return </span> to add a sibling source</div>
 							: <div className="node-editor__keyline">Press <span className="key" onClick={this.handleAddSibling}> Return </span> to add a sibling statement</div>
 					)  
 				}
-				<div className="node-editor__keyline">Press <span className="key" onClick={this.handleAddChildStatement}> TAB </span> to add a child statement</div>
-				<div className="node-editor__keyline">Press <span className="key" onClick={this.handleAddChildSource}> SHIFT </span> + <span className="key" onClick={this.handleAddChildSource}> TAB </span> to add a child source</div>
+				{
+					// Source has no children
+					node.type !== NodeType.SOURCE &&
+					<>
+						<div className="node-editor__keyline">Press <span className="key" onClick={this.handleAddChildStatement}> TAB </span> to add a child statement</div>
+						<div className="node-editor__keyline">Press <span className="key" onClick={this.handleAddChildSource}> SHIFT </span> + <span className="key" onClick={this.handleAddChildSource}> TAB </span> to add a child source</div>
+					</>
+				}
 				<div className="node-editor__keyline">Press <span className="key" onClick={this.handleEdit}> Backspace </span> to edit the selected node</div>
+				{
+				  	
+				  	// Can't delete Root
+					!isRoot &&
+					<div className="node-editor__keyline">Press <span className="key" onClick={this.handleDelete}> DEL </span> to delete the selected node</div>
+				}
 				<div className="node-editor__keyline">
 					Use 
 					<span className="key"> Up </span> 
@@ -255,12 +291,10 @@ export default class NodeEditor extends React.Component<NodeEditorProps, NodeEdi
 					<span className="key"> Down </span> 
 					to navigate
 				</div>
-        {
-          // Can't delete Root
-          node.parentId !== -1 &&
-          <div className="node-editor__keyline">Press <span className="key" onClick={this.handleDelete}> DEL </span> to delete the selected node</div>
-        }
+				</div>
+				<div className="node-editor__keyline">Press <span className="key" onClick={this.handleShowLegend}> H </span> to toggle ON/OFF this legend</div>
 			</div>
+
 		)
 	}
 
