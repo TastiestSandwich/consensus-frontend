@@ -8,7 +8,8 @@
 	padding:2em;
 	flex-direction: column;
 	font-size:2em;
-	.node-reviewer__review-action-buttons{
+	.node-reviewer__review-action-buttons,
+	.node-reviewer__implication-action-buttons,{
 		display: flex;
 		justify-content: space-around;
 	}
