@@ -204,8 +204,59 @@ export function findNodeById(argument: Argument, id: number) : Node {
       return node
     }
   }
-
   // root if we didn't find
   console.log("Couldnt find node with id: " + id)
   return argument.root
+}
+  // null if we didn't find
+  return null
+}
+
+export parseArgument(argument: Argument) {
+  argumentJson = {}
+  argumentJson.title = argument.title
+  argumentJson.root_id = argument.root.id
+  argumentJson.nodes = getNodes(argument.root)
+  return argumentJson
+}
+
+export getNodes(node: Node) {
+  nodes = {
+    node.id = {
+      'sentence': node.sentence,
+      // 'evaluation': node.evaluation
+    },
+  }
+  switch(node.type) {
+    case NodeType.STATEMENT {
+      getStatementNodes(node, nodes)
+      break
+    }
+    case NodeType.FACT: {
+      getFactNodes(node, nodes)
+      break
+    }
+    case NodeType.SOURCE: {
+      getSourceNodes(node, nodes)
+      break
+    }
+  }
+  return nodes
+}
+
+export getStatementNodes(node: Statement, nodes) {
+  for (let children in node.children) {
+    nodes = Object.assign(getNodes(node), nodes)
+  }
+}
+
+export getFactNodes(node: Fact, nodes) {
+  for (let children in node.sources) {
+    nodes = Object.assign(getNodes(node), nodes)
+  }
+}
+
+export getSourceNodes(node: Source, nodes) {
+  nodes[node.id].href = node.href
+  nodes[node.id].description = node.description
 }
