@@ -295,3 +295,28 @@ export function findFirstChildren(node: Node) : Node | null {
     return null
   }
 }
+
+export function findFirstUnreviewedSibling(argument: Argument, currentNode: Node) : Node | null {
+  if(currentNode.parentId === -1) { 
+    return null
+  }
+  let node = findNodeById(argument, currentNode.parentId)
+  let q : Node[] = []
+  switch(node.type) {
+    case NodeType.STATEMENT: {
+      q = q.concat(node.children)
+      break
+    }
+    case NodeType.FACT: {
+      q = q.concat(node.sources)
+      break
+    }
+  }
+  while (q.length > 0) {
+    let newNode = q.shift() as Node
+    if(newNode.review == undefined) {
+      return newNode
+    }
+  }
+  return null
+}

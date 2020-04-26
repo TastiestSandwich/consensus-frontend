@@ -4,15 +4,25 @@ import { Node, NodeType, NodeReview } from "../data/argument/argument"
 
 export enum ReviewerStep {
   REVIEW,
-  IMPLICATION
+  IMPLICATION,
+  FINISHED
 }
 
 interface NodeReviewerProps {
     node: Node
     step: ReviewerStep
+    review: (review: NodeReview) => void
 }
 
 export default class NodeReviewer extends React.Component<NodeReviewerProps>{
+
+  handleYes = () => {
+    this.props.review(NodeReview.YES)
+  }
+
+  handleNo = () => {
+    this.props.review(NodeReview.NO)
+  }
 
   renderNodePreview() {
     const node = this.props.node
@@ -43,7 +53,7 @@ export default class NodeReviewer extends React.Component<NodeReviewerProps>{
     const node = this.props.node
     return(
       <div className="node-reviewer__node-review">
-      { node.review && 
+      { node.review != undefined && 
         <>
           <div className="node-reviewer__review-message">
           Do you agree with this statement?
@@ -53,7 +63,7 @@ export default class NodeReviewer extends React.Component<NodeReviewerProps>{
           </div>
         </>
       }
-      { node.implicationReview &&
+      { node.implicationReview != undefined &&
         <>
           <div className="node-reviewer__implication-message">
           Do this statement's children imply the statement?
@@ -74,10 +84,12 @@ export default class NodeReviewer extends React.Component<NodeReviewerProps>{
         Do you agree with this statement?
         </div>
         <div className="node-reviewer__review-action-buttons">
-          <button className="node-reviewer__review-action-yes">
+          <button className="node-reviewer__review-action-yes"
+          onClick={this.handleYes}>
           { NodeReview[NodeReview.YES]}
           </button>
-          <button className="node-reviewer__review-action-no">
+          <button className="node-reviewer__review-action-no"
+          onClick={this.handleNo}>
           { NodeReview[NodeReview.NO]}
           </button>
         </div>
@@ -89,13 +101,15 @@ export default class NodeReviewer extends React.Component<NodeReviewerProps>{
     return(
       <div className="node-reviewer__implication-action">
         <div className="node-reviewer__implication-action-message">
-        Do you agree with this statement?
+        Do this statement's children imply the statement?
         </div>
         <div className="node-reviewer__implication-action-buttons">
-          <button className="node-reviewer__implication-action-yes">
+          <button className="node-reviewer__implication-action-yes"
+          onClick={this.handleYes}>
           { NodeReview[NodeReview.YES]}
           </button>
-          <button className="node-reviewer__implication-action-no">
+          <button className="node-reviewer__implication-action-no"
+          onClick={this.handleNo}>
           { NodeReview[NodeReview.NO]}
           </button>
         </div>
@@ -110,6 +124,11 @@ export default class NodeReviewer extends React.Component<NodeReviewerProps>{
       }
       case ReviewerStep.IMPLICATION: {
         return this.renderImplicationAction()
+      }
+      case ReviewerStep.FINISHED: {
+        return (
+          <div>FINISHED</div>
+        )
       }
     }
   }
